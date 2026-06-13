@@ -24,25 +24,38 @@ class ConfiguraplanejamentosTable extends Table
         $this->hasMany('Planejamentos', [
             'foreignKey' => 'configuraplanejamento_id',
         ]);
+
+        $this->hasMany('DocenteDisponibilidades', [
+            'foreignKey' => 'configuraplanejamento_id',
+        ]);
     }
 
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('usuarioplanejamento_id')
-            ->notEmptyString('usuarioplanejamento_id')
+            ->notEmptyString('usuarioplanejamento_id');
+
+        $validator
             ->scalar('nome')
             ->maxLength('nome', 100)
             ->requirePresence('nome', 'create')
-            ->notEmptyString('nome')
+            ->notEmptyString('nome');
+
+        $validator
             ->scalar('semestre')
             ->maxLength('semestre', 20)
             ->requirePresence('semestre', 'create')
-            ->notEmptyString('semestre')
+            ->notEmptyString('semestre');
+
+        $validator      
             ->integer('versao')
-            ->allowEmptyString('versao')
+            ->allowEmptyString('versao');
+
+        $validator
             ->boolean('ativo')
             ->allowEmptyString('ativo');
+
         return $validator;
     }
 }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -28,6 +26,10 @@ class DocentesTable extends Table
         $this->hasMany('Planejamentos', [
             'foreignKey' => 'docente_id',
         ]);
+
+        $this->hasMany('DocenteDisponibilidades', [
+            'foreignKey' => 'docente_id',
+        ]);
     }
 
     /**
@@ -42,19 +44,56 @@ class DocentesTable extends Table
             ->notEmptyString('nome');
 
         $validator
-            ->scalar('titulo')
-            ->maxLength('titulo', 100)
-            ->allowEmptyString('titulo');
+            ->scalar('cpf')
+            ->allowEmptyString('cpf');
+
+        $validator
+            ->scalar('siape')
+            ->allowEmptyString('siape');
+
+        $validator
+            ->scalar('cress')
+            ->allowEmptyString('cress');
+
+        $validator
+            ->scalar('regiao')
+            ->allowEmptyString('regiao');
+
+        $validator
+            ->scalar('telefone')
+            ->allowEmptyString('telefone');
+
+        $validator
+            ->scalar('celular')
+            ->allowEmptyString('celular');
 
         $validator
             ->scalar('departamento')
-            ->maxLength('departamento', 100)
             ->allowEmptyString('departamento');
 
         $validator
             ->email('email', false)
-            ->maxLength('email', 100)
             ->allowEmptyString('email');
+
+        $validator
+            ->date('dataingresso')
+            ->allowEmptyDate('dataingresso');
+
+        $validator
+            ->date('dataegresso')
+            ->allowEmptyDate('dataegresso');
+
+        $validator
+            ->scalar('motivoegresso')
+            ->allowEmptyString('motivoegresso');
+
+        $validator
+            ->scalar('observacoes')
+            ->allowEmptyString('observacoes');
+
+        $validator
+            ->scalar('status')
+            ->allowEmptyString('status');
 
         return $validator;
     }

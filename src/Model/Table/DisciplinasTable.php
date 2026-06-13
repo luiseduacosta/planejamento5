@@ -41,19 +41,21 @@ class DisciplinasTable extends Table
             ->notEmptyString('disciplina');
 
         $validator
-            ->scalar('creditos')
+            ->integer('creditos')
             ->allowEmptyString('creditos');
 
         $validator
-            ->integer('carga_horaria')
+            ->scalar('carga_horaria')
             ->allowEmptyString('carga_horaria');
 
         $validator
             ->integer('periodo_diurno')
+            ->inList('periodo_diurno', [1, 2, 3, 4, 5, 6, 7, 8])
             ->allowEmptyString('periodo_diurno');
 
         $validator
             ->integer('periodo_noturno')
+            ->inList('periodo_noturno', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
             ->allowEmptyString('periodo_noturno');
 
         $validator
@@ -61,16 +63,16 @@ class DisciplinasTable extends Table
             ->allowEmptyString('requisitos');
 
         $validator
-            ->scalar('optativa')
+            ->boolean('optativa', '1 => Sim 0 => Não')
             ->allowEmptyString('optativa');
 
         $validator
             ->scalar('departamento')
-            ->allowEmptyString('departamento');
+            ->allowEmptyString('departamento', 'create');
 
         $validator
             ->scalar('observacoes')
-            ->allowEmptyString('observacoes');
+            ->allowEmptyString('observacoes', 'create');
 
         return $validator;
     }

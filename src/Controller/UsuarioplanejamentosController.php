@@ -44,6 +44,8 @@ class UsuarioplanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível criar o usuário.'));
         }
         $this->set(compact('user'));
+
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
@@ -64,6 +66,8 @@ class UsuarioplanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível atualizar.'));
         }
         $this->set(compact('user'));
+
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null

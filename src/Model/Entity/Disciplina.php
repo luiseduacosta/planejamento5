@@ -12,7 +12,7 @@ use Cake\ORM\Entity;
  * @property string $codigo
  * @property string $disciplina
  * @property string|null $creditos
- * @property int|null $carga_horaria
+ * @property string|null $carga_horaria
  * @property int|null $periodo_diurno
  * @property int|null $periodo_noturno
  * @property string|null $requisitos

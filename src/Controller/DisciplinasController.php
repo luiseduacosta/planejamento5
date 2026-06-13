@@ -57,9 +57,11 @@ class DisciplinasController extends AppController
             $disciplina = $this->Disciplinas->patchEntity($disciplina, $this->request->getData());
             if ($this->Disciplinas->save($disciplina)) {
                 $this->Flash->success(__('A disciplina foi atualizada com sucesso.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $disciplina->id]);
             }
             $this->Flash->error(__('Não foi possível atualizar a disciplina. Tente novamente.'));
+            debug($disciplina);
+            exit;
         }
         $this->set(compact('disciplina'));
         return null;

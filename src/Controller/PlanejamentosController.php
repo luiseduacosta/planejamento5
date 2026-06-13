@@ -42,8 +42,7 @@ class PlanejamentosController extends AppController
                 'Salas',
                 'Dias',
                 'Horarios',
-            ])
-            ->orderBy(['Planejamentos.created' => 'DESC']);
+            ]);
         
         // Filter by selected semestre if provided
         if ($selectedSemestre) {
@@ -85,36 +84,60 @@ class PlanejamentosController extends AppController
     {
         $planejamento = $this->Planejamentos->newEmptyEntity();
         $this->Authorization->authorize($planejamento, 'add');
+
+        $selectedConfiguracaoId = $this->request->getQuery('configuraplanejamento_id');
+        if ($selectedConfiguracaoId !== null && $selectedConfiguracaoId !== '') {
+            $planejamento->configuraplanejamento_id = (int)$selectedConfiguracaoId;
+            $selectedConfiguracaoId = (int)$selectedConfiguracaoId;
+        } else {
+            $selectedConfiguracaoId = null;
+        }
         
-        $this->_setRelatedData();
+        $this->_setRelatedData($selectedConfiguracaoId, null);
         
         if ($this->request->is('post')) {
             $planejamento = $this->Planejamentos->patchEntity($planejamento, $this->request->getData());
+            $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
+            $this->_setRelatedData($selectedConfiguracaoId, null);
             if ($this->Planejamentos->save($planejamento)) {
                 $this->Flash->success(__('O planejamento foi salvo com sucesso.'));
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('Não foi possível salvar. Tente novamente.'));
         }
-        $this->set(compact('planejamento'));
+        $this->set(compact('planejamento', 'selectedConfiguracaoId'));
+
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
     {
         $planejamento = $this->Planejamentos->get($id, contain: []);
         $this->Authorization->authorize($planejamento, 'edit');
+
+        $selectedConfiguracaoId = $this->request->getQuery('configuraplanejamento_id');
+        if ($selectedConfiguracaoId !== null && $selectedConfiguracaoId !== '') {
+            $selectedConfiguracaoId = (int)$selectedConfiguracaoId;
+            $planejamento->configuraplanejamento_id = $selectedConfiguracaoId;
+        } else {
+            $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
+        }
         
-        $this->_setRelatedData();
+        $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
         
         if ($this->request->is(['patch', 'post', 'put'])) {
             $planejamento = $this->Planejamentos->patchEntity($planejamento, $this->request->getData());
+            $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
+            $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
             if ($this->Planejamentos->save($planejamento)) {
                 $this->Flash->success(__('Planejamento atualizado com sucesso.'));
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('Não foi possível atualizar.'));
         }
-        $this->set(compact('planejamento'));
+        $this->set(compact('planejamento', 'selectedConfiguracaoId'));
+
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null
@@ -151,15 +174,50 @@ class PlanejamentosController extends AppController
         $this->set(compact('planejamentos'));
     }
 
-    protected function _setRelatedData(): void
+    protected function _setRelatedData(?int $configuraplanejamentoId = null, ?int $currentDocenteId = null): void
     {
         $disciplinas = $this->Planejamentos->Disciplinas->find('list', limit: 200)->all();
-        $docentes = $this->Planejamentos->Docentes->find('list', limit: 200)->all();
         $configuracoes = $this->Planejamentos->Configuraplanejamentos->find('list', limit: 200)->all();
         $salas = $this->Planejamentos->Salas->find('list', limit: 200)->all();
         $dias = $this->Planejamentos->Dias->find('list', limit: 200)->all();
         $horarios = $this->Planejamentos->Horarios->find('list', limit: 200)->all();
+
+        $docentesQuery = $this->Planejamentos->Docentes
+            ->find('list', limit: 200)
+            ->where(['Docentes.status' => 'active'])
+            ->orderBy(['Docentes.nome' => 'ASC']);
+
+        $docentesFilteredByDisponibilidade = false;
+        if ($configuraplanejamentoId !== null) {
+            $docentesFilteredByDisponibilidade = true;
+            $docentesQuery->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoId) {
+                return $q->where([
+                    'DocenteDisponibilidades.configuraplanejamento_id' => $configuraplanejamentoId,
+                    'DocenteDisponibilidades.disponivel' => true,
+                ]);
+            });
+        }
+
+        $docentes = $docentesQuery->toArray();
+        if ($currentDocenteId !== null && !isset($docentes[$currentDocenteId])) {
+            $currentDocente = $this->Planejamentos->Docentes->find()
+                ->select(['id', 'nome'])
+                ->where(['Docentes.id' => $currentDocenteId])
+                ->first();
+            if ($currentDocente) {
+                $docentes[$currentDocente->id] = $currentDocente->nome;
+            }
+        }
         
-        $this->set(compact('disciplinas', 'docentes', 'configuracoes', 'salas', 'dias', 'horarios'));
+        $this->set(compact(
+            'disciplinas',
+            'docentes',
+            'configuracoes',
+            'salas',
+            'dias',
+            'horarios',
+            'docentesFilteredByDisponibilidade',
+            'configuraplanejamentoId'
+        ));
     }
 }
