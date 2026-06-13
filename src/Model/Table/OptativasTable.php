@@ -12,18 +12,25 @@ class OptativasTable extends Table
     {
         parent::initialize($config);
         $this->setTable('optativas');
-        $this->setDisplayField('nome');
+        $this->setDisplayField('disciplina');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
     }
 
     public function validationDefault(Validator $validator): Validator
     {
-        $validator
-            ->scalar('codigo')->maxLength('codigo', 50)->requirePresence('codigo', 'create')->notEmptyString('codigo')
-            ->scalar('nome')->maxLength('nome', 200)->requirePresence('nome', 'create')->notEmptyString('nome')
-            ->integer('carga_horaria')->allowEmptyString('carga_horaria')
-            ->scalar('ementa')->allowEmptyString('ementa');
+    $validator
+        ->scalar('codigo')->maxLength('codigo', 50)->requirePresence('codigo', 'create')->notEmptyString('codigo')
+        ->scalar('disciplina')->maxLength('disciplina', 200)->requirePresence('disciplina', 'create')->notEmptyString('disciplina')
+        ->integer('creditos')->allowEmptyString('creditos')
+        ->scalar('carga_horaria')->allowEmptyString('carga_horaria')
+        ->integer('periodo_diurno')->allowEmptyString('periodo_diurno')
+        ->integer('periodo_noturno')->allowEmptyString('periodo_noturno')
+        ->scalar('requisitos')->allowEmptyString('requisitos')
+        ->boolean('optativa')->allowEmptyString('optativa')
+        ->scalar('departamento')->allowEmptyString('departamento')
+        ->scalar('observacoes')->allowEmptyString('observacoes')
+        ;
         return $validator;
     }
 }

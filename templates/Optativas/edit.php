@@ -9,7 +9,6 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Metodos' => 'Métodos', 'Pol�
             echo $this->Form->control('disciplina', ['class' => 'form-control', 'label' => 'Disciplina']);
             echo $this->Form->control('creditos', ['class' => 'form-control', 'label' => 'Créditos']);
             echo $this->Form->control('carga_horaria', ['class' => 'form-control', 'label' => 'Carga Horária']);
-            echo $this->Form->control('ementa', ['class' => 'form-control', 'label' => 'Ementa', 'type' => 'textarea', 'rows' => 4]);
             echo $this->Form->control('periodo_diurno', ['class' => 'form-control', 'label' => 'Período Diurno']);
             echo $this->Form->control('periodo_noturno', ['class' => 'form-control', 'label' => 'Período Noturno']);
             echo $this->Form->control('requisitos', ['class' => 'form-control', 'label' => 'Requisitos']);

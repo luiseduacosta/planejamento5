@@ -12,6 +12,9 @@
                     <th><?= $this->Paginator->sort('disciplina') ?></th>
                     <th><?= $this->Paginator->sort('carga_horaria') ?></th>
                     <th><?= $this->Paginator->sort('departamento') ?></th>
+                    <th class="actions"><?= __('Ações') ?></th>
+                </tr>
+            </thead>
             <tbody>
                 <?php foreach ($optativas as $optativa): ?>
                 <tr>

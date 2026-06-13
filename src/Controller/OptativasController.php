@@ -39,6 +39,7 @@ class OptativasController extends AppController
             $this->Flash->error(__('Não foi possível salvar. Tente novamente.'));
         }
         $this->set(compact('optativa'));
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
@@ -54,6 +55,7 @@ class OptativasController extends AppController
             $this->Flash->error(__('Não foi possível atualizar.'));
         }
         $this->set(compact('optativa'));
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null
