@@ -5,15 +5,15 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('nome') ?></th><th><?= $this->Paginator->sort('semestre') ?></th><th><?= $this->Paginator->sort('ativo') ?></th><th><?= $this->Paginator->sort('usuarioplanejamento_id') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
+            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('nome') ?></th><th><?= $this->Paginator->sort('semestre') ?></th><th><?= $this->Paginator->sort('versao') ?></th><th><?= $this->Paginator->sort('ativo') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
             <tbody>
                 <?php foreach ($configuracoes as $configuracao): ?>
                 <tr>
                     <td><?= $this->Number->format($configuracao->id) ?></td>
                     <td><?= h($configuracao->nome) ?></td>
                     <td><?= h($configuracao->semestre) ?></td>
+                    <td><?= h($configuracao->versao ?? '-') ?></td>
                     <td><?= $configuracao->ativo ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-secondary">Inativo</span>' ?></td>
-                    <td><?= $configuracao->hasValue('usuarioplanejamento') ? h($configuracao->usuarioplanejamento->username) : '-' ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $configuracao->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $configuracao->id], ['class' => 'btn btn-sm btn-warning']) ?>

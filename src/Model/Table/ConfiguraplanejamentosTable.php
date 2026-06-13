@@ -39,10 +39,10 @@ class ConfiguraplanejamentosTable extends Table
             ->maxLength('semestre', 20)
             ->requirePresence('semestre', 'create')
             ->notEmptyString('semestre')
+            ->integer('versao')
+            ->allowEmptyString('versao')
             ->boolean('ativo')
-            ->allowEmptyString('ativo')
-            ->scalar('descricao')
-            ->allowEmptyString('descricao');
+            ->allowEmptyString('ativo');
         return $validator;
     }
 }

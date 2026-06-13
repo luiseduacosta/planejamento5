@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Disable PCRE JIT due to environment/security restrictions allocating executable JIT memory.
+ini_set('pcre.jit', '0');
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

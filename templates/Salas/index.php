@@ -13,6 +13,10 @@
                 <tr>
                     <th><?= $this->Paginator->sort('id') ?></th>
                     <th><?= $this->Paginator->sort('sala') ?></th>
+                    <th><?= $this->Paginator->sort('localizacao') ?></th>
+                    <th><?= $this->Paginator->sort('lotacao') ?></th>
+                    <th><?= $this->Paginator->sort('recursos') ?></th>
+                    <th><?= $this->Paginator->sort('observacoes') ?></th>
                     <th class="actions"><?= __('Ações') ?></th>
                 </tr>
             </thead>
@@ -21,6 +25,10 @@
                 <tr>
                     <td><?= $this->Number->format($sala->id) ?></td>
                     <td><?= h($sala->sala) ?></td>
+                    <td><?= h($sala->localizacao) ?></td>
+                    <td><?= $this->Number->format($sala->lotacao) ?></td>
+                    <td><?= h($sala->recursos) ?></td>
+                    <td><?= h($sala->observacoes) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $sala->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $sala->id], ['class' => 'btn btn-sm btn-warning']) ?>

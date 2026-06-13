@@ -11,11 +11,12 @@ use Cake\ORM\Entity;
 class Ementa extends Entity
 {
     protected array $_accessible = [
+        'configuraplanejamento_id' => true,
         'disciplina_id' => true,
-        'conteudo_programatico' => true,
-        'objetivos' => true,
-        'bibliografia_basica' => true,
-        'bibliografia_complementar' => true,
+        'optativa_id' => true,
+        'docente_id' => true,
+        'titulo' => true,
+        'ementa' => true,
         'created' => true,
         'modified' => true,
     ];

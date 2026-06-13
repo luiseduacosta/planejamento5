@@ -12,15 +12,15 @@ use Cake\Event\EventInterface;
  */
 class UsersController extends AppController
 {
+    protected ?string $defaultTable = 'Usuarioplanejamentos';
+
     /**
      * Before filter - allow login without authentication
      */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
-        
-        // Allow login action without being logged in
-        $this->Authentication->addUnauthenticatedActions(['login']);
+        $this->Authentication->addUnauthenticatedActions(['login', 'logout', 'profile']);
     }
 
     /**
@@ -35,11 +35,11 @@ class UsersController extends AppController
         
         // If user is logged in, redirect to dashboard
         if ($result->isValid()) {
-            $this->Flash->success(__('Bem-vindo, {0}!', $this->request->getAttribute('identity')->username));
+            $this->Flash->success(__('Bem-vindo, {0}!', $this->request->getAttribute('identity')->email));
             
             return $this->redirect([
                 'controller' => 'Planejamentos',
-                'action' => 'listar'
+                'action' => 'index'
             ]);
         }
         

@@ -17,6 +17,23 @@ class PlanejamentosController extends AppController
     public function index(): void
     {
         $this->Authorization->skipAuthorization();
+        
+        // Get selected semestre from query params
+        $selectedSemestre = $this->request->getQuery('semestre');
+        
+        // Extract unique semestres from Configuraplanejamentos
+        $semestres = $this->Planejamentos->Configuraplanejamentos->find()
+            ->select(['semestre'])
+            ->distinct(['semestre'])
+            ->orderBy(['semestre' => 'DESC'])
+            ->toArray();
+        
+        $semestresList = [];
+        foreach ($semestres as $semestre) {
+            $semestresList[$semestre->semestre] = $semestre->semestre;
+        }
+        
+        // Build query
         $query = $this->Planejamentos->find()
             ->contain([
                 'Disciplinas',
@@ -28,10 +45,28 @@ class PlanejamentosController extends AppController
             ])
             ->orderBy(['Planejamentos.created' => 'DESC']);
         
-        $planejamentos = $this->paginate($query);
-        $this->set(compact('planejamentos'));
-    }
+        // Filter by selected semestre if provided
+        if ($selectedSemestre) {
+            $query->matching('Configuraplanejamentos', function ($q) use ($selectedSemestre) {
+                return $q->where(['Configuraplanejamentos.semestre' => $selectedSemestre]);
+            });
+        }
 
+        $config = [
+            'sortableFields' => ['Planejamentos.id', 
+            'Disciplinas.disciplina', 
+            'Docentes.nome', 
+            'Configuraplanejamentos.semestre', 
+            'Dias.dia', 
+            'Horarios.horario', 
+            'Salas.sala'
+            ],
+        ];
+        
+        $planejamentos = $this->paginate($query, $config);
+        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre'));
+    }
+ 
     public function view($id = null): void
     {
         $planejamento = $this->Planejamentos->get($id, contain: [

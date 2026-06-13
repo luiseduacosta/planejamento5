@@ -5,13 +5,13 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('disciplina_id') ?></th><th><?= $this->Paginator->sort('conteudo_programatico') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
+            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('titulo') ?></th><th><?= $this->Paginator->sort('disciplina_id') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
             <tbody>
                 <?php foreach ($ementas as $ementa): ?>
                 <tr>
                     <td><?= $this->Number->format($ementa->id) ?></td>
-                    <td><?= $ementa->hasValue('disciplina') ? h($ementa->disciplina->nome) : '-' ?></td>
-                    <td><?= $ementa->conteudo_programatico ? substr(h($ementa->conteudo_programatico), 0, 50) . '...' : '-' ?></td>
+                    <td><?= h($ementa->titulo ?? '-') ?></td>
+                    <td><?= $ementa->hasValue('disciplina') ? h($ementa->disciplina->disciplina) : '-' ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $ementa->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $ementa->id], ['class' => 'btn btn-sm btn-warning']) ?>

@@ -45,6 +45,7 @@ class DisciplinasController extends AppController
             $this->Flash->error(__('Não foi possível salvar a disciplina. Tente novamente.'));
         }
         $this->set(compact('disciplina'));
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
@@ -61,6 +62,7 @@ class DisciplinasController extends AppController
             $this->Flash->error(__('Não foi possível atualizar a disciplina. Tente novamente.'));
         }
         $this->set(compact('disciplina'));
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null

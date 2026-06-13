@@ -4,8 +4,8 @@
         <?php
             echo $this->Form->control('nome', ['class' => 'form-control', 'label' => 'Nome']);
             echo $this->Form->control('semestre', ['class' => 'form-control', 'label' => 'Semestre', 'placeholder' => 'Ex: 2024.1']);
+            echo $this->Form->control('versao', ['class' => 'form-control', 'label' => 'Versão', 'type' => 'number', 'min' => 1]);
             echo $this->Form->control('ativo', ['class' => 'form-check-input', 'label' => ['text' => 'Ativo', 'class' => 'form-check-label']]);
-            echo $this->Form->control('descricao', ['class' => 'form-control', 'label' => 'Descrição', 'type' => 'textarea', 'rows' => 3]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-primary']) ?>

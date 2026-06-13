@@ -5,14 +5,21 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('codigo') ?></th><th><?= $this->Paginator->sort('nome') ?></th><th><?= $this->Paginator->sort('carga_horaria') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
+            <thead>
+                <tr>
+                    <th><?= $this->Paginator->sort('id') ?></th>
+                    <th><?= $this->Paginator->sort('codigo') ?></th>
+                    <th><?= $this->Paginator->sort('disciplina') ?></th>
+                    <th><?= $this->Paginator->sort('carga_horaria') ?></th>
+                    <th><?= $this->Paginator->sort('departamento') ?></th>
             <tbody>
                 <?php foreach ($optativas as $optativa): ?>
                 <tr>
                     <td><?= $this->Number->format($optativa->id) ?></td>
                     <td><?= h($optativa->codigo) ?></td>
-                    <td><?= h($optativa->nome) ?></td>
+                    <td><?= h($optativa->disciplina) ?></td>
                     <td><?= $optativa->carga_horaria ? $optativa->carga_horaria . 'h' : '-' ?></td>
+                    <td><?= $optativa->departamento ? $optativa->departamento : '-' ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $optativa->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $optativa->id], ['class' => 'btn btn-sm btn-warning']) ?>
@@ -23,7 +30,12 @@
             </tbody>
         </table>
     </div>
-    <div class="paginator"><?= $this->Paginator->first('<< '.__('primeiro')) ?><?= $this->Paginator->prev('< '.__('anterior')) ?><?= $this->Paginator->numbers() ?><?= $this->Paginator->next(__('próximo').' >') ?><?= $this->Paginator->last(__('último').' >>') ?>
+    <div class="paginator">
+        <?= $this->Paginator->first('<< '.__('primeiro')) ?>
+        <?= $this->Paginator->prev('< '.__('anterior')) ?>
+        <?= $this->Paginator->numbers() ?>
+        <?= $this->Paginator->next(__('próximo').' >') ?>
+        <?= $this->Paginator->last(__('último').' >>') ?>
         <p><?= $this->Paginator->counter(__('Página {{page}} de {{pages}}')) ?></p>
     </div>
 </div>

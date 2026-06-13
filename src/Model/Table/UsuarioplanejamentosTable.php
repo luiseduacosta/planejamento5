@@ -12,7 +12,7 @@ class UsuarioplanejamentosTable extends Table
     {
         parent::initialize($config);
         $this->setTable('users');
-        $this->setDisplayField('username');
+        $this->setDisplayField('email');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
@@ -24,20 +24,17 @@ class UsuarioplanejamentosTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('username')
-            ->maxLength('username', 50)
-            ->requirePresence('username', 'create')
-            ->notEmptyString('username')
-            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->email('email')
+            ->requirePresence('email', 'create')
+            ->notEmptyString('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->scalar('password')
             ->maxLength('password', 255)
             ->requirePresence('password', 'create')
-            ->notEmptyString('password')
+            ->allowEmptyString('password')
             ->scalar('role')
             ->maxLength('role', 20)
             ->notEmptyString('role')
-            ->email('email', false)
-            ->allowEmptyString('email')
             ->scalar('nome')
             ->allowEmptyString('nome');
         return $validator;

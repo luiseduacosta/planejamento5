@@ -3,14 +3,52 @@
         <div class="col"><h3><?= __('Planejamentos') ?></h3></div>
         <div class="col-auto mb-3"><?= $this->Html->link(__('Novo Planejamento'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?></div>
     </div>
+    
+    <!-- Semestre Filter -->
+    <?php if (!empty($semestresList)): ?>
+    <div class="row mb-3">
+        <div class="col-auto">
+            <?= $this->Form->create(null, ['type' => 'get', 'class' => 'd-flex align-items-center gap-2']) ?>
+            <label class="form-label mb-0"><?= __('Filtrar por Semestre:') ?></label>
+            <?= $this->Form->control('semestre', [
+                'options' => ['' => __('Todos os Semestres')] + $semestresList,
+                'default' => $selectedSemestre,
+                'class' => 'form-select',
+                'label' => false,
+                'onchange' => 'this.form.submit()'
+            ]) ?>
+            <?= $this->Form->end() ?>
+        </div>
+        <?php if ($selectedSemestre): ?>
+        <div class="col-auto">
+            <?= $this->Html->link(
+                '<i class="bi bi-x-circle"></i> ' . __('Limpar Filtro'),
+                ['action' => 'index'],
+                ['class' => 'btn btn-outline-secondary', 'escape' => false]
+            ) ?>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('disciplina_id') ?></th><th><?= $this->Paginator->sort('docente_id') ?></th><th><?= $this->Paginator->sort('configuraplanejamento_id') ?></th><th><?= $this->Paginator->sort('dia_id') ?></th><th><?= $this->Paginator->sort('horario_id') ?></th><th><?= $this->Paginator->sort('sala_id') ?></th><th class="actions"><?= __('Ações') ?></th></tr></thead>
+            <thead>
+                <tr>
+                    <th><?= $this->Paginator->sort('Planejamentos.id', 'ID') ?></th>
+                    <th><?= $this->Paginator->sort('Disciplinas.disciplina', 'Disciplina') ?></th>
+                    <th><?= $this->Paginator->sort('Docentes.nome', 'Docente') ?></th>
+                    <th><?= $this->Paginator->sort('Configuraplanejamentos.semestre', 'Semestre') ?></th>
+                    <th><?= $this->Paginator->sort('Dias.dia', 'Dia') ?></th>
+                    <th><?= $this->Paginator->sort('Horarios.horario', 'Horario') ?></th>
+                    <th><?= $this->Paginator->sort('Salas.sala', 'Sala') ?></th>
+                    <th class="actions"><?= __('Ações') ?></th>
+                </tr>
+            </thead>
             <tbody>
                 <?php foreach ($planejamentos as $planejamento): ?>
                 <tr>
                     <td><?= $this->Number->format($planejamento->id) ?></td>
-                    <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->nome) : '-' ?></td>
+                    <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->disciplina) : '-' ?></td>
                     <td><?= $planejamento->hasValue('docente') ? h($planejamento->docente->nome) : '-' ?></td>
                     <td><?= $planejamento->hasValue('configuraplanejamento') ? h($planejamento->configuraplanejamento->semestre) : '-' ?></td>
                     <td><?= $planejamento->hasValue('dia') ? h($planejamento->dia->dia) : '-' ?></td>

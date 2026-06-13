@@ -50,6 +50,7 @@ class ConfiguraplanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível salvar. Tente novamente.'));
         }
         $this->set(compact('configuracao'));
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
@@ -66,6 +67,7 @@ class ConfiguraplanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível atualizar.'));
         }
         $this->set(compact('configuracao'));
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null
@@ -93,8 +95,8 @@ class ConfiguraplanejamentosController extends AppController
         $clone->usuarioplanejamento_id = $original->usuarioplanejamento_id;
         $clone->nome = $original->nome . ' (Cópia)';
         $clone->semestre = $original->semestre;
+        $clone->versao = $original->versao ?? 1;
         $clone->ativo = false;
-        $clone->descricao = 'Cópia de: ' . $original->nome;
         
         if ($this->Configuraplanejamentos->save($clone)) {
             $this->Flash->success(__('Configuração clonada com sucesso!'));

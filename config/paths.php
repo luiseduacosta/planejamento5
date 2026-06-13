@@ -63,12 +63,32 @@ define('TESTS', ROOT . DS . 'tests' . DS);
 /*
  * Path to the temporary files directory.
  */
-define('TMP', ROOT . DS . 'tmp' . DS);
+$tmpPath = ROOT . DS . 'tmp' . DS;
+$logsPath = ROOT . DS . 'logs' . DS;
+
+// Fallback to system temp directory if project directories are not writable (e.g. read-only filesystem)
+if (!is_writable($tmpPath) || !is_writable($logsPath)) {
+    $user = 'default';
+    if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+        $uidInfo = posix_getpwuid(posix_geteuid());
+        if ($uidInfo) {
+            $user = $uidInfo['name'];
+        }
+    }
+    $sysTmp = sys_get_temp_dir() . DS . 'planejamento5-' . $user . DS;
+    $tmpPath = $sysTmp . 'tmp' . DS;
+    $logsPath = $sysTmp . 'logs' . DS;
+    unset($user, $sysTmp);
+}
+
+define('TMP', $tmpPath);
 
 /*
  * Path to the logs directory.
  */
-define('LOGS', ROOT . DS . 'logs' . DS);
+define('LOGS', $logsPath);
+
+unset($tmpPath, $logsPath);
 
 /*
  * Path to the cache files directory. It can be shared between hosts in a multi-server setup.

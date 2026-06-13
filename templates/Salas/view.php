@@ -12,6 +12,22 @@
                     <td><?= h($sala->sala) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Localizacao') ?></th>
+                    <td><?= h($sala->localizacao) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Lotacao') ?></th>
+                    <td><?= $this->Number->format($sala->lotacao) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Recursos') ?></th>
+                    <td><?= h($sala->recursos) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Observacoes') ?></th>
+                    <td><?= h($sala->observacoes) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Criado') ?></th>
                     <td><?= h($sala->created) ?></td>
                 </tr>

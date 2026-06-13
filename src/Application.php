@@ -107,6 +107,15 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new AuthenticationMiddleware($this))
             ->add(new AuthorizationMiddleware($this, [
                 'requireAuthorizationCheck' => false,
+                'unauthorizedHandler' => [
+                    'className' => 'Authorization.Redirect',
+                    'url' => '/users/login',
+                    'queryParam' => 'redirect',
+                    'exceptions' => [
+                        \Authorization\Exception\MissingIdentityException::class,
+                        \Authorization\Exception\ForbiddenException::class,
+                    ],
+                ],
             ]));
 
         return $middlewareQueue;
@@ -115,7 +124,32 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
+        $service->setConfig([
+            'unauthenticatedRedirect' => \Cake\Routing\Router::url('/users/login'),
+            'queryParam' => 'redirect',
+        ]);
+
+        // Load the authenticators. Session should be first.
         $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password',
+            ],
+            'loginUrl' => \Cake\Routing\Router::url('/users/login'),
+            'identifier' => [
+                'Authentication.Password' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password',
+                    ],
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'userModel' => 'Usuarioplanejamentos',
+                    ],
+                ]
+            ]
+        ]);
 
         return $service;
     }

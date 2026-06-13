@@ -12,29 +12,43 @@ class EmentasTable extends Table
     {
         parent::initialize($config);
         $this->setTable('ementas');
-        $this->setDisplayField('disciplina_id');
+        $this->setDisplayField('titulo');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Configuraplanejamentos', [
+            'foreignKey' => 'configuraplanejamento_id',
+        ]);
+
         $this->belongsTo('Disciplinas', [
             'foreignKey' => 'disciplina_id',
-            'joinType' => 'INNER',
+        ]);
+
+        $this->belongsTo('Optativas', [
+            'foreignKey' => 'optativa_id',
+        ]);
+
+        $this->belongsTo('Docentes', [
+            'foreignKey' => 'docente_id',
         ]);
     }
 
     public function validationDefault(Validator $validator): Validator
     {
         $validator
+            ->integer('configuraplanejamento_id')
+            ->allowEmptyString('configuraplanejamento_id')
             ->integer('disciplina_id')
-            ->notEmptyString('disciplina_id')
-            ->scalar('conteudo_programatico')
-            ->allowEmptyString('conteudo_programatico')
-            ->scalar('objetivos')
-            ->allowEmptyString('objetivos')
-            ->scalar('bibliografia_basica')
-            ->allowEmptyString('bibliografia_basica')
-            ->scalar('bibliografia_complementar')
-            ->allowEmptyString('bibliografia_complementar');
+            ->allowEmptyString('disciplina_id')
+            ->integer('optativa_id')
+            ->allowEmptyString('optativa_id')
+            ->integer('docente_id')
+            ->allowEmptyString('docente_id')
+            ->scalar('titulo')
+            ->maxLength('titulo', 255)
+            ->allowEmptyString('titulo')
+            ->scalar('ementa')
+            ->allowEmptyString('ementa');
         return $validator;
     }
 }

@@ -14,8 +14,8 @@ class Configuraplanejamento extends Entity
         'usuarioplanejamento_id' => true,
         'nome' => true,
         'semestre' => true,
+        'versao' => true,
         'ativo' => true,
-        'descricao' => true,
         'created' => true,
         'modified' => true,
     ];

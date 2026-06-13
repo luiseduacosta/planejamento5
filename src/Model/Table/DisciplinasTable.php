@@ -17,7 +17,7 @@ class DisciplinasTable extends Table
         parent::initialize($config);
 
         $this->setTable('disciplinas');
-        $this->setDisplayField('nome');
+        $this->setDisplayField('disciplina');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
@@ -35,18 +35,42 @@ class DisciplinasTable extends Table
             ->notEmptyString('codigo');
 
         $validator
-            ->scalar('nome')
-            ->maxLength('nome', 200)
-            ->requirePresence('nome', 'create')
-            ->notEmptyString('nome');
+            ->scalar('disciplina')
+            ->maxLength('disciplina', 200)
+            ->requirePresence('disciplina', 'create')
+            ->notEmptyString('disciplina');
+
+        $validator
+            ->scalar('creditos')
+            ->allowEmptyString('creditos');
 
         $validator
             ->integer('carga_horaria')
             ->allowEmptyString('carga_horaria');
 
         $validator
-            ->scalar('ementa')
-            ->allowEmptyString('ementa');
+            ->integer('periodo_diurno')
+            ->allowEmptyString('periodo_diurno');
+
+        $validator
+            ->integer('periodo_noturno')
+            ->allowEmptyString('periodo_noturno');
+
+        $validator
+            ->scalar('requisitos')
+            ->allowEmptyString('requisitos');
+
+        $validator
+            ->scalar('optativa')
+            ->allowEmptyString('optativa');
+
+        $validator
+            ->scalar('departamento')
+            ->allowEmptyString('departamento');
+
+        $validator
+            ->scalar('observacoes')
+            ->allowEmptyString('observacoes');
 
         return $validator;
     }

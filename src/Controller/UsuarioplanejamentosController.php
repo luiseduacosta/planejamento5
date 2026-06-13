@@ -5,15 +5,15 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
-use Cake\Auth\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 class UsuarioplanejamentosController extends AppController
 {
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
-        // Only allow index for viewing list, rest requires auth
-        $this->Authentication->addUnauthenticatedActions(['index']);
+        // Allow all actions for now to test
+        // $this->Authentication->addUnauthenticatedActions(['*']);
     }
 
     public function index(): void
@@ -36,12 +36,7 @@ class UsuarioplanejamentosController extends AppController
         $this->Authorization->authorize($user, 'add');
         
         if ($this->request->is('post')) {
-            $data = $this->request->getData();
-            // Hash password
-            if (!empty($data['password'])) {
-                $data['password'] = (new DefaultPasswordHasher())->hash($data['password']);
-            }
-            $user = $this->Usuarioplanejamentos->patchEntity($user, $data);
+            $user = $this->Usuarioplanejamentos->patchEntity($user, $this->request->getData());
             if ($this->Usuarioplanejamentos->save($user)) {
                 $this->Flash->success(__('Usuário criado com sucesso.'));
                 return $this->redirect(['action' => 'index']);
@@ -58,10 +53,7 @@ class UsuarioplanejamentosController extends AppController
         
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            // Only hash password if it was changed
-            if (!empty($data['password'])) {
-                $data['password'] = (new DefaultPasswordHasher())->hash($data['password']);
-            } else {
+            if (empty($data['password'])) {
                 unset($data['password']);
             }
             $user = $this->Usuarioplanejamentos->patchEntity($user, $data);

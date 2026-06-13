@@ -17,13 +17,23 @@ class EmentasController extends AppController
     public function index(): void
     {
         $this->Authorization->skipAuthorization();
-        $ementas = $this->paginate($this->Ementas->find()->contain(['Disciplinas']));
+        $ementas = $this->paginate($this->Ementas->find()->contain([
+            'Configuraplanejamentos',
+            'Disciplinas',
+            'Optativas',
+            'Docentes',
+        ]));
         $this->set(compact('ementas'));
     }
 
     public function view($id = null): void
     {
-        $ementa = $this->Ementas->get($id, contain: ['Disciplinas']);
+        $ementa = $this->Ementas->get($id, contain: [
+            'Configuraplanejamentos',
+            'Disciplinas',
+            'Optativas',
+            'Docentes',
+        ]);
         $this->Authorization->skipAuthorization();
         $this->set(compact('ementa'));
     }
@@ -33,9 +43,12 @@ class EmentasController extends AppController
         $ementa = $this->Ementas->newEmptyEntity();
         $this->Authorization->authorize($ementa, 'add');
         
-        // Load disciplines for dropdown
+        // Load related data for dropdowns
+        $configuraplanejamentos = $this->Ementas->Configuraplanejamentos->find('list', limit: 200)->all();
         $disciplinas = $this->Ementas->Disciplinas->find('list', limit: 200)->all();
-        $this->set(compact('disciplinas'));
+        $optativas = $this->Ementas->Optativas->find('list', limit: 200)->all();
+        $docentes = $this->Ementas->Docentes->find('list', limit: 200)->all();
+        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'docentes'));
         
         if ($this->request->is('post')) {
             $ementa = $this->Ementas->patchEntity($ementa, $this->request->getData());
@@ -46,6 +59,7 @@ class EmentasController extends AppController
             $this->Flash->error(__('Não foi possível salvar. Tente novamente.'));
         }
         $this->set(compact('ementa'));
+        return null;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
@@ -53,8 +67,12 @@ class EmentasController extends AppController
         $ementa = $this->Ementas->get($id, contain: []);
         $this->Authorization->authorize($ementa, 'edit');
         
+        // Load related data for dropdowns
+        $configuraplanejamentos = $this->Ementas->Configuraplanejamentos->find('list', limit: 200)->all();
         $disciplinas = $this->Ementas->Disciplinas->find('list', limit: 200)->all();
-        $this->set(compact('disciplinas'));
+        $optativas = $this->Ementas->Optativas->find('list', limit: 200)->all();
+        $docentes = $this->Ementas->Docentes->find('list', limit: 200)->all();
+        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'docentes'));
         
         if ($this->request->is(['patch', 'post', 'put'])) {
             $ementa = $this->Ementas->patchEntity($ementa, $this->request->getData());
@@ -65,6 +83,7 @@ class EmentasController extends AppController
             $this->Flash->error(__('Não foi possível atualizar.'));
         }
         $this->set(compact('ementa'));
+        return null;
     }
 
     public function delete($id = null): \Cake\Http\Response|null

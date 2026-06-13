@@ -11,12 +11,12 @@
                 <?= $this->Form->create(null, ['class' => 'needs-validation']) ?>
                 
                 <div class="mb-3">
-                    <?= $this->Form->control('username', [
+                    <?= $this->Form->control('email', [
                         'class' => 'form-control form-control-lg',
-                        'label' => ['text' => 'Usuário', 'class' => 'form-label'],
-                        'placeholder' => 'Digite seu usuário',
+                        'label' => ['text' => 'E-mail', 'class' => 'form-label'],
+                        'placeholder' => 'Digite seu e-mail',
                         'required' => true,
-                        'autocomplete' => 'username'
+                        'autocomplete' => 'email'
                     ]) ?>
                 </div>
                 
