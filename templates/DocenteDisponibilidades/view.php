@@ -1,4 +1,7 @@
-<div class="docenteDisponibilidades view content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <h3><?= __('Disponibilidade') ?></h3>
     <table class="table table-striped">
         <tr>
@@ -23,7 +26,7 @@
         </tr>
         <tr>
             <th><?= __('Observações') ?></th>
-            <td><?= nl2br(h($docenteDisponibilidade->observacoes)) ?></td>
+            <td><?= $docenteDisponibilidade->observacoes ? nl2br(h($docenteDisponibilidade->observacoes)) : '-' ?></td>
         </tr>
         <tr>
             <th><?= __('Criado') ?></th>

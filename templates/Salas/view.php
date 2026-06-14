@@ -1,4 +1,7 @@
-<div class="salas view content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <h3><?= h($sala->sala) ?></h3>
     <div class="row">
         <div class="col">
@@ -12,11 +15,11 @@
                     <td><?= h($sala->sala) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Localizacao') ?></th>
+                    <th><?= __('Localização') ?></th>
                     <td><?= h($sala->localizacao) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Lotacao') ?></th>
+                    <th><?= __('Lotação') ?></th>
                     <td><?= $this->Number->format($sala->lotacao) ?></td>
                 </tr>
                 <tr>
@@ -24,8 +27,8 @@
                     <td><?= h($sala->recursos) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Observacoes') ?></th>
-                    <td><?= h($sala->observacoes) ?></td>
+                    <th><?= __('Observações') ?></th>
+                    <td><?= $sala->observacoes ? nl2br(h($sala->observacoes)) : '-' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Criado') ?></th>

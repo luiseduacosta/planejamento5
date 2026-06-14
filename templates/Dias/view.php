@@ -1,4 +1,7 @@
-<div class="dias view content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <h3><?= h($dia->dia) ?></h3>
     <div class="row">
         <div class="col">

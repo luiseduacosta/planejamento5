@@ -1,5 +1,8 @@
-<div class="horarios view content">
-    <h3><?= h($horario->horario) ?></h3>
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
+    <h3><?= __('Horário') ?></h3>
     <div class="row">
         <div class="col">
             <table class="table table-striped">

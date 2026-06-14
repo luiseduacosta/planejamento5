@@ -13,6 +13,18 @@ use Cake\Event\EventInterface;
  */
 class DocentesController extends AppController
 {
+    private const STATUS_LABELS = [
+        'ativo' => 'Ativo',
+        'aposentado' => 'Aposentado',
+        'inativo' => 'Inativo',
+    ];
+
+    private const STATUS_ALIASES = [
+        'ativo' => ['ativo', 'active', 'activo'],
+        'aposentado' => ['aposentado', 'retired'],
+        'inativo' => ['inativo', 'inactive', 'inactivo'],
+    ];
+
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -49,15 +61,17 @@ class DocentesController extends AppController
             ->toArray();
         $statusList = [];
         foreach ($status as $statusItem) {
-            $statusList[$statusItem->status] = $statusItem->status;
+            $canonicalStatus = $this->canonicalStatus((string)$statusItem->status);
+            $statusList[$canonicalStatus] = self::STATUS_LABELS[$canonicalStatus] ?? $canonicalStatus;
         }
+        asort($statusList);
 
         // Build query
         $query = $this->Docentes->find();
         
         // Apply status filter
         if ($statusFilter) {
-            $query->where(['Docentes.status' => $statusFilter]);
+            $query->where(['Docentes.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
         }
         
         // Apply departamento filter
@@ -80,7 +94,16 @@ class DocentesController extends AppController
 
         $docentes = $this->paginate($query, $config);
 
-        $this->set(compact('docentes', 'departamentosList', 'statusList', 'statusFilter', 'departamentoFilter'));
+        $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
+
+        $this->set(compact(
+            'docentes',
+            'departamentosList',
+            'statusList',
+            'statusFilter',
+            'statusFilterLabel',
+            'departamentoFilter'
+        ));
     }
 
     public function view($id = null): void
@@ -111,9 +134,21 @@ class DocentesController extends AppController
         return null;
     }
 
+    private function canonicalStatus(string $status): string
+    {
+        foreach (self::STATUS_ALIASES as $canonicalStatus => $aliases) {
+            if (\in_array($status, $aliases, true)) {
+                return $canonicalStatus;
+            }
+        }
+
+        return $status;
+    }
+
     public function edit($id = null): \Cake\Http\Response|null
     {
         $docente = $this->Docentes->get($id, contain: []);
+        $docente->status = $this->canonicalStatus((string)$docente->status);
         $this->Authorization->authorize($docente, 'edit');
         
         if ($this->request->is(['patch', 'post', 'put'])) {

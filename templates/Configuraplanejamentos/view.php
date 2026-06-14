@@ -1,13 +1,29 @@
-<div class="configuraplanejamentos view content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <h3><?= h($configuracao->nome) ?></h3>
     <table class="table table-striped">
-        <tr><th><?= __('ID') ?></th><td><?= $this->Number->format($configuracao->id) ?></td></tr>
-        <tr><th><?= __('Nome') ?></th><td><?= h($configuracao->nome) ?></td></tr>
-        <tr><th><?= __('Semestre') ?></th><td><?= h($configuracao->semestre) ?></td></tr>
-        <tr><th><?= __('Versão') ?></th><td><?= h($configuracao->versao ?? '-') ?></td></tr>
-        <tr><th><?= __('Ativo') ?></th><td><?= $configuracao->ativo ? 'Sim' : 'Não' ?></td></tr>
-        <tr><th><?= __('Criado') ?></th><td><?= h($configuracao->created) ?></td></tr>
-        <tr><th><?= __('Modificado') ?></th><td><?= h($configuracao->modified) ?></td></tr>
+            <thead>
+                <tr>
+                    <th><?= __('ID') ?></th>
+                    <th><?= __('Nome') ?></th>
+                    <th><?= __('Semestre') ?></th>
+                    <th><?= __('Versão') ?></th>
+                    <th><?= __('Ativo') ?></th>
+                    <th><?= __('Criado') ?></th>
+                    <th><?= __('Modificado') ?></th>
+                </tr>
+                <tr>
+                    <td><?= $this->Number->format($configuracao->id) ?></td>
+                    <td><?= h($configuracao->nome) ?></td>
+                    <td><?= h($configuracao->semestre) ?></td>
+                    <td><?= h($configuracao->versao ?? '-') ?></td>
+                    <td><?= $configuracao->ativo ? 'Sim' : 'Não' ?></td>
+                    <td><?= h($configuracao->created) ?></td>
+                    <td><?= h($configuracao->modified) ?></td>
+                </tr>
+            </thead>
     </table>
     <div class="mt-3">
         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $configuracao->id], ['class' => 'btn btn-warning']) ?>

@@ -184,7 +184,7 @@ class PlanejamentosController extends AppController
 
         $docentesQuery = $this->Planejamentos->Docentes
             ->find('list', limit: 200)
-            ->where(['Docentes.status' => 'active'])
+            ->where(['Docentes.status IN' => ['ativo', 'active', 'activo']])
             ->orderBy(['Docentes.nome' => 'ASC']);
 
         $docentesFilteredByDisponibilidade = false;

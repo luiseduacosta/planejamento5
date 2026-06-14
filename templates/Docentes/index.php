@@ -1,7 +1,19 @@
 <?php
 declare(strict_types=1);
 ?>
-<div class="docentes index content">
+<div class="container">
+    <?php
+        $statusLabels = [
+            'ativo' => __('Ativo'),
+            'active' => __('Ativo'),
+            'activo' => __('Ativo'),
+            'aposentado' => __('Aposentado'),
+            'retired' => __('Aposentado'),
+            'inativo' => __('Inativo'),
+            'inactive' => __('Inativo'),
+            'inactivo' => __('Inativo'),
+        ];
+    ?>
     <div class="row">
         <div class="col">
             <h3><?= __('Docentes') ?></h3>
@@ -9,7 +21,7 @@ declare(strict_types=1);
                 <small class="text-muted">
                     <?= __('Filtros ativos:') ?>
                     <?php if ($statusFilter): ?>
-                        <span class="badge bg-primary"><?= __('Status') ?>: <?= h($statusFilter) ?></span>
+                        <span class="badge bg-primary"><?= __('Status') ?>: <?= h($statusFilterLabel) ?></span>
                     <?php endif; ?>
                     <?php if ($departamentoFilter): ?>
                         <span class="badge bg-primary"><?= __('Departamento') ?>: <?= h($departamentoFilter) ?></span>
@@ -31,7 +43,6 @@ declare(strict_types=1);
             <div class="col-auto">
                 <?= $this->Form->control('status', [
                     'label' => __('Status'),
-                    'class' => 'form-select',
                     'options' => [
                         '' => __('Todos')] + $statusList,
                     'default' => $statusFilter,
@@ -43,7 +54,6 @@ declare(strict_types=1);
             <div class="col-auto">
                 <?= $this->Form->control('departamento', [
                     'label' => __('Departamento'),
-                    'class' => 'form-select',
                     'options' => ['' => __('Todos')] + $departamentosList,
                     'default' => $departamentoFilter,
                     'empty' => false
@@ -52,7 +62,7 @@ declare(strict_types=1);
             
             <!-- Filter Button -->
             <div class="col-auto">
-                <?= $this->Form->button(__('Filtrar'), ['class' => 'btn btn-primary']) ?>
+                <?= $this->Form->button(__('Filtrar')) ?>
             </div>
             
             <!-- Clear Filters Button -->
@@ -81,7 +91,7 @@ declare(strict_types=1);
                     <th><?= $this->Paginator->sort('departamento', __('Departamento')) ?></th>
                     <th><?= $this->Paginator->sort('status', __('Status')) ?></th>
                     <th><?= $this->Paginator->sort('email', __('Email')) ?></th>
-                    <th class="actions"><?= __('Ações') ?></th>
+                    <th class="text-nowrap"><?= __('Ações') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -92,9 +102,9 @@ declare(strict_types=1);
                     <td><?= h($docente->cpf) ?></td>
                     <td><?= h($docente->siape) ?></td>
                     <td><?= h($docente->departamento) ?></td>
-                    <td><?= h($docente->status) ?></td>
+                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
                     <td><?= h($docente->email) ?></td>
-                    <td class="actions">
+                    <td class="text-nowrap">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $docente->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-sm btn-warning']) ?>
                         <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $docente->id], [
@@ -107,7 +117,9 @@ declare(strict_types=1);
             </tbody>
         </table>
     </div>
-    <div class="paginator">
+    
+    <!-- Paginator -->
+    <nav aria-label="Paginação">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('primeiro')) ?>
             <?= $this->Paginator->prev('< ' . __('anterior')) ?>
@@ -116,5 +128,5 @@ declare(strict_types=1);
             <?= $this->Paginator->last(__('último') . ' >>') ?>
         </ul>
         <p><?= $this->Paginator->counter(__('Página {{page}} de {{pages}}, mostrando {{current}} registro(s) de {{count}} total')) ?></p>
-    </div>
+    </nav>
 </div>

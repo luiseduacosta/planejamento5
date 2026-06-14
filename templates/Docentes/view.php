@@ -1,15 +1,20 @@
 <?php
 declare(strict_types=1);
 ?>
-<div class="docentes view content">
+<div class="container">
     <div class="col-auto mb-3">
         <?= $this->Html->link(__('Docentes'), ['controller' => 'Docentes', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
     </div>
     <h3><?= h($docente->nome) ?></h3>
     <?php
         $statusLabels = [
+            'ativo' => __('Ativo'),
+            'active' => __('Ativo'),
             'activo' => __('Ativo'),
             'aposentado' => __('Aposentado'),
+            'retired' => __('Aposentado'),
+            'inativo' => __('Inativo'),
+            'inactive' => __('Inativo'),
             'inactivo' => __('Inativo'),
         ];
     ?>
@@ -74,7 +79,7 @@ declare(strict_types=1);
                 </tr>
                 <tr>
                     <th><?= __('Observações') ?></th>
-                    <td><?= nl2br(h($docente->observacoes)) ?></td>
+                    <td><?= $docente->observacoes ? nl2br(h($docente->observacoes)) : '-' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Criado') ?></th>
@@ -106,7 +111,7 @@ declare(strict_types=1);
                             <th><?= __('Disponível') ?></th>
                             <th><?= __('Motivo') ?></th>
                             <th><?= __('Observações') ?></th>
-                            <th class="actions"><?= __('Ações') ?></th>
+                            <th class="text-nowrap"><?= __('Ações') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,8 +121,8 @@ declare(strict_types=1);
                                     <td><?= $disp->hasValue('configuraplanejamento') ? h($disp->configuraplanejamento->semestre) : '-' ?></td>
                                     <td><?= $disp->disponivel ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>' ?></td>
                                     <td><?= h($disp->motivo) ?></td>
-                                    <td><?= nl2br(h($disp->observacoes)) ?></td>
-                                    <td class="actions">
+                                    <td><?= $disp->observacoes !== null ? nl2br(h($disp->observacoes)) : '-' ?></td>
+                                    <td class="text-nowrap">
                                         <?= $this->Html->link(__('Editar'), ['controller' => 'DocenteDisponibilidades', 'action' => 'edit', $disp->id], ['class' => 'btn btn-sm btn-warning']) ?>
                                         <?= $this->Form->postLink(__('Excluir'), ['controller' => 'DocenteDisponibilidades', 'action' => 'delete', $disp->id], ['confirm' => __('Tem certeza?'), 'class' => 'btn btn-sm btn-danger']) ?>
                                     </td>

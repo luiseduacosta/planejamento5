@@ -1,16 +1,19 @@
-<div class="salas form content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <?= $this->Form->create($sala) ?>
     <fieldset>
         <legend><?= __('Editar Sala') ?></legend>
         <?php
-            echo $this->Form->control('sala', ['class' => 'form-control', 'label' => 'Sala']);
-            echo $this->Form->control('localizacao', ['class' => 'form-control', 'label' => 'Localizacao']);
-            echo $this->Form->control('lotacao', ['class' => 'form-control', 'label' => 'Lotacao', 'placeholder' => 'Capacidade']);
-            echo $this->Form->control('recursos', ['class' => 'form-control', 'label' => 'Recursos', 'placeholder' => 'Equipamentos']);
-            echo $this->Form->control('observacoes', ['class' => 'form-control', 'label' => 'Observacoes', 'placeholder' => 'Observacoes']);
+            echo $this->Form->control('sala', ['label' => 'Sala']);
+            echo $this->Form->control('localizacao', ['label' => 'Localização']);
+            echo $this->Form->control('lotacao', ['label' => 'Lotação', 'placeholder' => 'Capacidade']);
+            echo $this->Form->control('recursos', ['label' => 'Recursos', 'placeholder' => 'Equipamentos']);
+            echo $this->Form->control('observacoes', ['label' => 'Observações', 'placeholder' => 'Observações']);
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-primary']) ?>
+    <?= $this->Form->button(__('Salvar')) ?>
     <?= $this->Html->link(__('Cancelar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
     <?= $this->Form->end() ?>
 </div>

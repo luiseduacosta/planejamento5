@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use ArrayObject;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -11,6 +12,14 @@ use Cake\Validation\Validator;
  */
 class DocentesTable extends Table
 {
+    private const STATUS_NORMALIZATION_MAP = [
+        'active' => 'ativo',
+        'activo' => 'ativo',
+        'retired' => 'aposentado',
+        'inactive' => 'inativo',
+        'inactivo' => 'inativo',
+    ];
+
     /**
      * Initialize method
      */
@@ -96,5 +105,17 @@ class DocentesTable extends Table
             ->allowEmptyString('status');
 
         return $validator;
+    }
+
+    public function beforeMarshal(\Cake\Event\EventInterface $_event, ArrayObject $data, ArrayObject $_options): void
+    {
+        unset($_event, $_options);
+
+        $status = $data['status'] ?? null;
+        if (!\is_string($status)) {
+            return;
+        }
+
+        $data['status'] = self::STATUS_NORMALIZATION_MAP[$status] ?? $status;
     }
 }

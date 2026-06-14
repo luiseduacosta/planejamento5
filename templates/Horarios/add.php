@@ -1,13 +1,16 @@
-<div class="horarios form content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <?= $this->Form->create($horario) ?>
     <fieldset>
         <legend><?= __('Adicionar Horário') ?></legend>
         <?php
-            echo $this->Form->control('horario', ['class' => 'form-control', 'label' => 'Horário']);
-            echo $this->Form->control('ordem', ['class' => 'form-control', 'label' => 'Ordem']);
+            echo $this->Form->control('horario', ['label' => 'Horário']);
+            echo $this->Form->control('ordem');
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-primary']) ?>
+    <?= $this->Form->button(__('Salvar')) ?>
     <?= $this->Html->link(__('Cancelar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
     <?= $this->Form->end() ?>
 </div>

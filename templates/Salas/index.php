@@ -1,4 +1,7 @@
-<div class="salas index content">
+<?php
+declare(strict_types=1);
+?>
+<div class="container">
     <div class="row">
         <div class="col">
             <h3><?= __('Salas') ?></h3>
@@ -17,7 +20,7 @@
                     <th><?= $this->Paginator->sort('lotacao') ?></th>
                     <th><?= $this->Paginator->sort('recursos') ?></th>
                     <th><?= $this->Paginator->sort('observacoes') ?></th>
-                    <th class="actions"><?= __('Ações') ?></th>
+                    <th class="text-nowrap"><?= __('Ações') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -29,7 +32,7 @@
                     <td><?= $this->Number->format($sala->lotacao) ?></td>
                     <td><?= h($sala->recursos) ?></td>
                     <td><?= h($sala->observacoes) ?></td>
-                    <td class="actions">
+                    <td class="text-nowrap">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $sala->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $sala->id], ['class' => 'btn btn-sm btn-warning']) ?>
                         <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $sala->id], [
@@ -42,7 +45,9 @@
             </tbody>
         </table>
     </div>
-    <div class="paginator">
+    
+    <!-- Paginator -->
+    <nav aria-label="Paginação">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('primeiro')) ?>
             <?= $this->Paginator->prev('< ' . __('anterior')) ?>
@@ -51,5 +56,5 @@
             <?= $this->Paginator->last(__('último') . ' >>') ?>
         </ul>
         <p><?= $this->Paginator->counter(__('Página {{page}} de {{pages}}, mostrando {{current}} registro(s) de {{count}} total')) ?></p>
-    </div>
+    </nav>
 </div>
