@@ -4,7 +4,10 @@ declare(strict_types=1);
 <div class="container">
     <div class="row">
         <div class="col"><h3><?= __('Disciplinas') ?></h3></div>
-        <div class="col-auto mb-3"><?= $this->Html->link(__('Nova Disciplina'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?></div>
+        <div class="col-auto mb-3">
+            <?= $this->Html->link(__('Grade'), ['action' => 'grade'], ['class' => 'btn btn-info me-2']) ?>
+            <?= $this->Html->link(__('Nova Disciplina'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-striped table-hover">
