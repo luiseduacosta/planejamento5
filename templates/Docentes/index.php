@@ -86,10 +86,11 @@ declare(strict_types=1);
                 <tr>
                     <th><?= $this->Paginator->sort('id', __('ID')) ?></th>
                     <th><?= $this->Paginator->sort('nome', __('Nome')) ?></th>
-                    <th><?= $this->Paginator->sort('cpf', __('CPF')) ?></th>
                     <th><?= $this->Paginator->sort('siape', __('SIAPE')) ?></th>
                     <th><?= $this->Paginator->sort('departamento', __('Departamento')) ?></th>
+                    <th><?= $this->Paginator->sort('tipocargo', __('Tipo de Cargo')) ?></th>
                     <th><?= $this->Paginator->sort('status', __('Status')) ?></th>
+                    <th><?= __('Disponibilidade') ?><?= $configuracaoAtiva !== null ? ' <small class="text-muted">(' . h($configuracaoAtiva->semestre) . ')</small>' : '' ?></th>
                     <th><?= $this->Paginator->sort('email', __('Email')) ?></th>
                     <th class="text-nowrap"><?= __('Ações') ?></th>
                 </tr>
@@ -99,10 +100,24 @@ declare(strict_types=1);
                 <tr>
                     <td><?= $this->Number->format($docente->id) ?></td>
                     <td><?= h($docente->nome) ?></td>
-                    <td><?= h($docente->cpf) ?></td>
                     <td><?= h($docente->siape) ?></td>
                     <td><?= h($docente->departamento) ?></td>
+                    <td><?= h($docente->tipocargo ?? '-') ?></td>
                     <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
+                    <td>
+                        <?php if (isset($disponibilidades[$docente->id])): ?>
+                            <?php if ($disponibilidades[$docente->id]->disponivel): ?>
+                                <span class="badge bg-success"><?= __('Sim') ?></span>
+                            <?php else: ?>
+                                <span class="badge bg-danger"><?= __('Não') ?></span>
+                            <?php endif; ?>
+                            <?php if ($disponibilidades[$docente->id]->motivo): ?>
+                                <small class="text-muted d-block" title="<?= h($disponibilidades[$docente->id]->motivo) ?>"><?= h($disponibilidades[$docente->id]->motivo) ?></small>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="text-muted"><?= __('Não informada') ?></span>
+                        <?php endif; ?>
+                    </td>
                     <td><?= h($docente->email) ?></td>
                     <td class="text-nowrap">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $docente->id], ['class' => 'btn btn-sm btn-info']) ?>

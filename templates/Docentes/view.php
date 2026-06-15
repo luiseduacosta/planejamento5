@@ -58,6 +58,10 @@ declare(strict_types=1);
                     <td><?= h($docente->departamento) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Tipo de Cargo') ?></th>
+                    <td><?= h($docente->tipocargo ?? '-') ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Email') ?></th>
                     <td><?= h($docente->email) ?></td>
                 </tr>

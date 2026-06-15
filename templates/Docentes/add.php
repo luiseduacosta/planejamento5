@@ -17,6 +17,7 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
             echo $this->Form->control('departamento', ['options' => $departamentos]);
             echo $this->Form->control('email');
             echo $this->Form->control('dataingresso', ['label' => 'Data de Ingresso', 'type' => 'date']);
+            echo $this->Form->control('tipocargo', ['label' => 'Tipo de Cargo', 'options' => ['' => '- Selecionar -', 'efetivo' => 'Efetivo', 'substituto' => 'Substituto', 'outro' => 'Outro']]);
             echo $this->Form->control('dataegresso', ['label' => 'Data de Egresso', 'type' => 'date']);
             echo $this->Form->control('motivoegresso', ['label' => 'Motivo de Egresso']);
             echo $this->Form->control('status', [

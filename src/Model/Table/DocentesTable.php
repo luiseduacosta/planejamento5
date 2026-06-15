@@ -89,6 +89,10 @@ class DocentesTable extends Table
             ->allowEmptyDate('dataingresso');
 
         $validator
+            ->scalar('tipocargo')
+            ->allowEmptyString('tipocargo');
+            
+        $validator
             ->date('dataegresso')
             ->allowEmptyDate('dataegresso');
 

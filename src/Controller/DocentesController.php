@@ -87,6 +87,7 @@ class DocentesController extends AppController
                 'cpf',
                 'siape',
                 'departamento',
+                'tipocargo',
                 'status',
                 'email',
             ],
@@ -96,13 +97,34 @@ class DocentesController extends AppController
 
         $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
 
+        // Load availability data for the active planning configuration
+        $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+            ->find()
+            ->where(['ativo' => true])
+            ->orderBy(['semestre' => 'DESC'])
+            ->first();
+
+        $disponibilidades = [];
+        if ($configuracaoAtiva !== null) {
+            $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
+                ->find()
+                ->where(['configuraplanejamento_id' => $configuracaoAtiva->id])
+                ->all();
+
+            foreach ($disponibilidadesRows as $disponibilidade) {
+                $disponibilidades[$disponibilidade->docente_id] = $disponibilidade;
+            }
+        }
+
         $this->set(compact(
             'docentes',
             'departamentosList',
             'statusList',
             'statusFilter',
             'statusFilterLabel',
-            'departamentoFilter'
+            'departamentoFilter',
+            'disponibilidades',
+            'configuracaoAtiva'
         ));
     }
 
@@ -119,6 +141,7 @@ class DocentesController extends AppController
     public function add(): \Cake\Http\Response|null
     {
         $docente = $this->Docentes->newEmptyEntity();
+        $docente->status = 'ativo';
         $this->Authorization->authorize($docente, 'add');
         
         if ($this->request->is('post')) {

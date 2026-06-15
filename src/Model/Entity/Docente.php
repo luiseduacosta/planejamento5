@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property string |null $celular
  * @property string |null $email
  * @property \Cake\I18n\Date|null $dataingresso
+ * @property string |null $tipocargo
  * @property string |null $departamento
  * @property \Cake\I18n\Date|null $dataegresso
  * @property string |null $motivoegresso
@@ -43,6 +44,7 @@ class Docente extends Entity
         'celular' => true,
         'email' => true,
         'dataingresso' => true,
+        'tipocargo' => true,
         'departamento' => true,
         'dataegresso' => true,
         'motivoegresso' => true,
