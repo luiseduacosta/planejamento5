@@ -33,14 +33,6 @@ declare(strict_types=1);
             <td><?= $planejamento->hasValue('sala') ? h($planejamento->sala->sala) : '-' ?></td>
         </tr>
         <tr>
-            <th><?= __('Carga Horária') ?></th>
-            <td><?= $planejamento->disciplina->carga_horaria ? $planejamento->carga_horaria . 'h' : '-' ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Alunos') ?></th>
-            <td><?= $planejamento->alunos ?? '-' ?></td>
-        </tr>
-        <tr>
             <th><?= __('Observações') ?></th>
             <td><?= $planejamento->observacoes !== null ? nl2br(h($planejamento->observacoes)) : '-' ?></td>
         </tr>

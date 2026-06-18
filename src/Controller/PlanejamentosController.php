@@ -96,7 +96,23 @@ class PlanejamentosController extends AppController
         $this->_setRelatedData($selectedConfiguracaoId, null);
         
         if ($this->request->is('post')) {
-            $planejamento = $this->Planejamentos->patchEntity($planejamento, $this->request->getData());
+            $data = $this->request->getData();
+            // Set turno based on horario_id
+            if (in_array($data['horario_id'], [1, 2, 3, 4])) {
+                $data['turno'] = 'diurno';
+            } else {
+                $data['turno'] = 'noturno';
+            }
+            // Set periodo based on disciplina_id
+            if ($data['disciplina_id']) {
+                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
+                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
+                $data['periodo'] = (int)$periodo;
+            } else {
+                $this->Flash->error(__('Por favor, selecione uma disciplina.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $planejamento = $this->Planejamentos->patchEntity($planejamento, $data);
             $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
             $this->_setRelatedData($selectedConfiguracaoId, null);
             if ($this->Planejamentos->save($planejamento)) {
@@ -126,7 +142,23 @@ class PlanejamentosController extends AppController
         $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
         
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $planejamento = $this->Planejamentos->patchEntity($planejamento, $this->request->getData());
+            $data = $this->request->getData();
+            // Set turno based on horario_id
+            if (in_array($data['horario_id'], [1, 2, 3, 4])) {
+                $data['turno'] = 'diurno';
+            } else {
+                $data['turno'] = 'noturno';
+            }
+            // Set periodo based on disciplina_id
+            if ($data['disciplina_id']) {
+                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
+                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
+                $data['periodo'] = (int)$periodo;
+            } else {
+                $this->Flash->error(__('Por favor, selecione uma disciplina.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $planejamento = $this->Planejamentos->patchEntity($planejamento, $data);
             $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
             $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
             if ($this->Planejamentos->save($planejamento)) {
@@ -178,9 +210,9 @@ class PlanejamentosController extends AppController
     {
         $disciplinas = $this->Planejamentos->Disciplinas->find('list', limit: 200)->all();
         $configuracoes = $this->Planejamentos->Configuraplanejamentos->find('list', limit: 200)->all();
-        $salas = $this->Planejamentos->Salas->find('list', limit: 200)->all();
-        $dias = $this->Planejamentos->Dias->find('list', limit: 200)->all();
-        $horarios = $this->Planejamentos->Horarios->find('list', limit: 200)->all();
+        $salas = $this->Planejamentos->Salas->find('list')->all();
+        $dias = $this->Planejamentos->Dias->find('list')->all();
+        $horarios = $this->Planejamentos->Horarios->find('list')->all();
 
         $docentesQuery = $this->Planejamentos->Docentes
             ->find('list', limit: 200)

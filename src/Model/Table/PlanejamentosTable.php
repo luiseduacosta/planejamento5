@@ -43,13 +43,13 @@ class PlanejamentosTable extends Table
     {
         $validator
             ->integer('disciplina_id')->notEmptyString('disciplina_id')
-            ->integer('docente_id')->notEmptyString('docente_id')
+            ->integer('docente_id')->allowEmptyString('docente_id')
             ->integer('configuraplanejamento_id')->notEmptyString('configuraplanejamento_id')
+            ->integer('periodo')->allowEmptyString('periodo')
+            ->scalar('turno')->allowEmptyString('turno')
             ->integer('sala_id')->allowEmptyString('sala_id')
             ->integer('dia_id')->allowEmptyString('dia_id')
             ->integer('horario_id')->allowEmptyString('horario_id')
-            ->integer('carga_horaria')->allowEmptyString('carga_horaria')
-            ->integer('alunos')->allowEmptyString('alunos')
             ->scalar('observacoes')->allowEmptyString('observacoes');
         return $validator;
     }

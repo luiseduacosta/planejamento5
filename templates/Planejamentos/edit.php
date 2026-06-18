@@ -22,8 +22,6 @@ declare(strict_types=1);
             echo $this->Form->control('dia_id', ['options' => $dias, 'empty' => '-- Selecione --', 'label' => 'Dia']);
             echo $this->Form->control('horario_id', ['options' => $horarios, 'empty' => '-- Selecione --', 'label' => 'Horário']);
             echo $this->Form->control('sala_id', ['options' => $salas, 'empty' => '-- Selecione --', 'label' => 'Sala']);
-            echo $this->Form->control('carga_horaria', ['label' => 'Carga Horária']);
-            echo $this->Form->control('alunos', ['label' => 'Número de Alunos']);
             echo $this->Form->control('observacoes', ['label' => 'Observações', 'type' => 'textarea', 'rows' => 3]);
         ?>
     </fieldset>
