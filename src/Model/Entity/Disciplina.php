@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property string|null $requisitos
  * @property string|null $optativa
  * @property string|null $departamento
+ * @property string|null $curriculo
  * @property string|null $observacoes
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
@@ -39,6 +40,7 @@ class Disciplina extends Entity
         'requisitos' => true,
         'optativa' => true,
         'departamento' => true,
+        'curriculo' => true,
         'observacoes' => true,
         'created' => true,
         'modified' => true,

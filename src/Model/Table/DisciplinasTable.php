@@ -71,6 +71,11 @@ class DisciplinasTable extends Table
             ->allowEmptyString('departamento', 'create');
 
         $validator
+            ->scalar('curriculo')
+            ->maxLength('curriculo', 4)
+            ->allowEmptyString('curriculo');
+
+        $validator
             ->scalar('observacoes')
             ->allowEmptyString('observacoes', 'create');
 

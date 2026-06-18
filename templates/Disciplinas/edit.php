@@ -16,6 +16,7 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Metodos' => 'Métodos', 'Pol�
             echo $this->Form->control('requisitos', ['label' => 'Requisitos']);
             echo $this->Form->control('optativa');
             echo $this->Form->control('departamento', ['options' => $departamentos]);
+            echo $this->Form->control('curriculo', ['label' => 'Currículo']);
             echo $this->Form->control('observacoes', ['label' => 'Observações', 'type' => 'textarea', 'rows' => 4]);
         ?>
     </fieldset>

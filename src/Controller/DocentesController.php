@@ -38,6 +38,7 @@ class DocentesController extends AppController
         // Get filter parameters from query string
         $statusFilter = $this->request->getQuery('status');
         $departamentoFilter = $this->request->getQuery('departamento');
+        $configuraplanejamentoFilter = $this->request->getQuery('configuraplanejamento_id');
         
         // Get unique departamentos for dropdown
         $departamentos = $this->Docentes->find()
@@ -66,6 +67,20 @@ class DocentesController extends AppController
         }
         asort($statusList);
 
+        // Get planning configurations that have availability records for dropdown
+        $configuracoes = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+            ->find()
+            ->select(['id', 'semestre', 'versao'])
+            ->distinct(['id'])
+            ->orderBy(['semestre' => 'DESC', 'versao' => 'DESC'])
+            ->toArray();
+
+        $configuracoesList = [];
+        foreach ($configuracoes as $configuracao) {
+            $label = $configuracao->semestre . ' - ' . ($configuracao->versao ?? '1');
+            $configuracoesList[$configuracao->id] = $label;
+        }
+
         // Build query
         $query = $this->Docentes->find();
         
@@ -79,6 +94,16 @@ class DocentesController extends AppController
             $query->where(['Docentes.departamento' => $departamentoFilter]);
         }
 
+        // Apply availability filter for a planning configuration
+        if ($configuraplanejamentoFilter) {
+            $query->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoFilter) {
+                return $q->where([
+                    'DocenteDisponibilidades.configuraplanejamento_id' => (int)$configuraplanejamentoFilter,
+                    'DocenteDisponibilidades.disponivel' => true,
+                ]);
+            });
+        }
+
         $config = [
             'order' => ['nome' => 'ASC'],
             'sortableFields' => [
@@ -88,6 +113,8 @@ class DocentesController extends AppController
                 'siape',
                 'departamento',
                 'tipocargo',
+                'periodo_diurno',
+                'periodo_noturno',
                 'status',
                 'email',
             ],
@@ -96,19 +123,30 @@ class DocentesController extends AppController
         $docentes = $this->paginate($query, $config);
 
         $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
+        $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int)$configuraplanejamentoFilter] ?? null) : null;
 
-        // Load availability data for the active planning configuration
+        // Determine which planning configuration to show in the availability column
         $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
             ->find()
             ->where(['ativo' => true])
             ->orderBy(['semestre' => 'DESC'])
             ->first();
 
+        $configuracaoAtual = null;
+        if ($configuraplanejamentoFilter) {
+            $configuracaoAtual = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+                ->find()
+                ->where(['id' => (int)$configuraplanejamentoFilter])
+                ->first();
+        } else {
+            $configuracaoAtual = $configuracaoAtiva;
+        }
+
         $disponibilidades = [];
-        if ($configuracaoAtiva !== null) {
+        if ($configuracaoAtual !== null) {
             $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
                 ->find()
-                ->where(['configuraplanejamento_id' => $configuracaoAtiva->id])
+                ->where(['configuraplanejamento_id' => $configuracaoAtual->id])
                 ->all();
 
             foreach ($disponibilidadesRows as $disponibilidade) {
@@ -123,8 +161,12 @@ class DocentesController extends AppController
             'statusFilter',
             'statusFilterLabel',
             'departamentoFilter',
+            'configuracoesList',
+            'configuraplanejamentoFilter',
+            'configuracaoFilterLabel',
             'disponibilidades',
-            'configuracaoAtiva'
+            'configuracaoAtiva',
+            'configuracaoAtual'
         ));
     }
 

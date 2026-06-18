@@ -17,7 +17,7 @@ declare(strict_types=1);
     <div class="row">
         <div class="col">
             <h3><?= __('Docentes') ?></h3>
-            <?php if ($statusFilter || $departamentoFilter): ?>
+            <?php if ($statusFilter || $departamentoFilter || $configuraplanejamentoFilter): ?>
                 <small class="text-muted">
                     <?= __('Filtros ativos:') ?>
                     <?php if ($statusFilter): ?>
@@ -25,6 +25,9 @@ declare(strict_types=1);
                     <?php endif; ?>
                     <?php if ($departamentoFilter): ?>
                         <span class="badge bg-primary"><?= __('Departamento') ?>: <?= h($departamentoFilter) ?></span>
+                    <?php endif; ?>
+                    <?php if ($configuraplanejamentoFilter): ?>
+                        <span class="badge bg-primary"><?= __('Disponibilidade') ?>: <?= h($configuracaoFilterLabel) ?></span>
                     <?php endif; ?>
                 </small>
             <?php endif; ?>
@@ -59,6 +62,16 @@ declare(strict_types=1);
                     'empty' => false
                 ]) ?>
             </div>
+
+            <!-- Disponibilidade Filter -->
+            <div class="col-auto">
+                <?= $this->Form->control('configuraplanejamento_id', [
+                    'label' => __('Disponibilidade'),
+                    'options' => ['' => __('Todas')] + $configuracoesList,
+                    'default' => $configuraplanejamentoFilter,
+                    'empty' => false
+                ]) ?>
+            </div>
             
             <!-- Filter Button -->
             <div class="col-auto">
@@ -66,7 +79,7 @@ declare(strict_types=1);
             </div>
             
             <!-- Clear Filters Button -->
-            <?php if ($statusFilter || $departamentoFilter): ?>
+            <?php if ($statusFilter || $departamentoFilter || $configuraplanejamentoFilter): ?>
             <div class="col-auto">
                 <?= $this->Html->link(
                     __('Limpar Filtros'),
@@ -90,7 +103,12 @@ declare(strict_types=1);
                     <th><?= $this->Paginator->sort('departamento', __('Departamento')) ?></th>
                     <th><?= $this->Paginator->sort('tipocargo', __('Tipo de Cargo')) ?></th>
                     <th><?= $this->Paginator->sort('status', __('Status')) ?></th>
-                    <th><?= __('Disponibilidade') ?><?= $configuracaoAtiva !== null ? ' <small class="text-muted">(' . h($configuracaoAtiva->semestre) . ')</small>' : '' ?></th>
+                    <th>
+                        <?= __('Disponibilidade') ?>
+                        <?php if ($configuracaoAtual !== null): ?>
+                            <small class="text-muted">(<?= h($configuracaoAtual->semestre . ' - ' . ($configuracaoAtual->versao ?? '1')) ?>)</small>
+                        <?php endif; ?>
+                    </th>
                     <th><?= $this->Paginator->sort('email', __('Email')) ?></th>
                     <th class="text-nowrap"><?= __('Ações') ?></th>
                 </tr>

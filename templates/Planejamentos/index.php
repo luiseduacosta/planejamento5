@@ -6,7 +6,7 @@ declare(strict_types=1);
         <div class="col"><h3><?= __('Planejamentos') ?></h3></div>
         <div class="col-auto mb-3">
             <?= $this->Html->link(__('Grade'), ['controller' => 'Disciplinas', 'action' => 'grade'], ['class' => 'btn btn-info me-2']) ?>
-            <?= $this->Html->link(__('Novo Planejamento'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
+            <?= $this->Html->link(__('Novo docente/disciplina/horário/sala'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
     

@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @var array<\App\Model\Entity\Horario> $horariosNoturno
  * @var array<string, string> $semestresList
  * @var string|null $selectedSemestre
+ * @var \App\Model\Entity\Configuraplanejamento|null $configuracaoAtual
  */
 
 $diaLabels = [];
@@ -16,7 +17,7 @@ foreach ($dias as $dia) {
     $diaLabels[$dia->id] = ucfirst(str_replace('-feira', '', $dia->dia));
 }
 
-$renderTable = function (int $periodo, array $gradeData, array $horarios, array $dias, array $diaLabels, string $turno): string {
+$renderTable = function (int $periodo, array $gradeData, array $horarios, array $dias, array $diaLabels, string $turno, ?\App\Model\Entity\Configuraplanejamento $configuracaoAtual): string {
     ob_start();
     $turnoLabel = $turno === 'diurno' ? __('Diurno') : __('Noturno');
 ?>
@@ -43,14 +44,29 @@ $renderTable = function (int $periodo, array $gradeData, array $horarios, array 
                                 <?php
                                 $cell = $gradeData[$horario->id][$dia->id] ?? [];
                                 if (empty($cell)):
+                                    $addQuery = ['dia_id' => $dia->id, 'horario_id' => $horario->id];
+                                    if ($configuracaoAtual !== null) {
+                                        $addQuery['configuraplanejamento_id'] = $configuracaoAtual->id;
+                                    }
                                     ?>
-                                    <span class="text-muted">-</span>
+                                    <div class="text-center">
+                                        <?= $this->Html->link('+', ['controller' => 'Planejamentos', 'action' => 'add', '?' => $addQuery], [
+                                            'class' => 'btn btn-sm btn-outline-success',
+                                            'title' => __('Adicionar planejamento'),
+                                        ]) ?>
+                                    </div>
                                 <?php else: ?>
                                     <?php foreach ($cell as $planejamento): ?>
                                         <div class="mb-1 small border rounded p-1 bg-white">
                                             <div class="fw-semibold"><?= h($planejamento->disciplina->disciplina ?? '-') ?></div>
                                             <div class="text-muted"><?= h($planejamento->docente->nome ?? '-') ?></div>
                                             <div class="text-muted"><?= h($planejamento->sala->sala ?? '-') ?></div>
+                                            <div class="text-center mt-1">
+                                                <?= $this->Html->link(__('Ver'), ['controller' => 'Planejamentos', 'action' => 'view', $planejamento->id], [
+                                                    'class' => 'btn btn-sm btn-info',
+                                                    'title' => __('Ver planejamento'),
+                                                ]) ?>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -102,11 +118,11 @@ $renderTable = function (int $periodo, array $gradeData, array $horarios, array 
 
     <h4 class="mt-4 mb-3"><?= __('Turno Diurno') ?></h4>
     <?php for ($periodo = 1; $periodo <= 8; $periodo++): ?>
-        <?= $renderTable($periodo, $gradeDiurno[$periodo] ?? [], $horariosDiurno, $dias, $diaLabels, 'diurno') ?>
+        <?= $renderTable($periodo, $gradeDiurno[$periodo] ?? [], $horariosDiurno, $dias, $diaLabels, 'diurno', $configuracaoAtual) ?>
     <?php endfor; ?>
 
     <h4 class="mt-4 mb-3"><?= __('Turno Noturno') ?></h4>
     <?php for ($periodo = 1; $periodo <= 10; $periodo++): ?>
-        <?= $renderTable($periodo, $gradeNoturno[$periodo] ?? [], $horariosNoturno, $dias, $diaLabels, 'noturno') ?>
+        <?= $renderTable($periodo, $gradeNoturno[$periodo] ?? [], $horariosNoturno, $dias, $diaLabels, 'noturno', $configuracaoAtual) ?>
     <?php endfor; ?>
 </div>

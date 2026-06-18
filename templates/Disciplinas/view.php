@@ -45,6 +45,10 @@ declare(strict_types=1);
             <td><?= h($disciplina->departamento) ?></td>
         </tr>
         <tr>
+            <th><?= __('Currículo') ?></th>
+            <td><?= h($disciplina->curriculo ?? '-') ?></td>
+        </tr>
+        <tr>
             <th><?= __('Observações') ?></th>
             <td><?= $disciplina->observacoes ? nl2br(h($disciplina->observacoes)) : '-' ?></td>
         </tr>

@@ -20,8 +20,54 @@ class DisciplinasController extends AppController
     public function index(): void
     {
         $this->Authorization->skipAuthorization();
-        $disciplinas = $this->paginate($this->Disciplinas->find());
-        $this->set(compact('disciplinas'));
+
+        // Get filter parameters from query string
+        $curriculoFilter = $this->request->getQuery('curriculo');
+        $periodoDiurnoFilter = $this->request->getQuery('periodo_diurno');
+        $periodoNoturnoFilter = $this->request->getQuery('periodo_noturno');
+
+        // Get unique curriculos for dropdown
+        $curriculos = $this->Disciplinas->find()
+            ->select(['curriculo'])
+            ->distinct(['curriculo'])
+            ->where(['curriculo IS NOT' => null])
+            ->orderBy(['curriculo' => 'ASC'])
+            ->toArray();
+
+        $curriculosList = [];
+        foreach ($curriculos as $curriculo) {
+            $curriculosList[$curriculo->curriculo] = $curriculo->curriculo;
+        }
+
+        // Fixed period options
+        $periodosDiurnoList = array_combine(range(1, 8), range(1, 8));
+        $periodosNoturnoList = array_combine(range(1, 10), range(1, 10));
+
+        // Build query
+        $query = $this->Disciplinas->find();
+
+        // Apply filters (combinable)
+        if ($curriculoFilter) {
+            $query->where(['Disciplinas.curriculo' => $curriculoFilter]);
+        }
+        if ($periodoDiurnoFilter) {
+            $query->where(['Disciplinas.periodo_diurno' => (int)$periodoDiurnoFilter]);
+        }
+        if ($periodoNoturnoFilter) {
+            $query->where(['Disciplinas.periodo_noturno' => (int)$periodoNoturnoFilter]);
+        }
+
+        $disciplinas = $this->paginate($query);
+
+        $this->set(compact(
+            'disciplinas',
+            'curriculosList',
+            'periodosDiurnoList',
+            'periodosNoturnoList',
+            'curriculoFilter',
+            'periodoDiurnoFilter',
+            'periodoNoturnoFilter'
+        ));
     }
 
     public function grade(): void
@@ -96,6 +142,22 @@ class DisciplinasController extends AppController
             ->orderBy(['ordem' => 'ASC'])
             ->toArray();
 
+        // Determine the planning configuration to use for "add" links
+        $configuracaoAtual = null;
+        if ($selectedSemestre) {
+            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
+                ->find()
+                ->where(['semestre' => $selectedSemestre])
+                ->orderBy(['ativo' => 'DESC', 'semestre' => 'DESC', 'versao' => 'DESC'])
+                ->first();
+        } else {
+            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
+                ->find()
+                ->where(['ativo' => true])
+                ->orderBy(['semestre' => 'DESC'])
+                ->first();
+        }
+
         $this->set(compact(
             'gradeDiurno',
             'gradeNoturno',
@@ -103,7 +165,8 @@ class DisciplinasController extends AppController
             'horariosDiurno',
             'horariosNoturno',
             'semestresList',
-            'selectedSemestre'
+            'selectedSemestre',
+            'configuracaoAtual'
         ));
     }
 
