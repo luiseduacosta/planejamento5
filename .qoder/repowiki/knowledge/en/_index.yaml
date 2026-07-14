@@ -1,0 +1,27 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: master
+nodes_managed: true
+exported_at: "2026-07-14T01:57:59Z"
+modules:
+    "":
+        dir_name: CakePHP 5.x Application Skeleton
+        title: CakePHP 5.x Application Skeleton
+        scope:
+            - README.md
+            - composer.json
+            - composer.lock
+            - .gitignore
+            - .htaccess
+            - index.php
+            - phpunit.xml.dist
+            - phpstan.neon
+            - psalm.xml
+            - phpcs.xml
+            - .editorconfig
+            - .gitattributes
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

@@ -1,0 +1,1 @@
+CakePHP 5.3 with `cakephp/authentication` ^3.0 and `cakephp/authorization` ^3.5; PHP ≥ 8.2. Dev stack: PHPUnit 11–13, PHPStan level 8, Psalm, PHPCS via `cakephp/cakephp-codesniffer`, DebugKit, Bake, and dotenv via `josegonzalez/dotenv`.
