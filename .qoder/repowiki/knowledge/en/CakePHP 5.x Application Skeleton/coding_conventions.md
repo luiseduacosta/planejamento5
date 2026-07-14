@@ -1,0 +1,3 @@
+- PSR-4 autoloading maps `App\` to `src/` and `App\Test\` to `tests/`, keeping application and test namespaces separate.
+- Dev tooling is exposed exclusively through Composer scripts (`@check`, `@cs-check`, `@cs-fix`, `@test`) rather than ad-hoc shell commands.
+- Environment-specific overrides belong in `config/app_local.php` while framework defaults stay in `config/app.php`, so per-deploy secrets never enter version control.

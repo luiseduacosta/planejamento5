@@ -1,0 +1,19 @@
+schema_version: 1
+module_path: ""
+title: CakePHP 5.x Application Skeleton
+scope:
+    - README.md
+    - composer.json
+    - composer.lock
+    - .gitignore
+    - .htaccess
+    - index.php
+    - phpunit.xml.dist
+    - phpstan.neon
+    - psalm.xml
+    - phpcs.xml
+    - .editorconfig
+    - .gitattributes
+source_files: []
+depends_on: []
+related_to: []

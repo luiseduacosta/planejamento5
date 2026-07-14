@@ -1,0 +1,1 @@
+Create a new app with `composer create-project --prefer-dist cakephp/app [app_name]`; run the built-in server via `bin/cake server -p 8765`. Quality checks are invoked as Composer scripts: `composer check` (runs `@test` + `@cs-check`), `composer cs-fix`, or `composer test` directly. Post-install hooks execute `App\Console\Installer::postInstall` on install/create-project.

@@ -1,0 +1,1 @@
+Composer-managed CakePHP 5 skeleton application providing the default project layout, bootstrap entry point, and dev tooling configuration for new apps.
