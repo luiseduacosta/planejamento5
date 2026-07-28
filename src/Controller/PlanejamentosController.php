@@ -8,6 +8,9 @@ use Cake\Event\EventInterface;
 
 class PlanejamentosController extends AppController
 {
+    /** Horário IDs considered "diurno" */
+    private const HORARIO_DIURNO_IDS = [1, 2, 3, 4];
+
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -68,6 +71,11 @@ class PlanejamentosController extends AppController
  
     public function view($id = null): void
     {
+        if ($id === null) {
+            $this->Flash->error(__('ID do planejamento não informado.'));
+            $this->redirect(['action' => 'index']);
+            return;
+        }
         $planejamento = $this->Planejamentos->get($id, contain: [
             'Disciplinas',
             'Docentes',
@@ -98,19 +106,20 @@ class PlanejamentosController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             // Set turno based on horario_id
-            if (in_array($data['horario_id'], [1, 2, 3, 4])) {
-                $data['turno'] = 'diurno';
-            } else {
-                $data['turno'] = 'noturno';
-            }
-            // Set periodo based on disciplina_id
-            if ($data['disciplina_id']) {
-                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
-                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
-                $data['periodo'] = (int)$periodo;
-            } else {
-                $this->Flash->error(__('Por favor, selecione uma disciplina.'));
-                return $this->redirect(['action' => 'index']);
+            $horarioId = isset($data['horario_id']) ? (int)$data['horario_id'] : null;
+            $data['turno'] = $horarioId !== null && in_array($horarioId, self::HORARIO_DIURNO_IDS, true)
+                ? 'diurno'
+                : 'noturno';
+            // Set periodo based on disciplina_id and turno
+            $disciplinaId = isset($data['disciplina_id']) ? (int)$data['disciplina_id'] : null;
+            if ($disciplinaId) {
+                $disciplina = $this->fetchTable('Disciplinas')->get($disciplinaId);
+                $data['periodo'] = $data['turno'] === 'diurno'
+                    ? ($disciplina->periodo_diurno ?? $disciplina->periodo_noturno)
+                    : ($disciplina->periodo_noturno ?? $disciplina->periodo_diurno);
+                if ($data['periodo'] !== null) {
+                    $data['periodo'] = (int)$data['periodo'];
+                }
             }
             $planejamento = $this->Planejamentos->patchEntity($planejamento, $data);
             $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
@@ -128,6 +137,11 @@ class PlanejamentosController extends AppController
 
     public function edit($id = null): \Cake\Http\Response|null
     {
+        if ($id === null) {
+            $this->Flash->error(__('ID do planejamento não informado.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         $planejamento = $this->Planejamentos->get($id, contain: []);
         $this->Authorization->authorize($planejamento, 'edit');
 
@@ -138,25 +152,26 @@ class PlanejamentosController extends AppController
         } else {
             $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
         }
-        
+
         $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
-        
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
             // Set turno based on horario_id
-            if (in_array($data['horario_id'], [1, 2, 3, 4])) {
-                $data['turno'] = 'diurno';
-            } else {
-                $data['turno'] = 'noturno';
-            }
-            // Set periodo based on disciplina_id
-            if ($data['disciplina_id']) {
-                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
-                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
-                $data['periodo'] = (int)$periodo;
-            } else {
-                $this->Flash->error(__('Por favor, selecione uma disciplina.'));
-                return $this->redirect(['action' => 'index']);
+            $horarioId = isset($data['horario_id']) ? (int)$data['horario_id'] : null;
+            $data['turno'] = $horarioId !== null && in_array($horarioId, self::HORARIO_DIURNO_IDS, true)
+                ? 'diurno'
+                : 'noturno';
+            // Set periodo based on disciplina_id and turno
+            $disciplinaId = isset($data['disciplina_id']) ? (int)$data['disciplina_id'] : null;
+            if ($disciplinaId) {
+                $disciplina = $this->fetchTable('Disciplinas')->get($disciplinaId);
+                $data['periodo'] = $data['turno'] === 'diurno'
+                    ? ($disciplina->periodo_diurno ?? $disciplina->periodo_noturno)
+                    : ($disciplina->periodo_noturno ?? $disciplina->periodo_diurno);
+                if ($data['periodo'] !== null) {
+                    $data['periodo'] = (int)$data['periodo'];
+                }
             }
             $planejamento = $this->Planejamentos->patchEntity($planejamento, $data);
             $selectedConfiguracaoId = $planejamento->configuraplanejamento_id ?: null;
@@ -175,6 +190,10 @@ class PlanejamentosController extends AppController
     public function delete($id = null): \Cake\Http\Response|null
     {
         $this->request->allowMethod(['post', 'delete']);
+        if ($id === null) {
+            $this->Flash->error(__('ID do planejamento não informado.'));
+            return $this->redirect(['action' => 'index']);
+        }
         $planejamento = $this->Planejamentos->get($id);
         $this->Authorization->authorize($planejamento, 'delete');
         
@@ -227,7 +246,7 @@ class PlanejamentosController extends AppController
                     'DocenteDisponibilidades.configuraplanejamento_id' => $configuraplanejamentoId,
                     'DocenteDisponibilidades.disponivel' => true,
                 ]);
-            });
+            })->distinct(['Docentes.id']);
         }
 
         $docentes = $docentesQuery->toArray();
@@ -249,7 +268,6 @@ class PlanejamentosController extends AppController
             'dias',
             'horarios',
             'docentesFilteredByDisponibilidade',
-            'configuraplanejamentoId'
         ));
     }
 }
