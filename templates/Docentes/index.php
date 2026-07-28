@@ -14,8 +14,8 @@ declare(strict_types=1);
             'inactivo' => __('Inativo'),
         ];
     ?>
-    <div class="row">
-        <div class="col">
+    <div class="row mb-3">
+        <div class="col-auto">
             <h3><?= __('Docentes') ?></h3>
             <?php if ($statusFilter || $departamentoFilter || $configuraplanejamentoFilter): ?>
                 <small class="text-muted">
@@ -32,7 +32,7 @@ declare(strict_types=1);
                 </small>
             <?php endif; ?>
         </div>
-        <div class="col-auto mb-3">
+        <div class="col-auto">
             <?= $this->Html->link(__('Novo Docente'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>

@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 ?>
-<div class="container">
-    <div class="col-auto mb-3">
-        <?= $this->Html->link(__('Docentes'), ['controller' => 'Docentes', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
+<div class="card">
+    <div class="card-header">
+        <h3><?= h($docente->nome) ?></h3>
     </div>
-    <h3><?= h($docente->nome) ?></h3>
+    <div class="card-body">
+        
     <?php
         $statusLabels = [
             'ativo' => __('Ativo'),
@@ -18,13 +19,9 @@ declare(strict_types=1);
             'inactivo' => __('Inativo'),
         ];
     ?>
-    <div class="row">
-        <div class="col">
-            <table class="table table-striped">
-                <tr>
-                    <th><?= __('ID') ?></th>
-                    <td><?= $this->Number->format($docente->id) ?></td>
-                </tr>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
                 <tr>
                     <th><?= __('Nome') ?></th>
                     <td><?= h($docente->nome) ?></td>
@@ -97,16 +94,11 @@ declare(strict_types=1);
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><?= __('Disponibilidade por Semestre') ?></h4>
-                <?= $this->Html->link(
-                    __('Adicionar'),
-                    ['controller' => 'DocenteDisponibilidades', 'action' => 'add', '?' => ['docente_id' => $docente->id]],
-                    ['class' => 'btn btn-sm btn-primary']
-                ) ?>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4><?= __('Disponibilidade por Semestre') ?></h4>
+        </div>
+        <div class="card-body">
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
                     <thead>
@@ -143,10 +135,6 @@ declare(strict_types=1);
         </div>
     </div>
 
-    <div class="row mt-3">
-        <div class="col">
-            <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-warning']) ?>
-            <?= $this->Html->link(__('Voltar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
-        </div>
-    </div>
+    <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-warning']) ?>
+    <?= $this->Html->link(__('Voltar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
 </div>
