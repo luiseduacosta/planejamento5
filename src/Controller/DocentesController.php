@@ -35,8 +35,23 @@ class DocentesController extends AppController
     {
         $this->Authorization->skipAuthorization();
         
-        // Get filter parameters from query string
-        $statusFilter = $this->request->getQuery('status');
+        // Get filter parameters from query string.
+        // Status is frozen to 'ativo' by default and persisted for the whole
+        // session. When the user explicitly submits the filter (query present,
+        // including empty string = "Todos"), that choice is stored and reused
+        // for the rest of the session.
+        $statusSessionKey = 'Docentes.statusFilter';
+        $session = $this->request->getSession();
+        $statusQuery = $this->request->getQuery('status');
+        if ($statusQuery !== null) {
+            $session->write($statusSessionKey, $statusQuery);
+            $statusFilter = $statusQuery;
+        } else {
+            $statusFilter = $session->read($statusSessionKey);
+            if ($statusFilter === null) {
+                $statusFilter = 'ativo';
+            }
+        }
         $departamentoFilter = $this->request->getQuery('departamento');
         $configuraplanejamentoFilter = $this->request->getQuery('configuraplanejamento_id');
         
@@ -126,11 +141,14 @@ class DocentesController extends AppController
         $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int)$configuraplanejamentoFilter] ?? null) : null;
 
         // Determine which planning configuration to show in the availability column
-        $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
-            ->find()
-            ->where(['ativo' => true])
-            ->orderBy(['semestre' => 'DESC'])
-            ->first();
+        $activeConfiguraplanejamentoId = $this->getActiveConfiguraplanejamentoId();
+        $configuracaoAtiva = null;
+        if ($activeConfiguraplanejamentoId !== null) {
+            $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+                ->find()
+                ->where(['id' => $activeConfiguraplanejamentoId])
+                ->first();
+        }
 
         $configuracaoAtual = null;
         if ($configuraplanejamentoFilter) {
@@ -177,7 +195,27 @@ class DocentesController extends AppController
             'DocenteDisponibilidades' => ['Configuraplanejamentos'],
         ]);
         $this->Authorization->skipAuthorization();
-        $this->set(compact('docente'));
+
+        // Active configuration from the session (semester currently in use),
+        // plus this docente's availability record for it (if any). Used by the
+        // quick Sim/Não toggle in the "Disponibilidade por Semestre" section.
+        $activeConfiguraplanejamentoId = $this->getActiveConfiguraplanejamentoId();
+        $configuracaoAtiva = null;
+        $disponibilidadeAtiva = null;
+        if ($activeConfiguraplanejamentoId !== null) {
+            $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+                ->find()
+                ->where(['id' => $activeConfiguraplanejamentoId])
+                ->first();
+            foreach ($docente->docente_disponibilidades as $disp) {
+                if ((int)$disp->configuraplanejamento_id === (int)$activeConfiguraplanejamentoId) {
+                    $disponibilidadeAtiva = $disp;
+                    break;
+                }
+            }
+        }
+
+        $this->set(compact('docente', 'configuracaoAtiva', 'disponibilidadeAtiva'));
     }
 
     public function add(): \Cake\Http\Response|null

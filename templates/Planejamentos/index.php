@@ -6,6 +6,7 @@ declare(strict_types=1);
         <div class="col"><h3><?= __('Planejamentos') ?></h3></div>
         <div class="col-auto mb-3">
             <?= $this->Html->link(__('Grade'), ['controller' => 'Disciplinas', 'action' => 'grade'], ['class' => 'btn btn-info me-2']) ?>
+            <?= $this->Html->link(__('Clonar Planejamentos'), ['action' => 'clonar'], ['class' => 'btn btn-outline-primary me-2']) ?>
             <?= $this->Html->link(__('Novo docente/disciplina/horário/sala'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
@@ -33,6 +34,26 @@ declare(strict_types=1);
             ) ?>
         </div>
         <?php endif; ?>
+   </div>
+    <?php endif; ?>
+    <!-- Avisos de conflito / otimização do semestre ativo -->
+    <?php if (!empty($conflitos)): ?>
+    <div class="alert alert-warning">
+        <strong>&#9888; <?= __('Avisos do semestre {0}', h($conflitoSemestre)) ?> (<?= count($conflitos) ?>):</strong>
+        <ul class="mb-0 mt-2">
+            <?php foreach ($conflitos as $conflito): ?>
+            <li>
+                <?= h($conflito['mensagem']) ?>
+                <?php if (!empty($conflito['itens'])): ?>
+                    <span class="text-muted">&mdash; <?= h(implode(', ', $conflito['itens'])) ?></span>
+                <?php endif; ?>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php elseif ($conflitoSemestre !== null): ?>
+    <div class="alert alert-success py-2">
+        &#10004; <?= __('Nenhum conflito detectado no semestre {0}.', h($conflitoSemestre)) ?>
     </div>
     <?php endif; ?>
     <div class="table-responsive">
@@ -41,6 +62,7 @@ declare(strict_types=1);
                 <tr>
                     <th><?= $this->Paginator->sort('Planejamentos.id', 'ID') ?></th>
                     <th><?= $this->Paginator->sort('Disciplinas.disciplina', 'Disciplina') ?></th>
+                    <th><?= $this->Paginator->sort('Planejamentos.periodo', 'Período') ?></th>
                     <th><?= $this->Paginator->sort('Docentes.nome', 'Docente') ?></th>
                     <th><?= $this->Paginator->sort('Configuraplanejamentos.semestre', 'Semestre') ?></th>
                     <th><?= $this->Paginator->sort('Dias.dia', 'Dia') ?></th>
@@ -54,6 +76,7 @@ declare(strict_types=1);
                 <tr>
                     <td><?= $this->Number->format($planejamento->id) ?></td>
                     <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->disciplina) : '-' ?></td>
+                    <td><?= $planejamento->periodo !== null ? $this->Number->format($planejamento->periodo) : '-' ?></td>
                     <td><?= $planejamento->hasValue('docente') ? h($planejamento->docente->nome) : '-' ?></td>
                     <td><?= $planejamento->hasValue('configuraplanejamento') ? h($planejamento->configuraplanejamento->semestre) : '-' ?></td>
                     <td><?= $planejamento->hasValue('dia') ? h($planejamento->dia->dia) : '-' ?></td>

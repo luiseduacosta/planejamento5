@@ -59,7 +59,7 @@ $renderTable = function (int $periodo, array $gradeData, array $horarios, array 
                                     <?php foreach ($cell as $planejamento): ?>
                                         <div class="mb-1 small border rounded p-1 bg-white">
                                             <div class="fw-semibold"><?= h($planejamento->disciplina->disciplina ?? '-') ?></div>
-                                            <div class="text-muted"><?= h($planejamento->docente->nome ?? '-') ?></div>
+                                            <div class="text-muted"><?= h($planejamento->docente?->nome ?? '-') ?></div>
                                             <div class="text-muted"><?= h($planejamento->sala->sala ?? '-') ?></div>
                                             <div class="text-center mt-1">
                                                 <?= $this->Html->link(__('Ver'), ['controller' => 'Planejamentos', 'action' => 'view', $planejamento->id], [
@@ -108,7 +108,7 @@ $renderTable = function (int $periodo, array $gradeData, array $horarios, array 
                 <div class="col-auto">
                     <?= $this->Html->link(
                         __('Limpar Filtro'),
-                        ['action' => 'grade'],
+                        ['action' => 'grade', '?' => ['semestre' => '']],
                         ['class' => 'btn btn-outline-secondary btn-sm']
                     ) ?>
                 </div>

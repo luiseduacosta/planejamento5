@@ -99,6 +99,44 @@ declare(strict_types=1);
             <h4><?= __('Disponibilidade por Semestre') ?></h4>
         </div>
         <div class="card-body">
+            <?php if ($configuracaoAtiva !== null): ?>
+                <?php
+                    $isDisponivel = $disponibilidadeAtiva ? (bool)$disponibilidadeAtiva->disponivel : true;
+                    $motivoAtual = $disponibilidadeAtiva ? (string)$disponibilidadeAtiva->motivo : '';
+                ?>
+                <div class="alert alert-light border d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <strong><?= __('Semestre ativo:') ?> <?= h($configuracaoAtiva->semestre) ?></strong>
+                    <?= $this->Form->create(null, [
+                        'url' => ['controller' => 'DocenteDisponibilidades', 'action' => 'salvarRapido'],
+                        'class' => 'disp-form d-flex align-items-center gap-2 mb-0',
+                    ]) ?>
+                        <?= $this->Form->hidden('docente_id', ['value' => $docente->id]) ?>
+                        <?= $this->Form->hidden('configuraplanejamento_id', ['value' => $configuracaoAtiva->id]) ?>
+                        <div class="form-check form-switch mb-0">
+                            <?= $this->Form->checkbox('disponivel', [
+                                'checked' => $isDisponivel,
+                                'class' => 'form-check-input disp-switch',
+                                'role' => 'switch',
+                                'id' => 'disp-ativa-' . $docente->id,
+                            ]) ?>
+                            <label class="form-check-label disp-label" for="disp-ativa-<?= $docente->id ?>">
+                                <?= $isDisponivel ? __('Sim') : __('Não') ?>
+                            </label>
+                        </div>
+                        <div class="disp-motivo" style="<?= $isDisponivel ? 'display:none;' : '' ?>">
+                            <?= $this->Form->text('motivo', [
+                                'value' => $motivoAtual,
+                                'placeholder' => __('Motivo'),
+                                'maxlength' => 100,
+                                'class' => 'form-control form-control-sm',
+                            ]) ?>
+                            <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-sm btn-primary disp-save']) ?>
+                        </div>
+                    <?= $this->Form->end() ?>
+                </div>
+            <?php else: ?>
+                <p class="text-muted"><?= __('Nenhum semestre ativo selecionado na sessão.') ?></p>
+            <?php endif; ?>
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
                     <thead>
@@ -138,3 +176,28 @@ declare(strict_types=1);
     <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-warning']) ?>
     <?= $this->Html->link(__('Voltar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.disp-form').forEach(function (form) {
+        var sw = form.querySelector('.disp-switch');
+        var motivo = form.querySelector('.disp-motivo');
+        var label = form.querySelector('.disp-label');
+        if (!sw) { return; }
+        sw.addEventListener('change', function () {
+            if (sw.checked) {
+                // Disponível (Sim): esconde o motivo e salva imediatamente.
+                if (motivo) { motivo.style.display = 'none'; }
+                if (label) { label.textContent = <?= json_encode(__('Sim')) ?>; }
+                form.submit();
+            } else {
+                // Indisponível (Não): revela o campo de motivo para preenchimento.
+                if (motivo) { motivo.style.display = ''; }
+                if (label) { label.textContent = <?= json_encode(__('Não')) ?>; }
+                var input = motivo ? motivo.querySelector('input[name="motivo"]') : null;
+                if (input) { input.focus(); }
+            }
+        });
+    });
+});
+</script>

@@ -20,7 +20,8 @@ class ConfiguraplanejamentosController extends AppController
         $query = $this->Configuraplanejamentos->find()
             ->orderBy(['semestre' => 'DESC']);
         $configuracoes = $this->paginate($query);
-        $this->set(compact('configuracoes'));
+        $activeConfiguraplanejamentoId = $this->getActiveConfiguraplanejamentoId();
+        $this->set(compact('configuracoes', 'activeConfiguraplanejamentoId'));
     }
 
     public function view($id = null): void
@@ -44,6 +45,9 @@ class ConfiguraplanejamentosController extends AppController
         if ($this->request->is('post')) {
             $configuracao = $this->Configuraplanejamentos->patchEntity($configuracao, $this->request->getData());
             if ($this->Configuraplanejamentos->save($configuracao)) {
+                if ($configuracao->ativo) {
+                    $this->setActiveConfiguraplanejamentoId($configuracao->id);
+                }
                 $this->Flash->success(__('A configuração foi salva com sucesso.'));
                 return $this->redirect(['action' => 'index']);
             }
@@ -61,6 +65,9 @@ class ConfiguraplanejamentosController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $configuracao = $this->Configuraplanejamentos->patchEntity($configuracao, $this->request->getData());
             if ($this->Configuraplanejamentos->save($configuracao)) {
+                if ($configuracao->ativo) {
+                    $this->setActiveConfiguraplanejamentoId($configuracao->id);
+                }
                 $this->Flash->success(__('Atualizada com sucesso.'));
                 return $this->redirect(['action' => 'index']);
             }
@@ -104,6 +111,26 @@ class ConfiguraplanejamentosController extends AppController
         }
         
         $this->Flash->error(__('Não foi possível clonar.'));
+        return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Define a configuração como ativa para a sessão (e no banco de dados).
+     * É assim que o usuário "muda para outra configuração".
+     */
+    public function setativo($id = null): \Cake\Http\Response|null
+    {
+        $this->request->allowMethod(['post']);
+        $configuracao = $this->Configuraplanejamentos->get($id);
+        $this->Authorization->authorize($configuracao, 'edit');
+
+        $configuracao->ativo = true;
+        if ($this->Configuraplanejamentos->save($configuracao)) {
+            $this->setActiveConfiguraplanejamentoId($configuracao->id);
+            $this->Flash->success(__('Configuração "{0}" definida como ativa.', $configuracao->nome));
+        } else {
+            $this->Flash->error(__('Não foi possível definir a configuração como ativa.'));
+        }
         return $this->redirect(['action' => 'index']);
     }
 }

@@ -83,7 +83,7 @@ declare(strict_types=1);
             <div class="col-auto">
                 <?= $this->Html->link(
                     __('Limpar Filtros'),
-                    ['action' => 'index'],
+                    ['action' => 'index', '?' => ['status' => 'ativo']],
                     ['class' => 'btn btn-outline-secondary']
                 ) ?>
             </div>
@@ -123,17 +123,44 @@ declare(strict_types=1);
                     <td><?= h($docente->tipocargo ?? '-') ?></td>
                     <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
                     <td>
-                        <?php if (isset($disponibilidades[$docente->id])): ?>
-                            <?php if ($disponibilidades[$docente->id]->disponivel): ?>
-                                <span class="badge bg-success"><?= __('Sim') ?></span>
-                            <?php else: ?>
-                                <span class="badge bg-danger"><?= __('Não') ?></span>
-                            <?php endif; ?>
-                            <?php if ($disponibilidades[$docente->id]->motivo): ?>
-                                <small class="text-muted d-block" title="<?= h($disponibilidades[$docente->id]->motivo) ?>"><?= h($disponibilidades[$docente->id]->motivo) ?></small>
-                            <?php endif; ?>
+                        <?php if ($configuracaoAtual !== null): ?>
+                            <?php
+                                $disp = $disponibilidades[$docente->id] ?? null;
+                                $isDisponivel = $disp ? (bool)$disp->disponivel : true;
+                                $motivoAtual = $disp ? (string)$disp->motivo : '';
+                            ?>
+                            <?= $this->Form->create(null, [
+                                'url' => ['controller' => 'DocenteDisponibilidades', 'action' => 'salvarRapido'],
+                                'class' => 'disp-form d-flex flex-column gap-1',
+                            ]) ?>
+                                <?= $this->Form->hidden('docente_id', ['value' => $docente->id]) ?>
+                                <?= $this->Form->hidden('configuraplanejamento_id', ['value' => $configuracaoAtual->id]) ?>
+                                <div class="form-check form-switch mb-0">
+                                    <?= $this->Form->checkbox('disponivel', [
+                                        'checked' => $isDisponivel,
+                                        'class' => 'form-check-input disp-switch',
+                                        'role' => 'switch',
+                                        'id' => 'disp-' . $docente->id,
+                                    ]) ?>
+                                    <label class="form-check-label disp-label" for="disp-<?= $docente->id ?>">
+                                        <?= $isDisponivel ? __('Sim') : __('Não') ?>
+                                    </label>
+                                    <?php if ($disp === null): ?>
+                                        <small class="text-muted d-block"><?= __('(não informada)') ?></small>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="disp-motivo" style="<?= $isDisponivel ? 'display:none;' : '' ?>">
+                                    <?= $this->Form->text('motivo', [
+                                        'value' => $motivoAtual,
+                                        'placeholder' => __('Motivo'),
+                                        'maxlength' => 100,
+                                        'class' => 'form-control form-control-sm',
+                                    ]) ?>
+                                    <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-sm btn-primary mt-1 disp-save']) ?>
+                                </div>
+                            <?= $this->Form->end() ?>
                         <?php else: ?>
-                            <span class="text-muted"><?= __('Não informada') ?></span>
+                            <span class="text-muted"><?= __('Selecione um semestre') ?></span>
                         <?php endif; ?>
                     </td>
                     <td><?= h($docente->email) ?></td>
@@ -163,3 +190,28 @@ declare(strict_types=1);
         <p><?= $this->Paginator->counter(__('Página {{page}} de {{pages}}, mostrando {{current}} registro(s) de {{count}} total')) ?></p>
     </nav>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.disp-form').forEach(function (form) {
+        var sw = form.querySelector('.disp-switch');
+        var motivo = form.querySelector('.disp-motivo');
+        var label = form.querySelector('.disp-label');
+        if (!sw) { return; }
+        sw.addEventListener('change', function () {
+            if (sw.checked) {
+                // Disponível (Sim): esconde o motivo e salva imediatamente.
+                if (motivo) { motivo.style.display = 'none'; }
+                if (label) { label.textContent = <?= json_encode(__('Sim')) ?>; }
+                form.submit();
+            } else {
+                // Indisponível (Não): revela o campo de motivo para preenchimento.
+                if (motivo) { motivo.style.display = ''; }
+                if (label) { label.textContent = <?= json_encode(__('Não')) ?>; }
+                var input = motivo ? motivo.querySelector('input[name="motivo"]') : null;
+                if (input) { input.focus(); }
+            }
+        });
+    });
+});
+</script>

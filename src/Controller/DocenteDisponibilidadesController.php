@@ -114,4 +114,54 @@ class DocenteDisponibilidadesController extends AppController
 
         return $this->redirect(['action' => 'index', '?' => ['docente_id' => $docenteId]]);
     }
+
+    /**
+     * Upsert rápido da disponibilidade de um docente numa configuração.
+     * Usado pelo botão de alternar (Sim/Não) no index de Docentes.
+     * Respeita o índice único (docente_id, configuraplanejamento_id).
+     */
+    public function salvarRapido(): \Cake\Http\Response|null
+    {
+        $this->request->allowMethod(['post']);
+        $table = $this->fetchTable('DocenteDisponibilidades');
+
+        $docenteId = (int)$this->request->getData('docente_id');
+        $configId = (int)$this->request->getData('configuraplanejamento_id');
+        $disponivel = (bool)$this->request->getData('disponivel');
+        $motivo = trim((string)$this->request->getData('motivo'));
+
+        $fallback = $this->referer(['controller' => 'Docentes', 'action' => 'index']);
+
+        if ($docenteId <= 0 || $configId <= 0) {
+            $this->Flash->error(__('Dados inválidos para atualizar a disponibilidade.'));
+
+            return $this->redirect($fallback);
+        }
+
+        $disponibilidade = $table->find()
+            ->where([
+                'docente_id' => $docenteId,
+                'configuraplanejamento_id' => $configId,
+            ])
+            ->first();
+        if ($disponibilidade === null) {
+            $disponibilidade = $table->newEmptyEntity();
+            $disponibilidade->docente_id = $docenteId;
+            $disponibilidade->configuraplanejamento_id = $configId;
+        }
+
+        $this->Authorization->authorize($disponibilidade, $disponibilidade->isNew() ? 'add' : 'edit');
+
+        $disponibilidade->disponivel = $disponivel;
+        // O motivo só faz sentido quando o docente está indisponível.
+        $disponibilidade->motivo = $disponivel ? null : ($motivo !== '' ? $motivo : null);
+
+        if ($table->save($disponibilidade)) {
+            $this->Flash->success(__('Disponibilidade atualizada.'));
+        } else {
+            $this->Flash->error(__('Não foi possível atualizar a disponibilidade.'));
+        }
+
+        return $this->redirect($fallback);
+    }
 }

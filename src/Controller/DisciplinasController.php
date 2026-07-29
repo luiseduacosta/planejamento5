@@ -74,10 +74,14 @@ class DisciplinasController extends AppController
     {
         $this->Authorization->skipAuthorization();
 
+        $planejamentosTable = $this->fetchTable('Planejamentos');
+
+        // The semester stays null when absent from the query string; in that
+        // case we fall back to the active configuration. An explicit empty
+        // value ("Todos os Semestres") keeps showing every semester.
         $selectedSemestre = $this->request->getQuery('semestre');
 
-        $semestres = $this->fetchTable('Planejamentos')
-            ->Configuraplanejamentos
+        $semestres = $planejamentosTable->Configuraplanejamentos
             ->find()
             ->select(['semestre'])
             ->distinct(['semestre'])
@@ -89,7 +93,35 @@ class DisciplinasController extends AppController
             $semestresList[$semestre->semestre] = $semestre->semestre;
         }
 
-        $query = $this->fetchTable('Planejamentos')
+        // Determine the planning configuration the grade refers to and make the
+        // selection box display its semester, since the grade is about the
+        // selected configuraplanejamento_id.
+        $configuracaoAtual = null;
+        if ($selectedSemestre) {
+            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
+                ->find()
+                ->where(['semestre' => $selectedSemestre])
+                ->orderBy(['ativo' => 'DESC', 'semestre' => 'DESC', 'versao' => 'DESC'])
+                ->first();
+            if ($configuracaoAtual !== null) {
+                // The user picked a semester: make it the active configuration
+                // for the whole session.
+                $this->setActiveConfiguraplanejamentoId($configuracaoAtual->id);
+            }
+        } elseif ($selectedSemestre === null) {
+            $activeId = $this->getActiveConfiguraplanejamentoId();
+            if ($activeId !== null) {
+                $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
+                    ->find()
+                    ->where(['id' => $activeId])
+                    ->first();
+                if ($configuracaoAtual !== null) {
+                    $selectedSemestre = $configuracaoAtual->semestre;
+                }
+            }
+        }
+
+        $query = $planejamentosTable
             ->find()
             ->contain([
                 'Disciplinas',
@@ -131,7 +163,6 @@ class DisciplinasController extends AppController
             }
         }
 
-        $planejamentosTable = $this->fetchTable('Planejamentos');
         $dias = $planejamentosTable->Dias->find()->orderBy(['ordem' => 'ASC'])->toArray();
         $horariosDiurno = $planejamentosTable->Horarios->find()
             ->where(['id IN' => [1, 2, 3, 4]])
@@ -141,22 +172,6 @@ class DisciplinasController extends AppController
             ->where(['id IN' => [5, 6]])
             ->orderBy(['ordem' => 'ASC'])
             ->toArray();
-
-        // Determine the planning configuration to use for "add" links
-        $configuracaoAtual = null;
-        if ($selectedSemestre) {
-            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
-                ->find()
-                ->where(['semestre' => $selectedSemestre])
-                ->orderBy(['ativo' => 'DESC', 'semestre' => 'DESC', 'versao' => 'DESC'])
-                ->first();
-        } else {
-            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
-                ->find()
-                ->where(['ativo' => true])
-                ->orderBy(['semestre' => 'DESC'])
-                ->first();
-        }
 
         $this->set(compact(
             'gradeDiurno',

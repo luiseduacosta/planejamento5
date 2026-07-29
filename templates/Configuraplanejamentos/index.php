@@ -11,16 +11,25 @@ declare(strict_types=1);
             <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('nome') ?></th><th><?= $this->Paginator->sort('semestre') ?></th><th><?= $this->Paginator->sort('versao') ?></th><th><?= $this->Paginator->sort('ativo') ?></th><th class="text-nowrap"><?= __('Ações') ?></th></tr></thead>
             <tbody>
                 <?php foreach ($configuracoes as $configuracao): ?>
-                <tr>
+                <?php $isAtivaSessao = isset($activeConfiguraplanejamentoId) && (int)$configuracao->id === (int)$activeConfiguraplanejamentoId; ?>
+                <tr<?= $isAtivaSessao ? ' class="table-success"' : '' ?>>
                     <td><?= $this->Number->format($configuracao->id) ?></td>
                     <td><?= h($configuracao->nome) ?></td>
                     <td><?= h($configuracao->semestre) ?></td>
                     <td><?= h($configuracao->versao ?? '-') ?></td>
-                    <td><?= $configuracao->ativo ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-secondary">Inativo</span>' ?></td>
+                    <td>
+                        <?= $configuracao->ativo ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-secondary">Inativo</span>' ?>
+                        <?= $isAtivaSessao ? ' <span class="badge bg-primary">Em uso</span>' : '' ?>
+                    </td>
                     <td class="text-nowrap">
+                        <?php if (!$isAtivaSessao): ?>
+                        <?= $this->Form->postLink(__('Ativar'), ['action' => 'setativo', $configuracao->id], ['confirm' => __('Definir esta configuração como ativa?'), 'class' => 'btn btn-sm btn-success']) ?>
+                        <?php endif; ?>
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $configuracao->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $configuracao->id], ['class' => 'btn btn-sm btn-warning']) ?>
-                        <?= $this->Form->postLink(__('Clonar'), ['action' => 'clone', $configuracao->id], ['confirm' => __('Deseja clonar esta configuração?'), 'class' => 'btn btn-sm btn-primary']) ?>
+                        <?= $this->Html->link(__('Clonar Planej.'), ['controller' => 'Planejamentos', 'action' => 'clonar', '?' => ['destino' => $configuracao->id]], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                        <?= $this->Form->postLink(__('Excluir Planej.'), ['controller' => 'Planejamentos', 'action' => 'excluirTodos', $configuracao->id], ['confirm' => __('Excluir TODOS os planejamentos desta configuração? Esta ação não pode ser desfeita.'), 'class' => 'btn btn-sm btn-outline-danger']) ?>
+                        <?= $this->Form->postLink(__('Duplicar'), ['action' => 'clone', $configuracao->id], ['confirm' => __('Deseja duplicar esta configuração?'), 'class' => 'btn btn-sm btn-primary']) ?>
                         <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $configuracao->id], ['confirm' => __('Tem certeza?'), 'class' => 'btn btn-sm btn-danger']) ?>
                     </td>
                 </tr>

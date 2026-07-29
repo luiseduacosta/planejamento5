@@ -51,4 +51,61 @@ class AppController extends Controller
             'display',
         ]);
     }
+
+    /**
+     * Session key that keeps the active planning configuration for the session.
+     */
+    protected const ACTIVE_CONFIGURAPLANEJAMENTO_SESSION_KEY = 'Configuraplanejamento.ativo';
+
+    /**
+     * Resolve the active planning configuration id for the current session.
+     *
+     * Resolution order:
+     * 1. The value stored in the session (the one the user is working with),
+     *    kept until the user switches to another configuration.
+     * 2. When nothing is selected, the record flagged as `ativo` in the table.
+     * 3. When nothing is `ativo`, the most recently modified record.
+     *
+     * @return int|null The active configuration id or null when none exists.
+     */
+    protected function getActiveConfiguraplanejamentoId(): ?int
+    {
+        $session = $this->getRequest()->getSession();
+        $table = $this->fetchTable('Configuraplanejamentos');
+
+        $sessionId = $session->read(self::ACTIVE_CONFIGURAPLANEJAMENTO_SESSION_KEY);
+        if ($sessionId !== null) {
+            if ($table->exists(['id' => (int)$sessionId])) {
+                return (int)$sessionId;
+            }
+            // The stored configuration no longer exists; drop it and fall back.
+            $session->delete(self::ACTIVE_CONFIGURAPLANEJAMENTO_SESSION_KEY);
+        }
+
+        // Nothing selected: use the configuration flagged as active.
+        $configuracao = $table->find()
+            ->where(['ativo' => true])
+            ->orderBy(['modified' => 'DESC'])
+            ->first();
+
+        // Nothing active: use the most recently modified configuration.
+        if ($configuracao === null) {
+            $configuracao = $table->find()
+                ->orderBy(['modified' => 'DESC'])
+                ->first();
+        }
+
+        return $configuracao?->id;
+    }
+
+    /**
+     * Persist the active planning configuration id for the whole session.
+     *
+     * @param int $id The configuration id to keep as active.
+     * @return void
+     */
+    protected function setActiveConfiguraplanejamentoId(int $id): void
+    {
+        $this->getRequest()->getSession()->write(self::ACTIVE_CONFIGURAPLANEJAMENTO_SESSION_KEY, $id);
+    }
 }

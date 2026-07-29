@@ -18,8 +18,31 @@ class PlanejamentosController extends AppController
     {
         $this->Authorization->skipAuthorization();
         
-        // Get selected semestre from query params
+        // Get selected semestre from query params. An explicit choice becomes
+        // the active configuration for the whole session; when the parameter is
+        // absent (not just empty), default to the active configuration's
+        // semester so the user keeps working within the configuration in use.
         $selectedSemestre = $this->request->getQuery('semestre');
+        if ($selectedSemestre !== null && $selectedSemestre !== '') {
+            $chosenConfig = $this->Planejamentos->Configuraplanejamentos->find()
+                ->where(['semestre' => $selectedSemestre])
+                ->orderBy(['ativo' => 'DESC', 'versao' => 'DESC'])
+                ->first();
+            if ($chosenConfig !== null) {
+                $this->setActiveConfiguraplanejamentoId($chosenConfig->id);
+            }
+        } elseif ($selectedSemestre === null) {
+            $activeId = $this->getActiveConfiguraplanejamentoId();
+            if ($activeId !== null) {
+                $activeConfig = $this->Planejamentos->Configuraplanejamentos->find()
+                    ->select(['semestre'])
+                    ->where(['id' => $activeId])
+                    ->first();
+                if ($activeConfig !== null) {
+                    $selectedSemestre = $activeConfig->semestre;
+                }
+            }
+        }
         
         // Extract unique semestres from Configuraplanejamentos
         $semestres = $this->Planejamentos->Configuraplanejamentos->find()
@@ -54,6 +77,7 @@ class PlanejamentosController extends AppController
         $config = [
             'sortableFields' => ['Planejamentos.id', 
             'Disciplinas.disciplina', 
+            'Planejamentos.periodo', 
             'Docentes.nome', 
             'Configuraplanejamentos.semestre', 
             'Dias.dia', 
@@ -63,7 +87,22 @@ class PlanejamentosController extends AppController
         ];
         
         $planejamentos = $this->paginate($query, $config);
-        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre'));
+
+        // Conflict/optimization warnings for the configuration currently in use
+        // (the active configuration = the schedule the user is working on).
+        $activeConfigId = $this->getActiveConfiguraplanejamentoId();
+        $conflitos = [];
+        $conflitoSemestre = null;
+        if ($activeConfigId !== null) {
+            $conflitos = $this->Planejamentos->detectarConflitos($activeConfigId);
+            $cfg = $this->Planejamentos->Configuraplanejamentos->find()
+                ->select(['semestre'])
+                ->where(['id' => $activeConfigId])
+                ->first();
+            $conflitoSemestre = $cfg?->semestre;
+        }
+
+        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre', 'conflitos', 'conflitoSemestre'));
     }
  
     public function view($id = null): void
@@ -87,10 +126,13 @@ class PlanejamentosController extends AppController
 
         $selectedConfiguracaoId = $this->request->getQuery('configuraplanejamento_id');
         if ($selectedConfiguracaoId !== null && $selectedConfiguracaoId !== '') {
-            $planejamento->configuraplanejamento_id = (int)$selectedConfiguracaoId;
             $selectedConfiguracaoId = (int)$selectedConfiguracaoId;
         } else {
-            $selectedConfiguracaoId = null;
+            // Nothing chosen in the form: use the active session configuration.
+            $selectedConfiguracaoId = $this->getActiveConfiguraplanejamentoId();
+        }
+        if ($selectedConfiguracaoId !== null) {
+            $planejamento->configuraplanejamento_id = $selectedConfiguracaoId;
         }
         
         $this->_setRelatedData($selectedConfiguracaoId, null);
@@ -184,6 +226,101 @@ class PlanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível excluir.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Clona (copia) todos os planejamentos de uma configuração de origem para
+     * uma de destino. O destino precisa estar vazio; caso contrário a cópia é
+     * bloqueada e o usuário deve excluir os planejamentos do destino primeiro.
+     */
+    public function clonar(): \Cake\Http\Response|null
+    {
+        $this->Authorization->authorize($this->Planejamentos->newEmptyEntity(), 'clone');
+
+        $configuracoes = $this->Planejamentos->Configuraplanejamentos
+            ->find('list', valueField: 'nome')
+            ->orderBy(['semestre' => 'DESC'])
+            ->toArray();
+
+        // Seleção inicial: via querystring (botão em cada configuração) ou POST.
+        $origemId = $this->request->getQuery('origem');
+        $destinoId = $this->request->getQuery('destino');
+        if ($this->request->is('post')) {
+            $origemId = $this->request->getData('origem');
+            $destinoId = $this->request->getData('destino');
+        }
+        $origemId = ($origemId !== null && $origemId !== '') ? (int)$origemId : null;
+        $destinoId = ($destinoId !== null && $destinoId !== '') ? (int)$destinoId : null;
+
+        // Origem padrão: a última configuração (maior id) com planejamentos na
+        // tabela, diferente do destino, para facilitar copiar do semestre anterior.
+        if ($origemId === null) {
+            $ultima = $this->Planejamentos->find()
+                ->select(['configuraplanejamento_id'])
+                ->where($destinoId !== null ? ['configuraplanejamento_id !=' => $destinoId] : [])
+                ->orderBy(['configuraplanejamento_id' => 'DESC'])
+                ->first();
+            if ($ultima !== null) {
+                $origemId = $ultima->configuraplanejamento_id;
+            }
+        }
+
+        if ($this->request->is('post')) {
+            if ($origemId === null || $destinoId === null) {
+                $this->Flash->error(__('Selecione a configuração de origem e a de destino.'));
+            } elseif ($origemId === $destinoId) {
+                $this->Flash->error(__('A origem e o destino devem ser diferentes.'));
+            } else {
+                $origemCount = $this->Planejamentos->find()
+                    ->where(['configuraplanejamento_id' => $origemId])->count();
+                $destinoCount = $this->Planejamentos->find()
+                    ->where(['configuraplanejamento_id' => $destinoId])->count();
+                if ($origemCount === 0) {
+                    $this->Flash->error(__('A configuração de origem não possui planejamentos para copiar.'));
+                } elseif ($destinoCount > 0) {
+                    $this->Flash->error(__('O destino já possui {0} planejamento(s). Exclua-os primeiro para poder clonar.', $destinoCount));
+                } else {
+                    try {
+                        $copiados = $this->Planejamentos->clonarPlanejamentos($origemId, $destinoId);
+                        $this->setActiveConfiguraplanejamentoId($destinoId);
+                        $this->Flash->success(__('{0} planejamento(s) copiado(s) com sucesso para o destino.', $copiados));
+                        return $this->redirect(['action' => 'index']);
+                    } catch (\Exception $e) {
+                        $this->Flash->error(__('Não foi possível clonar os planejamentos.'));
+                    }
+                }
+            }
+        }
+
+        $this->set(compact('configuracoes', 'origemId', 'destinoId'));
+
+        return null;
+    }
+
+    /**
+     * Exclui TODOS os planejamentos de uma configuração (semestre).
+     */
+    public function excluirTodos($id = null): \Cake\Http\Response|null
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $this->Authorization->authorize($this->Planejamentos->newEmptyEntity(), 'delete');
+
+        $configuraplanejamentoId = $id !== null
+            ? (int)$id
+            : (int)$this->request->getData('configuraplanejamento_id');
+        if ($configuraplanejamentoId <= 0) {
+            $this->Flash->error(__('Configuração inválida.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $excluidos = $this->Planejamentos->excluirPorConfiguracao($configuraplanejamentoId);
+        if ($excluidos > 0) {
+            $this->Flash->success(__('{0} planejamento(s) excluído(s) da configuração selecionada.', $excluidos));
+        } else {
+            $this->Flash->warning(__('Não havia planejamentos para excluir nessa configuração.'));
+        }
+
+        return $this->redirect($this->referer(['action' => 'index']));
     }
 
     public function listar(): void

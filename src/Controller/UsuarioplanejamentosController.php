@@ -12,8 +12,8 @@ class UsuarioplanejamentosController extends AppController
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
-        // Allow all actions for now to test
-        // $this->Authentication->addUnauthenticatedActions(['*']);
+        // Allow logout to run even if the session has already expired
+        $this->Authentication->addUnauthenticatedActions(['logout']);
     }
 
     public function index(): void
@@ -81,5 +81,14 @@ class UsuarioplanejamentosController extends AppController
             $this->Flash->error(__('Não foi possível excluir.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function logout(): \Cake\Http\Response|null
+    {
+        $this->Authorization->skipAuthorization();
+        $this->Authentication->logout();
+        $this->Flash->success(__('Até mais! Você foi deslogado.'));
+
+        return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
 }

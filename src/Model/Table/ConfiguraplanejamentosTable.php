@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -57,5 +60,16 @@ class ConfiguraplanejamentosTable extends Table
             ->allowEmptyString('ativo');
 
         return $validator;
+    }
+
+    /**
+     * Keep a single active configuration: whenever one is saved as `ativo`,
+     * every other record is flagged as inactive.
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    {
+        if ($entity->ativo) {
+            $this->updateAll(['ativo' => false], ['id !=' => $entity->id]);
+        }
     }
 }
