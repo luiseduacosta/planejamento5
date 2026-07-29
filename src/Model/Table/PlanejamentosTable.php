@@ -46,6 +46,7 @@ class PlanejamentosTable extends Table
             ->integer('docente_id')->allowEmptyString('docente_id')
             ->integer('configuraplanejamento_id')->notEmptyString('configuraplanejamento_id')
             ->integer('periodo')->allowEmptyString('periodo')
+                        ->range('periodo', [1, 10], __('O período deve estar entre 1 e 10.'))
             ->scalar('turno')->allowEmptyString('turno')
             ->integer('sala_id')->allowEmptyString('sala_id')
             ->integer('dia_id')->allowEmptyString('dia_id')
@@ -56,9 +57,15 @@ class PlanejamentosTable extends Table
 
     /**
      * Copia todos os planejamentos de uma configuração (origem) para outra
-     * (destino). Retorna a quantidade de registros copiados.
+     * (destino) e garante que todos os docentes usados na origem tenham
+     * registro em docente_disponibilidades no destino com disponivel = 1
+     * (o usuário ajusta depois apenas as exceções).
+     *
+     * Retorna ['planejamentos' => copiados, 'disponibilidades' => criadas].
+     *
+     * @return array{planejamentos: int, disponibilidades: int}
      */
-    public function clonarPlanejamentos(int $origemId, int $destinoId): int
+    public function clonarPlanejamentos(int $origemId, int $destinoId): array
     {
         $origens = $this->find()
             ->where(['configuraplanejamento_id' => $origemId])
@@ -82,13 +89,63 @@ class PlanejamentosTable extends Table
         }
 
         if ($novos === []) {
-            return 0;
+            return ['planejamentos' => 0, 'disponibilidades' => 0];
         }
 
         // Cópia de dados já persistidos: dispensa validação e é atômica.
         $this->saveManyOrFail($novos, ['validate' => false]);
 
-        return count($novos);
+        $disponibilidades = $this->seedDisponibilidades($origens, $destinoId);
+
+        return ['planejamentos' => count($novos), 'disponibilidades' => $disponibilidades];
+    }
+
+    /**
+     * Cria em docente_disponibilidades (configuração de destino, disponivel = 1)
+     * um registro para cada docente distinto dos planejamentos de origem que
+     * ainda não o possua. Respeita o índice único (docente_id, configuraplanejamento_id).
+     * Retorna a quantidade de registros criados.
+     *
+     * @param iterable<\App\Model\Entity\Planejamento> $origens
+     */
+    private function seedDisponibilidades(iterable $origens, int $destinoId): int
+    {
+        $docenteIds = [];
+        foreach ($origens as $origem) {
+            if ($origem->docente_id !== null) {
+                $docenteIds[$origem->docente_id] = $origem->docente_id;
+            }
+        }
+        if ($docenteIds === []) {
+            return 0;
+        }
+
+        $dispTable = TableRegistry::getTableLocator()->get('DocenteDisponibilidades');
+        $existentes = $dispTable->find()
+            ->select(['docente_id'])
+            ->where([
+                'configuraplanejamento_id' => $destinoId,
+                'docente_id IN' => array_values($docenteIds),
+            ])
+            ->all();
+        foreach ($existentes as $existente) {
+            unset($docenteIds[$existente->docente_id]);
+        }
+
+        $novas = [];
+        foreach ($docenteIds as $docenteId) {
+            $nova = $dispTable->newEmptyEntity();
+            $nova->docente_id = $docenteId;
+            $nova->configuraplanejamento_id = $destinoId;
+            $nova->disponivel = true;
+            $novas[] = $nova;
+        }
+        if ($novas === []) {
+            return 0;
+        }
+        $dispTable->saveManyOrFail($novas, ['validate' => false]);
+
+        return count($novas);
     }
 
     /**

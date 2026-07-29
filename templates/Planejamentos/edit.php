@@ -6,6 +6,12 @@ declare(strict_types=1);
     <fieldset><legend><?= __('Editar Planejamento') ?></legend>
         <?php
             echo $this->Form->control('disciplina_id', ['options' => $disciplinas, 'empty' => '-- Selecione --', 'label' => 'Disciplina']);
+            echo $this->Form->control('periodo', [
+                'options' => array_combine(range(1, 10), range(1, 10)),
+                'empty' => '-- Automático (padrão da disciplina) --',
+                'label' => 'Período',
+            ]);
+            echo '<div class="form-text">' . __('O padrão vem da disciplina (período diurno/noturno) e pode ser sobrescrito; a disciplina não é alterada.') . '</div>';
             echo $this->Form->control('configuraplanejamento_id', [
                 'options' => $configuracoes,
                 'empty' => '-- Selecione --',

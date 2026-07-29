@@ -74,6 +74,25 @@ class PlanejamentosController extends AppController
             });
         }
 
+        // Filter by turno ('' = todos; valores gravados em minúsculas). O valor
+        // fica congelado na sessão e é reutilizado até o usuário mudar a seleção
+        // (query presente, inclusive vazia = "Todos", atualiza a sessão).
+        $turnoSessionKey = 'Planejamentos.turnoFilter';
+        $session = $this->request->getSession();
+        $turnoQuery = $this->request->getQuery('turno');
+        if ($turnoQuery !== null) {
+            $selectedTurno = (string)$turnoQuery;
+            $session->write($turnoSessionKey, $selectedTurno);
+        } else {
+            $selectedTurno = (string)$session->read($turnoSessionKey);
+        }
+        if (!in_array($selectedTurno, ['diurno', 'noturno'], true)) {
+            $selectedTurno = '';
+        }
+        if ($selectedTurno !== '') {
+            $query->where(['Planejamentos.turno' => $selectedTurno]);
+        }
+
         $config = [
             'sortableFields' => ['Planejamentos.id', 
             'Disciplinas.disciplina', 
@@ -102,7 +121,7 @@ class PlanejamentosController extends AppController
             $conflitoSemestre = $cfg?->semestre;
         }
 
-        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre', 'conflitos', 'conflitoSemestre'));
+        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre', 'selectedTurno', 'conflitos', 'conflitoSemestre'));
     }
  
     public function view($id = null): void
@@ -145,11 +164,20 @@ class PlanejamentosController extends AppController
             } else {
                 $data['turno'] = 'noturno';
             }
-            // Set periodo based on disciplina_id
+            // Período: o valor informado pelo usuário prevalece; se vazio, usa o
+            // padrão da disciplina (periodo_diurno/periodo_noturno conforme o
+            // turno). Só o campo periodo do planejamento é gravado — a
+            // disciplina nunca é modificada.
             if ($data['disciplina_id']) {
-                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
-                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
-                $data['periodo'] = (int)$periodo;
+                if (!empty($data['periodo'])) {
+                    $data['periodo'] = (int)$data['periodo'];
+                } else {
+                    $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
+                    $padrao = $data['turno'] === 'noturno'
+                        ? ($disciplina->periodo_noturno ?? $disciplina->periodo_diurno)
+                        : ($disciplina->periodo_diurno ?? $disciplina->periodo_noturno);
+                    $data['periodo'] = $padrao !== null ? (int)$padrao : null;
+                }
             } else {
                 $this->Flash->error(__('Por favor, selecione uma disciplina.'));
                 return $this->redirect(['action' => 'index']);
@@ -182,7 +210,19 @@ class PlanejamentosController extends AppController
         }
         
         $this->_setRelatedData($selectedConfiguracaoId, $planejamento->docente_id ?: null);
-        
+
+        // Pré-preenche o período com o padrão da disciplina quando ainda não
+        // definido (somente exibição; a disciplina nunca é alterada).
+        if ($planejamento->periodo === null && $planejamento->disciplina_id) {
+            $disciplinaAtual = $this->fetchTable('Disciplinas')->get($planejamento->disciplina_id);
+            $padrao = $planejamento->turno === 'noturno'
+                ? ($disciplinaAtual->periodo_noturno ?? $disciplinaAtual->periodo_diurno)
+                : ($disciplinaAtual->periodo_diurno ?? $disciplinaAtual->periodo_noturno);
+            if ($padrao !== null) {
+                $planejamento->periodo = (int)$padrao;
+            }
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
             // Set turno based on horario_id
@@ -191,11 +231,20 @@ class PlanejamentosController extends AppController
             } else {
                 $data['turno'] = 'noturno';
             }
-            // Set periodo based on disciplina_id
+            // Período: o valor informado pelo usuário prevalece; se vazio, usa o
+            // padrão da disciplina (periodo_diurno/periodo_noturno conforme o
+            // turno). Só o campo periodo do planejamento é gravado — a
+            // disciplina nunca é modificada.
             if ($data['disciplina_id']) {
-                $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
-                $periodo = $disciplina->periodo_diurno ? $disciplina->periodo_diurno : $disciplina->periodo_noturno;
-                $data['periodo'] = (int)$periodo;
+                if (!empty($data['periodo'])) {
+                    $data['periodo'] = (int)$data['periodo'];
+                } else {
+                    $disciplina = $this->fetchTable('Disciplinas')->get($data['disciplina_id']);
+                    $padrao = $data['turno'] === 'noturno'
+                        ? ($disciplina->periodo_noturno ?? $disciplina->periodo_diurno)
+                        : ($disciplina->periodo_diurno ?? $disciplina->periodo_noturno);
+                    $data['periodo'] = $padrao !== null ? (int)$padrao : null;
+                }
             } else {
                 $this->Flash->error(__('Por favor, selecione uma disciplina.'));
                 return $this->redirect(['action' => 'index']);
@@ -281,9 +330,13 @@ class PlanejamentosController extends AppController
                     $this->Flash->error(__('O destino já possui {0} planejamento(s). Exclua-os primeiro para poder clonar.', $destinoCount));
                 } else {
                     try {
-                        $copiados = $this->Planejamentos->clonarPlanejamentos($origemId, $destinoId);
+                        $resultado = $this->Planejamentos->clonarPlanejamentos($origemId, $destinoId);
                         $this->setActiveConfiguraplanejamentoId($destinoId);
-                        $this->Flash->success(__('{0} planejamento(s) copiado(s) com sucesso para o destino.', $copiados));
+                        $this->Flash->success(__(
+                            '{0} planejamento(s) copiado(s) e {1} docente(s) marcado(s) como disponível(is) no destino.',
+                            $resultado['planejamentos'],
+                            $resultado['disponibilidades']
+                        ));
                         return $this->redirect(['action' => 'index']);
                     } catch (\Exception $e) {
                         $this->Flash->error(__('Não foi possível clonar os planejamentos.'));

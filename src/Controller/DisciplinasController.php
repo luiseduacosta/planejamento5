@@ -155,10 +155,10 @@ class DisciplinasController extends AppController
             $horarioId = $planejamento->horario_id;
 
             if (in_array($horarioId, [1, 2, 3, 4], true) && $disciplina->periodo_diurno !== null) {
-                $periodo = (int)$disciplina->periodo_diurno;
+                $periodo = (int)$planejamento->periodo;
                 $gradeDiurno[$periodo][$horarioId][$diaId][] = $planejamento;
             } elseif (in_array($horarioId, [5, 6], true) && $disciplina->periodo_noturno !== null) {
-                $periodo = (int)$disciplina->periodo_noturno;
+                $periodo = (int)$planejamento->periodo;
                 $gradeNoturno[$periodo][$horarioId][$diaId][] = $planejamento;
             }
         }

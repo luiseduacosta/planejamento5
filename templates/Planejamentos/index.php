@@ -11,7 +11,7 @@ declare(strict_types=1);
         </div>
     </div>
     
-    <!-- Semestre Filter -->
+    <!-- Filtros: Semestre + Turno (combináveis, mesmo formulário GET) -->
     <?php if (!empty($semestresList)): ?>
     <div class="row mb-3">
         <div class="col-auto">
@@ -23,13 +23,20 @@ declare(strict_types=1);
                 'label' => false,
                 'onchange' => 'this.form.submit()'
             ]) ?>
+            <label class="form-label mb-0"><?= __('Turno:') ?></label>
+            <?= $this->Form->control('turno', [
+                'options' => ['' => __('Todos'), 'diurno' => __('Diurno'), 'noturno' => __('Noturno')],
+                'default' => $selectedTurno,
+                'label' => false,
+                'onchange' => 'this.form.submit()'
+            ]) ?>
             <?= $this->Form->end() ?>
         </div>
-        <?php if ($selectedSemestre): ?>
+        <?php if ($selectedSemestre || $selectedTurno): ?>
         <div class="col-auto">
             <?= $this->Html->link(
                 '<i class="bi bi-x-circle"></i> ' . __('Limpar Filtro'),
-                ['action' => 'index'],
+                ['action' => 'index', '?' => ['semestre' => '', 'turno' => '']],
                 ['class' => 'btn btn-outline-secondary', 'escape' => false]
             ) ?>
         </div>
