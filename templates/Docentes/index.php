@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 ?>
-<div class="container">
+<div class="container-fluid px-4 py-3">
     <?php
         $statusLabels = [
             'ativo' => __('Ativo'),
@@ -14,339 +14,407 @@ declare(strict_types=1);
             'inactivo' => __('Inativo'),
         ];
     ?>
-    <div class="row mb-3">
-        <div class="col-auto">
-            <h3><?= __('Docentes') ?></h3>
-            <?php
-                // Condições usadas para exibir os badges de filtro ativo.
-                // Observação: $statusFilter é sempre um array agora.
-                $temStatusFiltro = !($statusIsAll ?? false);
-                $temDepartamento = !empty($departamentoFilter);
-                $temSemestreDisp = !empty($configuraplanejamentoFilter);
-            ?>
-            <?php if ($temStatusFiltro || $temDepartamento || $temSemestreDisp): ?>
-                <small class="text-muted d-inline-flex flex-wrap gap-1 align-items-center">
-                    <?= __('Filtros ativos:') ?>
-                    <?php if ($temStatusFiltro): ?>
-                        <?php foreach (($statusFilterLabels ?? []) as $_canonical => $_label): ?>
-                            <span class="badge bg-primary"><?= __('Status') ?>: <?= h($_label) ?></span>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                    <?php if ($temDepartamento): ?>
-                        <span class="badge bg-primary"><?= __('Departamento') ?>: <?= h($departamentoFilter) ?></span>
-                    <?php endif; ?>
-                    <?php if ($temSemestreDisp): ?>
-                        <span class="badge bg-primary">
-                            <?= __('Semestre na coluna Disponibilidade') ?>: <?= h($configuracaoFilterLabel ?? '') ?>
-                        </span>
-                    <?php endif; ?>
-                </small>
-            <?php endif; ?>
+
+    <!-- Page Title & Header Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h2 class="h3 fw-bold mb-1"><i class="bi bi-people-fill text-primary me-2"></i><?= __('Docentes') ?></h2>
+            <p class="text-muted small mb-0"><?= __('Gestão de docentes, situação institucional e disponibilidade por semestre') ?></p>
         </div>
-        <div class="col-auto">
-            <?= $this->Html->link(__('Novo Docente'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
+        <div>
+            <?= $this->Html->link(
+                '<i class="bi bi-plus-circle me-1"></i>' . __('Novo Docente'),
+                ['action' => 'add'],
+                ['class' => 'btn btn-primary shadow-sm', 'escape' => false]
+            ) ?>
         </div>
     </div>
-    
-    <!-- Filters -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-3 align-items-end', 'id' => 'docentes-filter-form']) ?>
 
-            <!-- Status Filter (multi-select) -->
-            <div class="col-auto">
+    <!-- Summary Metrics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="rounded-circle bg-primary-subtle text-primary p-3 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-person-vcard fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold"><?= __('Total de Docentes') ?></div>
+                        <div class="fs-4 fw-bold text-dark"><?= number_format($statsDocentes['total'] ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="rounded-circle bg-success-subtle text-success p-3 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-check-circle fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold"><?= __('Ativos Institucional') ?></div>
+                        <div class="fs-4 fw-bold text-success"><?= number_format($statsDocentes['ativos'] ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="rounded-circle bg-danger-subtle text-danger p-3 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold"><?= __('Indisponíveis no Semestre') ?></div>
+                        <div class="fs-4 fw-bold text-danger"><?= number_format($statsDocentes['indisponiveisSemestre'] ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="rounded-circle bg-secondary-subtle text-secondary p-3 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-person-x fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold"><?= __('Aposentados / Inativos') ?></div>
+                        <div class="fs-4 fw-bold text-secondary"><?= number_format($statsDocentes['inativos'] ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white">
+        <div class="card-body p-3">
+            <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-3 align-items-end', 'id' => 'docentes-filter-form']) ?>
+            
+            <!-- Status Filter -->
+            <div class="col-12 col-md-4 col-lg-3">
                 <?php
-                    // Garante que o valor selecionado seja sempre um array para
-                    // o helper renderizar <option selected> corretamente.
                     $statusSelected = is_array($statusFilter) ? $statusFilter : [];
-                    // Opcão sentinela 'all' não tem representação real como dado,
-                    // então para fins de exibição, se statusIsAll, preenchemos o
-                    // valor selecionado apenas com 'all'. Assim a opção "Todos"
-                    // aparece marcada no multi-select quando a tabela exibe tudo.
                     if (!empty($statusIsAll)) {
                         $statusSelected = [$statusAllSentinel];
                     }
                 ?>
-                <div class="mb-3 mb-0">
-                    <?= $this->Form->label('status', __('Status (multi-seleção)'), ['class' => 'form-label']) ?>
-                    <select
-                        name="status[]"
-                        id="status"
-                        multiple="multiple"
-                        size="4"
-                        class="form-select docentes-status-multi"
-                        data-all-sentinel="<?= h($statusAllSentinel) ?>"
-                        aria-label="<?= h(__('Filtrar docentes por status')) ?>"
-                    >
-                        <?php foreach ($statusList as $valor => $rotulo): ?>
-                            <?php $selecionado = in_array((string)$valor, $statusSelected, true); ?>
-                            <option
-                                value="<?= h($valor) ?>"
-                                <?= $selecionado ? 'selected="selected"' : '' ?>
-                                data-role="<?= $valor === $statusAllSentinel ? 'all' : 'single' ?>"
-                            ><?= h($rotulo) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <div class="form-text">
-                        <?= __('Segure Ctrl/Cmd para selecionar múltiplos. A opção “Todos” exibe todos os registros.') ?>
-                    </div>
+                <label for="status" class="form-label small fw-semibold mb-1"><?= __('Status Permanente (Multi-seleção)') ?></label>
+                <select
+                    name="status[]"
+                    id="status"
+                    multiple="multiple"
+                    size="4"
+                    class="form-select form-select-sm docentes-status-multi"
+                    data-all-sentinel="<?= h($statusAllSentinel) ?>"
+                    aria-label="<?= h(__('Filtrar docentes por status')) ?>"
+                >
+                    <?php foreach ($statusList as $valor => $rotulo): ?>
+                        <?php $selecionado = in_array((string)$valor, $statusSelected, true); ?>
+                        <option
+                            value="<?= h($valor) ?>"
+                            <?= $selecionado ? 'selected="selected"' : '' ?>
+                            data-role="<?= $valor === $statusAllSentinel ? 'all' : 'single' ?>"
+                        ><?= h($rotulo) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="form-text small" style="font-size: 0.75rem;">
+                    <?= __('Segure Ctrl/Cmd para múltiplos. "Todos" exibe tudo.') ?>
                 </div>
             </div>
 
             <!-- Departamento Filter -->
-            <div class="col-auto">
+            <div class="col-12 col-md-4 col-lg-3">
                 <?= $this->Form->control('departamento', [
-                    'label' => __('Departamento'),
-                    'options' => ['' => __('Todos')] + $departamentosList,
+                    'label' => ['text' => __('Departamento'), 'class' => 'form-label small fw-semibold mb-1'],
+                    'options' => ['' => __('Todos os Departamentos')] + $departamentosList,
                     'default' => $departamentoFilter,
-                    'empty' => false
+                    'empty' => false,
+                    'class' => 'form-select form-select-sm'
                 ]) ?>
             </div>
 
-            <!-- Escolha do semestre para a coluna "Disponibilidade" (não filtra linhas) -->
-            <div class="col-auto">
+            <!-- Semestre na Coluna Disponibilidade -->
+            <div class="col-12 col-md-4 col-lg-3">
                 <?= $this->Form->control('configuraplanejamento_id', [
-                    'label' => __('Semestre na Coluna Disponibilidade'),
-                    'options' => ['' => __('(Ativo da sessão)')] + $configuracoesList,
+                    'label' => ['text' => __('Semestre na Coluna Disponibilidade'), 'class' => 'form-label small fw-semibold mb-1'],
+                    'options' => ['' => __('(Usar Semestre Ativo da Sessão)')] + $configuracoesList,
                     'default' => $configuraplanejamentoFilter,
                     'empty' => false,
+                    'class' => 'form-select form-select-sm'
                 ]) ?>
-                <div class="form-text mb-2">
-                    <?= __('Define qual semestre os botões toggle abaixo editam. Não filtra as linhas da tabela.') ?>
+                <div class="form-text small" style="font-size: 0.75rem;">
+                    <?= __('Define o semestre da coluna de disponibilidade.') ?>
                 </div>
             </div>
 
-            <!-- Filter Button -->
-            <div class="col-auto">
-                <?= $this->Form->button('<i class="bi bi-funnel me-1"></i>' . __('Aplicar Filtros'), [
-                    'class' => 'btn btn-primary',
+            <!-- Buttons -->
+            <div class="col-12 col-lg-3 d-flex gap-2">
+                <?= $this->Form->button('<i class="bi bi-funnel me-1"></i>' . __('Filtrar'), [
+                    'class' => 'btn btn-sm btn-primary flex-grow-1',
                     'escape' => false,
                 ]) ?>
+                <?php
+                    $temStatusFiltro = !($statusIsAll ?? false);
+                    $temDepartamento = !empty($departamentoFilter);
+                    $temSemestreDisp = !empty($configuraplanejamentoFilter);
+                ?>
+                <?php if ($temStatusFiltro || $temDepartamento || $temSemestreDisp): ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-x-circle me-1"></i>' . __('Limpar'),
+                        ['action' => 'index', '?' => ['status' => [$statusAllSentinel ?? 'all'], 'departamento' => '', 'configuraplanejamento_id' => '']],
+                        ['class' => 'btn btn-sm btn-outline-secondary', 'escape' => false]
+                    ) ?>
+                <?php endif; ?>
             </div>
-
-            <!-- Clear Filters Button -->
-            <?php if ($temStatusFiltro || $temDepartamento || $temSemestreDisp): ?>
-            <div class="col-auto">
-                <?= $this->Html->link(
-                    '<i class="bi bi-x-circle me-1"></i>' . __('Limpar Filtros'),
-                    ['action' => 'index', '?' => ['status' => [$statusAllSentinel ?? 'all'], 'departamento' => '', 'configuraplanejamento_id' => '']],
-                    ['class' => 'btn btn-outline-secondary', 'escape' => false]
-                ) ?>
-            </div>
-            <?php endif; ?>
 
             <?= $this->Form->end() ?>
+
+            <?php if ($temStatusFiltro || $temDepartamento || $temSemestreDisp): ?>
+                <div class="mt-2 pt-2 border-top d-flex flex-wrap gap-1 align-items-center">
+                    <span class="small text-muted me-1"><?= __('Filtros ativos:') ?></span>
+                    <?php if ($temStatusFiltro): ?>
+                        <?php foreach (($statusFilterLabels ?? []) as $_canonical => $_label): ?>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-tag-fill me-1"></i>Status: <?= h($_label) ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if ($temDepartamento): ?>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-building me-1"></i>Dept: <?= h($departamentoFilter) ?></span>
+                    <?php endif; ?>
+                    <?php if ($temSemestreDisp): ?>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-calendar-event me-1"></i>Semestre: <?= h($configuracaoFilterLabel ?? '') ?></span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th><?= $this->Paginator->sort('id', __('ID')) ?></th>
-                    <th><?= $this->Paginator->sort('nome', __('Nome')) ?></th>
-                    <th><?= $this->Paginator->sort('siape', __('SIAPE')) ?></th>
-                    <th><?= $this->Paginator->sort('departamento', __('Departamento')) ?></th>
-                    <th><?= $this->Paginator->sort('tipocargo', __('Tipo de Cargo')) ?></th>
-                    <th><?= $this->Paginator->sort('status', __('Status')) ?></th>
-                    <th>
-                        <?= __('Disponibilidade') ?>
-                        <?php if ($configuracaoAtual !== null): ?>
-                            <small class="text-muted">(<?= h($configuracaoAtual->semestre . ' - ' . ($configuracaoAtual->versao ?? '1')) ?>)</small>
-                        <?php endif; ?>
-                    </th>
-                    <th><?= $this->Paginator->sort('email', __('Email')) ?></th>
-                    <th class="text-nowrap"><?= __('Ações') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($docentes as $docente): ?>
-                <tr>
-                    <td><?= $this->Number->format($docente->id) ?></td>
-                    <td><?= h($docente->nome) ?></td>
-                    <td><?= h($docente->siape) ?></td>
-                    <td><?= h($docente->departamento) ?></td>
-                    <td><?= h($docente->tipocargo ?? '-') ?></td>
-                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
-                    <td class="align-middle">
-                        <?php if ($configuracaoAtual !== null): ?>
+    <!-- Docentes Table -->
+    <div class="card border-0 shadow-sm rounded-3 bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 60px;"><?= $this->Paginator->sort('id', __('ID')) ?></th>
+                        <th><?= $this->Paginator->sort('nome', __('Docente / Dados')) ?></th>
+                        <th><?= $this->Paginator->sort('departamento', __('Departamento / Cargo')) ?></th>
+                        <th style="width: 140px;"><?= $this->Paginator->sort('status', __('Status Permanente')) ?></th>
+                        <th style="min-width: 220px;">
+                            <?= __('Disponibilidade no Semestre') ?>
+                            <?php if ($configuracaoAtual !== null): ?>
+                                <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal">(<?= h($configuracaoAtual->semestre . ' - v' . ($configuracaoAtual->versao ?? '1')) ?>)</span>
+                            <?php endif; ?>
+                        </th>
+                        <th class="text-end" style="width: 140px;"><?= __('Ações') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($docentes) && count($docentes) > 0): ?>
+                        <?php foreach ($docentes as $docente): ?>
                             <?php
-                                $disp = $disponibilidades[$docente->id] ?? null;
-                                $isDisponivel = $disp ? (bool)$disp->disponivel : true;
-                                $motivoAtual = $disp ? (string)$disp->motivo : '';
-                                $semestreLabelRaw = $configuracaoAtual->semestre . ' - ' . ($configuracaoAtual->versao ?? '1');
-                                // Strings para tooltips: NÃO pré-escape aqui, pois h()
-                                // será aplicado no contexto de atributo title="" no HTML.
-                                $tooltipAvailRaw = __('Disponível no semestre {0} — clique para marcar como indisponível', $semestreLabelRaw);
-                                $tooltipUnavailRaw = __('Indisponível no semestre {0} — clique para marcar como disponível', $semestreLabelRaw);
-                                $semestreBadge = $disp === null
-                                    ? '<span class="badge bg-light text-secondary border border-secondary-subtle ms-1" title="' . h(__('Nenhuma definição explícita; usa o padrão do sistema')) . '">' . h(__('padrão')) . '</span>'
-                                    : '';
+                                $canonicalStatus = strtolower(trim((string)$docente->status));
+                                $isDocenteAtivo = in_array($canonicalStatus, ['ativo', 'active', 'activo'], true);
+                                $isDocenteAposentado = in_array($canonicalStatus, ['aposentado', 'retired'], true);
+                                $isDocenteInativo = in_array($canonicalStatus, ['inativo', 'inactive', 'inactivo'], true);
                             ?>
-                            <?= $this->Form->create(null, [
-                                'url' => ['controller' => 'DocenteDisponibilidades', 'action' => 'salvarRapido'],
-                                'class' => 'disp-form d-flex flex-column gap-1 align-items-start',
-                            ]) ?>
-                                <?= $this->Form->hidden('docente_id', ['value' => $docente->id]) ?>
-                                <?= $this->Form->hidden('configuraplanejamento_id', ['value' => $configuracaoAtual->id]) ?>
-                                <?= $this->Form->hidden('_ajax', ['value' => '1']) ?>
-
-                                <div class="d-flex align-items-center gap-2 disp-toggle-wrap">
-                                    <?php
-                                        // Badge visual com ícone e cor para comunicar o estado de forma imediata.
-                                        if ($isDisponivel) {
-                                            $badgeClasses = 'badge bg-success text-white d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill shadow-sm transition-all';
-                                            $badgeIcon = '<i class="bi bi-check-circle-fill"></i>';
-                                            $badgeText = __('Disponível');
-                                            $switchTooltip = $tooltipAvailRaw;
-                                        } else {
-                                            $badgeClasses = 'badge bg-danger text-white d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill shadow-sm transition-all';
-                                            $badgeIcon = '<i class="bi bi-x-circle-fill"></i>';
-                                            $badgeText = __('Indisponível');
-                                            $switchTooltip = $tooltipUnavailRaw;
-                                        }
-                                    ?>
-                                    <span
-                                        class="<?= $badgeClasses ?>"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="<?= h($switchTooltip) ?>"
-                                        aria-label="<?= h($badgeText) ?>"
-                                    >
-                                        <span class="disp-badge-icon"><?= $badgeIcon ?></span>
-                                        <span class="disp-badge-text"><?= h($badgeText) ?></span>
+                        <tr id="docente-row-<?= $docente->id ?>">
+                            <td class="text-muted small"><?= $this->Number->format($docente->id) ?></td>
+                            <td>
+                                <div class="fw-bold text-dark mb-0"><?= h($docente->nome) ?></div>
+                                <div class="small text-muted d-flex flex-wrap gap-2 align-items-center">
+                                    <?php if ($docente->siape): ?>
+                                        <span><i class="bi bi-card-text me-1"></i>SIAPE: <?= h($docente->siape) ?></span>
+                                    <?php endif; ?>
+                                    <?php if ($docente->email): ?>
+                                        <span><i class="bi bi-envelope me-1"></i><?= h($docente->email) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark"><?= h($docente->departamento ?? '-') ?></div>
+                                <?php if ($docente->tipocargo): ?>
+                                    <span class="badge bg-light text-dark border text-capitalize small"><?= h($docente->tipocargo) ?></span>
+                                <?php endif; ?>
+                            </td>
+                            <!-- Status Permanente (Institutional) -->
+                            <td>
+                                <?php if ($isDocenteAtivo): ?>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">
+                                        <i class="bi bi-check-circle-fill me-1"></i><?= __('Ativo') ?>
                                     </span>
-                                    <?= $semestreBadge ?>
-
-                                    <div class="form-check form-switch mb-0 ms-auto">
-                                        <?= $this->Form->checkbox('disponivel', [
-                                            'checked' => $isDisponivel,
-                                            'class' => 'form-check-input disp-switch',
-                                            'role' => 'switch',
-                                            'id' => 'disp-' . $docente->id,
-                                            'data-bs-toggle' => 'tooltip',
-                                            'data-bs-placement' => 'top',
-                                            'title' => h($switchTooltip),
-                                            'aria-label' => h($badgeText),
+                                <?php elseif ($isDocenteAposentado): ?>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 rounded-pill">
+                                        <i class="bi bi-mortarboard-fill me-1"></i><?= __('Aposentado') ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill">
+                                        <i class="bi bi-dash-circle-fill me-1"></i><?= h($statusLabels[$docente->status] ?? $docente->status) ?>
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <!-- Disponibilidade no Semestre (Transitory Status) -->
+                            <td class="disp-cell">
+                                <?php if (!$isDocenteAtivo): ?>
+                                    <span class="badge bg-light text-muted border border-secondary-subtle px-2 py-1" data-bs-toggle="tooltip" title="<?= h(__('Docente não está ativo no cadastro permanente. Disponibilidade não aplicável.')) ?>">
+                                        <i class="bi bi-slash-circle me-1"></i><?= __('N/A (Inativo)') ?>
+                                    </span>
+                                <?php elseif ($configuracaoAtual !== null): ?>
+                                    <?php
+                                        $disp = $disponibilidades[$docente->id] ?? null;
+                                        $isDisponivel = $disp ? (bool)$disp->disponivel : true;
+                                        $motivoAtual = $disp ? (string)$disp->motivo : '';
+                                    ?>
+                                    <div class="disp-wrapper" data-docente-id="<?= $docente->id ?>" data-docente-nome="<?= h($docente->nome) ?>">
+                                        <?= $this->Form->create(null, [
+                                            'url' => ['controller' => 'DocenteDisponibilidades', 'action' => 'salvarRapido'],
+                                            'class' => 'disp-form d-flex flex-column align-items-start gap-1 mb-0',
                                         ]) ?>
-                                        <label class="form-check-label disp-label visually-hidden" for="disp-<?= $docente->id ?>">
-                                            <?= h($badgeText) ?>
-                                        </label>
+                                            <?= $this->Form->hidden('docente_id', ['value' => $docente->id]) ?>
+                                            <?= $this->Form->hidden('configuraplanejamento_id', ['value' => $configuracaoAtual->id]) ?>
+                                            <?= $this->Form->hidden('disponivel', ['value' => $isDisponivel ? '1' : '0', 'class' => 'disp-val-hidden']) ?>
+                                            <?= $this->Form->hidden('motivo', ['value' => $motivoAtual, 'class' => 'disp-motivo-hidden']) ?>
+                                            <?= $this->Form->hidden('_ajax', ['value' => '1']) ?>
+
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="form-check form-switch mb-0 fs-6">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="form-check-input disp-switch cursor-pointer"
+                                                        role="switch"
+                                                        id="disp-switch-<?= $docente->id ?>"
+                                                        <?= $isDisponivel ? 'checked="checked"' : '' ?>
+                                                        aria-label="<?= h(__('Alternar disponibilidade do docente')) ?>"
+                                                    >
+                                                </div>
+
+                                                <!-- Status Badge Indicator -->
+                                                <span class="disp-badge badge <?= $isDisponivel ? 'bg-success text-white' : 'bg-danger text-white' ?> px-2 py-1 rounded-pill shadow-xs transition-all">
+                                                    <span class="disp-badge-icon me-1"><i class="bi <?= $isDisponivel ? 'bi-check-circle-fill' : 'bi-x-circle-fill' ?>"></i></span>
+                                                    <span class="disp-badge-text"><?= $isDisponivel ? __('Disponível') : __('Indisponível') ?></span>
+                                                </span>
+
+                                                <?php if ($disp === null): ?>
+                                                    <span class="badge bg-light text-secondary border border-secondary-subtle small ms-1" data-bs-toggle="tooltip" title="<?= h(__('Sem registro explícito; assume padrão disponível')) ?>"><?= __('padrão') ?></span>
+                                                <?php endif; ?>
+                                                
+                                                <span class="disp-spinner spinner-border spinner-border-sm text-primary d-none ms-1" role="status" aria-hidden="true"></span>
+                                            </div>
+
+                                            <!-- Motivo text (for Indisponível status) -->
+                                            <div class="disp-motivo-display small mt-1 <?= $isDisponivel ? 'd-none' : '' ?>">
+                                                <?php if (!empty($motivoAtual)): ?>
+                                                    <span class="text-danger fw-medium"><i class="bi bi-info-circle me-1"></i><?= h($motivoAtual) ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted fst-italic"><?= __('Sem motivo registrado') ?></span>
+                                                <?php endif; ?>
+                                                <button type="button" class="btn btn-link p-0 ms-1 text-decoration-none btn-edit-motivo text-secondary small" title="<?= h(__('Editar motivo da indisponibilidade')) ?>">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </div>
+                                        <?= $this->Form->end() ?>
                                     </div>
-
-                                    <span class="disp-status-icon d-none text-muted small" aria-live="polite"></span>
-                                </div>
-
-                                <div
-                                    class="disp-motivo w-100"
-                                    style="<?= $isDisponivel ? 'display:none;' : '' ?>"
-                                    aria-expanded="<?= $isDisponivel ? 'false' : 'true' ?>"
-                                >
-                                    <?= $this->Form->text('motivo', [
-                                        'value' => $motivoAtual,
-                                        'placeholder' => __('Ex.: afastamento para doutorado, licença médica...'),
-                                        'maxlength' => 100,
-                                        'class' => 'form-control form-control-sm',
+                                <?php else: ?>
+                                    <span class="badge bg-light text-secondary border px-2 py-1">
+                                        <i class="bi bi-info-circle me-1"></i><?= __('Selecione um semestre') ?>
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <!-- Actions -->
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <?= $this->Html->link('<i class="bi bi-eye"></i>', ['action' => 'view', $docente->id], [
+                                        'class' => 'btn btn-outline-info',
+                                        'escape' => false,
                                         'data-bs-toggle' => 'tooltip',
-                                        'data-bs-placement' => 'top',
-                                        'title' => h(__('Informe o motivo da indisponibilidade (opcional)')),
-                                        'aria-label' => h(__('Motivo da indisponibilidade')),
+                                        'title' => __('Ver Detalhes')
                                     ]) ?>
-                                    <div class="d-flex align-items-center gap-1 mt-1">
-                                        <?= $this->Form->button('<i class="bi bi-save me-1"></i>' . __('Salvar'), [
-                                            'class' => 'btn btn-sm btn-outline-danger disp-save',
-                                            'escape' => false,
-                                            'data-bs-toggle' => 'tooltip',
-                                            'data-bs-placement' => 'top',
-                                            'title' => h(__('Salvar a indisponibilidade e o motivo')),
-                                        ]) ?>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-secondary disp-cancel"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            title="<?= h(__('Cancelar e voltar para Disponível')) ?>"
-                                        >
-                                            <i class="bi bi-x me-1"></i><?= __('Cancelar') ?>
-                                        </button>
-                                    </div>
+                                    <?= $this->Html->link('<i class="bi bi-pencil"></i>', ['action' => 'edit', $docente->id], [
+                                        'class' => 'btn btn-outline-warning',
+                                        'escape' => false,
+                                        'data-bs-toggle' => 'tooltip',
+                                        'title' => __('Editar Docente')
+                                    ]) ?>
+                                    <?= $this->Form->postLink('<i class="bi bi-trash"></i>', ['action' => 'delete', $docente->id], [
+                                        'confirm' => __('Tem certeza que deseja excluir {0}?', $docente->nome),
+                                        'class' => 'btn btn-outline-danger',
+                                        'escape' => false,
+                                        'data-bs-toggle' => 'tooltip',
+                                        'title' => __('Excluir Docente')
+                                    ]) ?>
                                 </div>
-                            <?= $this->Form->end() ?>
-                        <?php else: ?>
-                            <span
-                                class="badge bg-light text-secondary border border-secondary-subtle px-2 py-1"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                title="<?= h(__('Escolha uma configuração de semestre para editar a disponibilidade')) ?>"
-                            >
-                                <i class="bi bi-info-circle me-1"></i><?= __('Selecione um semestre') ?>
-                            </span>
-                        <?php endif; ?>
-                    </td>
-                    <td><?= h($docente->email) ?></td>
-                    <td class="text-nowrap">
-                        <?= $this->Html->link(__('Ver'), ['action' => 'view', $docente->id], ['class' => 'btn btn-sm btn-info']) ?>
-                        <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-sm btn-warning']) ?>
-                        <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $docente->id], [
-                            'confirm' => __('Tem certeza que deseja excluir {0}?', $docente->nome),
-                            'class' => 'btn btn-sm btn-danger'
-                        ]) ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                <?= __('Nenhum docente encontrado com os filtros selecionados.') ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="card-footer bg-white border-top-0 d-flex flex-wrap align-items-center justify-content-between py-3 px-3">
+            <div class="small text-muted mb-2 mb-md-0">
+                <?= $this->Paginator->counter(__('Mostrando {{current}} registro(s) de {{count}} total (Página {{page}} de {{pages}})')) ?>
+            </div>
+            <nav aria-label="<?= h(__('Paginação')) ?>">
+                <ul class="pagination pagination-sm mb-0">
+                    <?= $this->Paginator->first('<i class="bi bi-chevron-double-left"></i>', ['escape' => false]) ?>
+                    <?= $this->Paginator->prev('<i class="bi bi-chevron-left"></i>', ['escape' => false]) ?>
+                    <?= $this->Paginator->numbers(['modulus' => 4]) ?>
+                    <?= $this->Paginator->next('<i class="bi bi-chevron-right"></i>', ['escape' => false]) ?>
+                    <?= $this->Paginator->last('<i class="bi bi-chevron-double-right"></i>', ['escape' => false]) ?>
+                </ul>
+            </nav>
+        </div>
     </div>
-    
-    <!-- Paginator -->
-    <nav aria-label="Paginação">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('primeiro')) ?>
-            <?= $this->Paginator->prev('< ' . __('anterior')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('próximo') . ' >') ?>
-            <?= $this->Paginator->last(__('último') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Página {{page}} de {{pages}}, mostrando {{current}} registro(s) de {{count}} total')) ?></p>
-    </nav>
+</div>
+
+<!-- Modal para Digitar/Editar o Motivo da Indisponibilidade -->
+<div class="modal fade" id="modalMotivoIndisponibilidade" tabindex="-1" aria-labelledby="modalMotivoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title h6" id="modalMotivoLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><?= __('Informar Motivo da Indisponibilidade') ?>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="small text-muted mb-3" id="modalDocenteNomeText">
+                    <?= __('Informe o motivo pelo qual o docente estará indisponível neste semestre (ex.: afastamento para doutorado, licença médica, projetos especiais):') ?>
+                </p>
+                <div class="mb-3">
+                    <label for="modalInputMotivo" class="form-label small fw-semibold"><?= __('Motivo (opcional):') ?></label>
+                    <input type="text" class="form-control" id="modalInputMotivo" maxlength="100" placeholder="<?= h(__('Ex.: Licença Capacitação, Afastamento Médico...')) ?>">
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 px-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnModalCancel"><?= __('Cancelar') ?></button>
+                <button type="button" class="btn btn-sm btn-danger" id="btnModalConfirmSave">
+                    <i class="bi bi-check-lg me-1"></i><?= __('Salvar Indisponibilidade') ?>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-    /* Animações e efeitos visuais para o toggle de disponibilidade */
-    .disp-form .transition-all { transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease, color 180ms ease, opacity 180ms ease; }
-    .disp-form .disp-toggle-wrap {
-        border-radius: 999px;
-        padding: 0.25rem 0.5rem 0.25rem 0.25rem;
-        transition: background-color 180ms ease, box-shadow 180ms ease;
-    }
-    .disp-form.is-saving .disp-toggle-wrap {
-        background-color: rgba(13, 110, 253, 0.08);
-        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
-    }
-    .disp-form.is-saving .disp-switch,
-    .disp-form.is-saving .disp-save,
-    .disp-form.is-saving .disp-cancel { cursor: wait; pointer-events: none; opacity: 0.7; }
-    .disp-form.is-flash-success .disp-toggle-wrap {
-        animation: dispFlashSuccess 900ms ease-out;
-    }
-    .disp-form.is-flash-error .disp-toggle-wrap {
-        animation: dispFlashError 900ms ease-out;
-    }
-    @keyframes dispFlashSuccess {
-        0%   { background-color: transparent; box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.0); }
-        20%  { background-color: rgba(25, 135, 84, 0.18); box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.35); }
-        100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.0); }
-    }
-    @keyframes dispFlashError {
-        0%   { background-color: transparent; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.0); }
-        20%  { background-color: rgba(220, 53, 69, 0.18); box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.35); }
-        100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.0); }
-    }
+    .cursor-pointer { cursor: pointer; }
+    .transition-all { transition: all 180ms ease-in-out; }
+    .disp-cell { vertical-align: middle; }
+    
+    /* Global Toast Container */
     .disp-toast-wrap {
         position: fixed;
-        right: 1rem;
-        bottom: 1rem;
-        z-index: 1080;
+        right: 1.25rem;
+        bottom: 1.25rem;
+        z-index: 1090;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -354,335 +422,270 @@ declare(strict_types=1);
     }
     .disp-toast {
         pointer-events: auto;
-        min-width: 240px;
-        max-width: 360px;
+        min-width: 260px;
+        max-width: 380px;
         opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 180ms ease, transform 180ms ease;
+        transform: translateY(12px);
+        transition: opacity 200ms ease, transform 200ms ease;
     }
     .disp-toast.show { opacity: 1; transform: translateY(0); }
-    @media (max-width: 576px) {
-        .disp-badge-text { display: none; }
-        .disp-form .disp-motivo { width: 100%; max-width: 240px; }
-    }
 </style>
 
 <script>
 (function () {
     'use strict';
 
-    var STR_SAVE_LABEL  = <?= json_encode(__('Disponível')) ?>;
-    var STR_SAVE_ICON   = '<i class="bi bi-check-circle-fill"></i>';
-    var STR_UNSAVE_LABEL = <?= json_encode(__('Indisponível')) ?>;
-    var STR_UNSAVE_ICON  = '<i class="bi bi-x-circle-fill"></i>';
-    var STR_TOOLTIP_AVAIL_FMT = <?= json_encode(__('Disponível no semestre {0} — clique para marcar como indisponível')) ?>;
-    var STR_TOOLTIP_UNAVAIL_FMT = <?= json_encode(__('Indisponível no semestre {0} — clique para marcar como disponível')) ?>;
+    var activeWrapper = null;
 
-    function getSemestreLabel(form) {
-        // O label do semestre vem do cabeçalho da coluna.
-        var hdr = document.querySelector('th small.text-muted');
-        if (hdr && hdr.textContent) {
-            var m = hdr.textContent.match(/\(([^)]+)\)/);
-            return m ? m[1].trim() : '';
-        }
-        return '';
-    }
-    function fmt(str, a) { return (str || '').replace('{0}', String(a == null ? '' : a)); }
-
-    // Status inline: mostra um ícone + texto breve ao lado do toggle por alguns segundos.
-    function setStatusInline(form, kind, message) {
-        var el = form.querySelector('.disp-status-icon');
-        if (!el) { return; }
-        var icon = '';
-        var cls = 'text-muted';
-        if (kind === 'saving')  { icon = '<i class="bi bi-arrow-repeat spin me-1"></i>'; cls = 'text-primary'; }
-        if (kind === 'success') { icon = '<i class="bi bi-check2-circle me-1"></i>';   cls = 'text-success'; }
-        if (kind === 'error')   { icon = '<i class="bi bi-exclamation-triangle me-1"></i>'; cls = 'text-danger'; }
-        el.className = 'disp-status-icon small px-1 ' + cls;
-        el.innerHTML = icon + (message || '');
-        el.classList.remove('d-none');
-        if (kind !== 'saving') {
-            setTimeout(function () { el.classList.add('d-none'); el.innerHTML = ''; }, 2200);
-        }
-    }
-
-    // Toast global de confirmação (um por vez, pilha).
-    function ensureToastWrap() {
-        var w = document.querySelector('.disp-toast-wrap');
-        if (w) { return w; }
-        w = document.createElement('div');
-        w.className = 'disp-toast-wrap';
-        document.body.appendChild(w);
-        return w;
-    }
+    // Show floating toast message
     function showToast(kind, message) {
-        var wrap = ensureToastWrap();
+        var wrap = document.querySelector('.disp-toast-wrap');
+        if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.className = 'disp-toast-wrap';
+            document.body.appendChild(wrap);
+        }
         var div = document.createElement('div');
         var bg = kind === 'success' ? 'bg-success' : (kind === 'error' ? 'bg-danger' : 'bg-primary');
-        var icon = kind === 'success'
-            ? '<i class="bi bi-check-circle-fill me-2"></i>'
-            : (kind === 'error' ? '<i class="bi bi-x-circle-fill me-2"></i>' : '<i class="bi bi-info-circle-fill me-2"></i>');
-        div.className = 'disp-toast alert ' + bg + ' text-white shadow-sm border-0 rounded-3';
+        var icon = kind === 'success' ? '<i class="bi bi-check-circle-fill me-2"></i>' : '<i class="bi bi-exclamation-triangle-fill me-2"></i>';
+        div.className = 'disp-toast alert ' + bg + ' text-white shadow rounded-3 border-0 py-2 px-3 mb-0';
         div.setAttribute('role', 'status');
-        div.innerHTML = icon + message;
+        div.innerHTML = icon + '<span>' + message + '</span>';
         wrap.appendChild(div);
-        // Trigger transition no próximo frame.
-        requestAnimationFrame(function () { requestAnimationFrame(function () { div.classList.add('show'); }); });
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () { div.classList.add('show'); });
+        });
         setTimeout(function () {
             div.classList.remove('show');
             setTimeout(function () { if (div.parentNode) { div.parentNode.removeChild(div); } }, 250);
-        }, 2400);
+        }, 2500);
     }
 
-    function updateToggleVisuals(form, isDisponivel, keepSemestre) {
-        var sw = form.querySelector('.disp-switch');
-        var badge = form.querySelector('.disp-form > .disp-toggle-wrap > span.badge');
-        // Fallback: caso o primeiro span não seja o badge (ordem flex diferente).
-        if (!badge) { badge = form.querySelector('.disp-toggle-wrap span.badge.bg-success, .disp-toggle-wrap span.badge.bg-danger'); }
-        var badgeIcon = badge ? badge.querySelector('.disp-badge-icon') : null;
-        var badgeText = badge ? badge.querySelector('.disp-badge-text') : null;
-        var motivo = form.querySelector('.disp-motivo');
+    // Submit AJAX form
+    function submitAvailabilityAjax(wrapper, isDisponivel, motivoText) {
+        var form = wrapper.querySelector('.disp-form');
+        if (!form) return;
 
-        var sem = keepSemestre ? '' : getSemestreLabel(form);
-        var tooltip = isDisponivel ? fmt(STR_TOOLTIP_AVAIL_FMT, sem) : fmt(STR_TOOLTIP_UNAVAIL_FMT, sem);
+        var switchEl = wrapper.querySelector('.disp-switch');
+        var badgeEl = wrapper.querySelector('.disp-badge');
+        var badgeIcon = wrapper.querySelector('.disp-badge-icon');
+        var badgeText = wrapper.querySelector('.disp-badge-text');
+        var spinner = wrapper.querySelector('.disp-spinner');
+        var motivoDisplay = wrapper.querySelector('.disp-motivo-display');
+        var valHidden = form.querySelector('.disp-val-hidden');
+        var motivoHidden = form.querySelector('.disp-motivo-hidden');
 
-        if (sw) {
-            // Não forçar o .checked aqui se o usuário acabou de mudar; o DOM
-            // já está correto, este método é para sincronizar o restante.
-            // Apenas atualiza tooltip.
-            var s = window.bootstrap ? bootstrap.Tooltip.getInstance(sw) : null;
-            sw.setAttribute('title', tooltip);
-            if (s) { s.dispose(); }
-        }
-        if (badge) {
-            badge.classList.remove('bg-success', 'bg-danger');
-            badge.classList.add(isDisponivel ? 'bg-success' : 'bg-danger');
-            if (badgeIcon) { badgeIcon.innerHTML = isDisponivel ? STR_SAVE_ICON : STR_UNSAVE_ICON; }
-            if (badgeText) { badgeText.textContent = isDisponivel ? STR_SAVE_LABEL : STR_UNSAVE_LABEL; }
-            badge.setAttribute('title', tooltip);
-            var b = window.bootstrap ? bootstrap.Tooltip.getInstance(badge) : null;
-            if (b) { b.dispose(); }
-            badge.setAttribute('aria-label', isDisponivel ? STR_SAVE_LABEL : STR_UNSAVE_LABEL);
-        }
-        if (motivo) {
-            motivo.style.display = isDisponivel ? 'none' : '';
-            motivo.setAttribute('aria-expanded', isDisponivel ? 'false' : 'true');
-        }
-        // Re-inicializa tooltips do Bootstrap se disponível.
-        if (window.bootstrap && typeof window.bootstrap.Tooltip === 'function') {
-            [sw, badge].forEach(function (el) {
-                if (el) { new bootstrap.Tooltip(el, { boundary: 'clippingParents' }); }
+        if (valHidden) valHidden.value = isDisponivel ? '1' : '0';
+        if (motivoHidden) motivoHidden.value = isDisponivel ? '' : (motivoText || '');
+
+        if (spinner) spinner.classList.remove('d-none');
+        if (switchEl) switchEl.disabled = true;
+
+        var formData = new FormData(form);
+        var url = form.getAttribute('action') || window.location.href;
+
+        fetch(url, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+        }).then(function (resp) {
+            return resp.json().then(function (json) {
+                return { ok: resp.ok && json && json.ok === true, json: json };
             });
-        }
-    }
+        }).then(function (res) {
+            if (spinner) spinner.classList.add('d-none');
+            if (switchEl) switchEl.disabled = false;
 
-    // Submissão AJAX com fallback.
-    function submitFormAjax(form, then) {
-        if (!form || typeof window.fetch !== 'function' || typeof window.FormData !== 'function') {
-            // Fallback: submissão normal via POST (sem AJAX).
-            then && then(false);
-            form.submit();
-            return false;
-        }
-        try {
-            var data = new FormData(form);
-            // Garante que a flag _ajax esteja presente (ainda que o formulário
-            // tenha sido enviado sem ela, por exemplo por um submit manual).
-            if (!data.has('_ajax')) { data.append('_ajax', '1'); }
-            var url = form.getAttribute('action') || window.location.href;
-            form.classList.add('is-saving');
-            setStatusInline(form, 'saving', <?= json_encode(__('Salvando...')) ?>);
-            window.fetch(url, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: data,
-            }).then(function (resp) {
-                return resp.text().then(function (t) {
-                    var json = null;
-                    try { json = JSON.parse(t); } catch (_) {}
-                    return { ok: resp.ok && json && json.ok === true, status: resp.status, json: json };
-                });
-            }).then(function (res) {
-                form.classList.remove('is-saving');
-                if (res.ok) {
-                    // Êxito: animar + toast.
-                    form.classList.remove('is-flash-success');
-                    // Force reflow para reiniciar a animação.
-                    void form.offsetWidth;
-                    form.classList.add('is-flash-success');
-                    setTimeout(function () { form.classList.remove('is-flash-success'); }, 1000);
-                    setStatusInline(form, 'success', res.json && res.json.message ? res.json.message : <?= json_encode(__('Salvo')) ?>);
-                    showToast('success', res.json && res.json.message ? res.json.message : <?= json_encode(__('Disponibilidade atualizada com sucesso.')) ?>);
-                    then && then(true, res.json || {});
-                } else {
-                    form.classList.remove('is-flash-error');
-                    void form.offsetWidth;
-                    form.classList.add('is-flash-error');
-                    setTimeout(function () { form.classList.remove('is-flash-error'); }, 1000);
-                    var msg = res.json && res.json.message ? res.json.message : <?= json_encode(__('Não foi possível atualizar a disponibilidade.')) ?>;
-                    setStatusInline(form, 'error', msg);
-                    showToast('error', msg);
-                    then && then(false, res.json || {});
+            if (res.ok) {
+                var dispNow = res.json.disponivel !== undefined ? Boolean(res.json.disponivel) : isDisponivel;
+                var motivoNow = res.json.motivo || '';
+
+                if (switchEl) switchEl.checked = dispNow;
+                if (badgeEl) {
+                    badgeEl.className = 'disp-badge badge ' + (dispNow ? 'bg-success text-white' : 'bg-danger text-white') + ' px-2 py-1 rounded-pill shadow-xs transition-all';
                 }
-            }).catch(function () {
-                form.classList.remove('is-saving');
-                // Erro de rede: fallback para submissão normal (garante quebra).
-                then && then(false);
-                form.submit();
-            });
-            return true;
-        } catch (_) {
-            then && then(false);
-            form.submit();
-            return false;
-        }
-    }
+                if (badgeIcon) {
+                    badgeIcon.innerHTML = '<i class="bi ' + (dispNow ? 'bi-check-circle-fill' : 'bi-x-circle-fill') + '"></i>';
+                }
+                if (badgeText) {
+                    badgeText.textContent = dispNow ? <?= json_encode(__('Disponível')) ?> : <?= json_encode(__('Indisponível')) ?>;
+                }
 
-    function hookOneForm(form) {
-        var sw = form.querySelector('.disp-switch');
-        var motivo = form.querySelector('.disp-motivo');
-        var btnSave = form.querySelector('.disp-save');
-        var btnCancel = form.querySelector('.disp-cancel');
-        var wasDisponivelOnLoad = sw ? sw.checked : true;
-
-        // Lembrete do estado anterior (antes do toggle) para poder reverter
-        // caso o envio falhe e a página não recarregue.
-        form._lastState = { disponivel: wasDisponivelOnLoad };
-
-        // 1) Intercepta o submit padrão para dar preferência ao AJAX.
-        form.addEventListener('submit', function (evt) {
-            // Se já estivermos salvando, bloqueie disparos duplicados.
-            if (form.classList.contains('is-saving')) { evt.preventDefault(); return; }
-            evt.preventDefault();
-            submitFormAjax(form, function (ok, data) {
-                if (ok) {
-                    var novo = typeof data.disponivel === 'boolean' ? data.disponivel : sw.checked;
-                    form._lastState.disponivel = novo;
-                    updateToggleVisuals(form, novo);
-                    if (novo && motivo) {
-                        // Garante que motivo fique vazio e fechado após salvar.
-                        var input = motivo.querySelector('input[name="motivo"]');
-                        if (input) { input.value = ''; }
+                if (motivoDisplay) {
+                    if (!dispNow) {
+                        motivoDisplay.classList.remove('d-none');
+                        var txtSpan = motivoDisplay.querySelector('span');
+                        if (txtSpan) {
+                            if (motivoNow.trim() !== '') {
+                                txtSpan.className = 'text-danger fw-medium';
+                                txtSpan.innerHTML = '<i class="bi bi-info-circle me-1"></i>' + escapeHtml(motivoNow);
+                            } else {
+                                txtSpan.className = 'text-muted fst-italic';
+                                txtSpan.textContent = <?= json_encode(__('Sem motivo registrado')) ?>;
+                            }
+                        }
+                    } else {
+                        motivoDisplay.classList.add('d-none');
                     }
                 }
-            });
+
+                showToast('success', res.json.message || <?= json_encode(__('Disponibilidade atualizada.')) ?>);
+            } else {
+                if (switchEl) switchEl.checked = !isDisponivel;
+                showToast('error', res.json.message || <?= json_encode(__('Erro ao atualizar disponibilidade.')) ?>);
+            }
+        }).catch(function () {
+            if (spinner) spinner.classList.add('d-none');
+            if (switchEl) {
+                switchEl.disabled = false;
+                switchEl.checked = !isDisponivel;
+            }
+            showToast('error', <?= json_encode(__('Erro de conexão ao salvar.')) ?>);
         });
-
-        // 2) Troca no switch (form-check). Semântica:
-        //    - Ligado → Disponível: salva imediatamente, fecha o motivo.
-        //    - Desligado → Indisponível: abre o painel do motivo para o usuário
-        //      confirmar/salvar (opcionalmente preenchendo um motivo).
-        if (sw) {
-            sw.addEventListener('change', function () {
-                if (form.classList.contains('is-saving')) {
-                    sw.checked = !sw.checked;
-                    return;
-                }
-                var agoraDisponivel = sw.checked;
-                if (agoraDisponivel) {
-                    // Atualiza UI no cliente, depois envia via AJAX (evento submit).
-                    updateToggleVisuals(form, true);
-                    // Previne submit duplicado via change + via submit().
-                    form.requestSubmit ? form.requestSubmit() : form.submit();
-                } else {
-                    // Abre o motivo sem salvar ainda. Deixa o usuário digitar e
-                    // clicar no botão "Salvar". Se desistir, botão "Cancelar"
-                    // volta para Disponível (e salva essa reversão).
-                    updateToggleVisuals(form, false);
-                    var input = motivo ? motivo.querySelector('input[name="motivo"]') : null;
-                    if (input) { setTimeout(function () { input.focus(); }, 20); }
-                }
-            });
-        }
-
-        // 3) Botão "Cancelar" dentro do motivo: volta para Disponível e salva.
-        if (btnCancel) {
-            btnCancel.addEventListener('click', function () {
-                if (form.classList.contains('is-saving')) { return; }
-                if (sw) { sw.checked = true; }
-                updateToggleVisuals(form, true);
-                form.requestSubmit ? form.requestSubmit() : form.submit();
-            });
-        }
-
-        // 4) O botão Salvar (dentro do motivo) já dispara form.submit() naturalmente,
-        //    então o handler de submit() acima já cuida do fluxo AJAX.
-        if (btnSave) {
-            btnSave.addEventListener('click', function () {
-                if (sw) { sw.checked = false; } // Garante que o valor chegue como indisponível.
-            });
-        }
     }
 
-    // CSS para girar o ícone "spin".
-    var spinStyle = document.createElement('style');
-    spinStyle.textContent = '.spin { display: inline-block; animation: dispSpin 900ms linear infinite; } @keyframes dispSpin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }';
-    document.head.appendChild(spinStyle);
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
 
-    // Comportamento intuitivo do multi-select de status:
-    //   - Selecionar "Todos" desmarca os status específicos.
-    //   - Selecionar um status específico desmarca "Todos".
-    // O backend já reconhece a presença do sentinela 'all' como "exibir tudo".
     function hookStatusMultiSelect() {
         var sel = document.querySelector('select.docentes-status-multi');
-        if (!sel) { return; }
+        if (!sel) return;
         var sentinel = sel.getAttribute('data-all-sentinel') || 'all';
         var lastUserSelectedAll = Array.from(sel.selectedOptions).some(function (o) { return o.value === sentinel; });
 
-        var updateFromAllChoice = function () {
-            // Se "Todos" estiver marcado, desmarque os específicos.
-            var allOpt = sel.querySelector('option[value="' + sentinel + '"]');
-            if (allOpt && allOpt.selected) {
-                Array.from(sel.options).forEach(function (op) {
-                    if (op.value !== sentinel) { op.selected = false; }
-                });
-            }
-        };
-        var updateFromSpecificChoice = function () {
-            var allOpt = sel.querySelector('option[value="' + sentinel + '"]');
-            var hasSpecific = Array.from(sel.options).some(function (op) {
-                return op.value !== sentinel && op.selected;
-            });
-            if (hasSpecific && allOpt) { allOpt.selected = false; }
-            // Se nada estiver selecionado, marque "Todos" como padrão.
-            var anySelected = Array.from(sel.options).some(function (op) { return op.selected; });
-            if (!anySelected && allOpt) { allOpt.selected = true; }
-        };
-
-        // Estado inicial: se algum específico + all estiverem marcados juntos,
-        // deixe apenas "Todos" (pois foi o último que o usuário explicitou querer,
-        // mas na dúvida use o sentinel já que é o mais conservador).
-        updateFromAllChoice();
-
         sel.addEventListener('change', function () {
-            // Detecta se a opção "Todos" ficou marcada nesta interação.
             var allOpt = sel.querySelector('option[value="' + sentinel + '"]');
             var allIsNow = allOpt ? allOpt.selected : false;
+
             if (allIsNow && !lastUserSelectedAll) {
-                updateFromAllChoice();
+                Array.from(sel.options).forEach(function (op) {
+                    if (op.value !== sentinel) op.selected = false;
+                });
             } else {
-                updateFromSpecificChoice();
+                var hasSpecific = Array.from(sel.options).some(function (op) {
+                    return op.value !== sentinel && op.selected;
+                });
+                if (hasSpecific && allOpt) allOpt.selected = false;
+                var anySelected = Array.from(sel.options).some(function (op) { return op.selected; });
+                if (!anySelected && allOpt) allOpt.selected = true;
             }
             lastUserSelectedAll = allOpt ? allOpt.selected : false;
         });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Inicializa tooltips do Bootstrap.
+        hookStatusMultiSelect();
+
         if (window.bootstrap && typeof window.bootstrap.Tooltip === 'function') {
-            bootstrap.Tooltip.getOrCreateInstance = bootstrap.Tooltip.getOrCreateInstance || function (el, opts) {
-                var i = bootstrap.Tooltip.getInstance(el);
-                if (i) return i;
-                return new bootstrap.Tooltip(el, opts || {});
-            };
             document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
-                bootstrap.Tooltip.getOrCreateInstance(el, { boundary: 'clippingParents' });
+                new bootstrap.Tooltip(el, { boundary: 'clippingParents' });
             });
         }
 
-        hookStatusMultiSelect();
-        document.querySelectorAll('.disp-form').forEach(hookOneForm);
+        var modalEl = document.getElementById('modalMotivoIndisponibilidade');
+        var bsModal = modalEl && window.bootstrap ? new bootstrap.Modal(modalEl) : null;
+        var inputMotivo = document.getElementById('modalInputMotivo');
+        var btnConfirm = document.getElementById('btnModalConfirmSave');
+        var btnCancel = document.getElementById('btnModalCancel');
+        var docenteNomeText = document.getElementById('modalDocenteNomeText');
+
+        document.querySelectorAll('.disp-wrapper').forEach(function (wrapper) {
+            var switchEl = wrapper.querySelector('.disp-switch');
+            var btnEdit = wrapper.querySelector('.btn-edit-motivo');
+
+            if (switchEl) {
+                switchEl.addEventListener('change', function () {
+                    var isDisponivel = switchEl.checked;
+                    if (isDisponivel) {
+                        submitAvailabilityAjax(wrapper, true, '');
+                    } else {
+                        activeWrapper = wrapper;
+                        var dNome = wrapper.getAttribute('data-docente-nome') || '';
+                        var motivoHidden = wrapper.querySelector('.disp-motivo-hidden');
+                        if (inputMotivo) inputMotivo.value = motivoHidden ? motivoHidden.value : '';
+                        if (docenteNomeText) {
+                            docenteNomeText.innerHTML = <?= json_encode(__('Informe o motivo pelo qual <strong>{0}</strong> estará indisponível neste semestre:')) ?>.replace('{0}', escapeHtml(dNome));
+                        }
+                        if (bsModal) {
+                            bsModal.show();
+                            setTimeout(function () { if (inputMotivo) inputMotivo.focus(); }, 300);
+                        } else {
+                            var m = prompt(<?= json_encode(__('Motivo da indisponibilidade:')) ?>, inputMotivo ? inputMotivo.value : '');
+                            if (m !== null) {
+                                submitAvailabilityAjax(wrapper, false, m);
+                            } else {
+                                switchEl.checked = true;
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (btnEdit) {
+                btnEdit.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    activeWrapper = wrapper;
+                    var dNome = wrapper.getAttribute('data-docente-nome') || '';
+                    var motivoHidden = wrapper.querySelector('.disp-motivo-hidden');
+                    if (inputMotivo) inputMotivo.value = motivoHidden ? motivoHidden.value : '';
+                    if (docenteNomeText) {
+                        docenteNomeText.innerHTML = <?= json_encode(__('Editar o motivo da indisponibilidade de <strong>{0}</strong>:')) ?>.replace('{0}', escapeHtml(dNome));
+                    }
+                    if (bsModal) {
+                        bsModal.show();
+                        setTimeout(function () { if (inputMotivo) inputMotivo.focus(); }, 300);
+                    }
+                });
+            }
+        });
+
+        if (btnConfirm) {
+            btnConfirm.addEventListener('click', function () {
+                if (!activeWrapper) return;
+                var motivoVal = inputMotivo ? inputMotivo.value : '';
+                if (bsModal) bsModal.hide();
+                submitAvailabilityAjax(activeWrapper, false, motivoVal);
+            });
+        }
+
+        if (inputMotivo) {
+            inputMotivo.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (btnConfirm) btnConfirm.click();
+                }
+            });
+        }
+
+        if (btnCancel) {
+            btnCancel.addEventListener('click', function () {
+                if (bsModal) bsModal.hide();
+                if (activeWrapper) {
+                    var switchEl = activeWrapper.querySelector('.disp-switch');
+                    var valHidden = activeWrapper.querySelector('.disp-val-hidden');
+                    if (switchEl && valHidden && valHidden.value === '1') {
+                        switchEl.checked = true;
+                    }
+                }
+            });
+        }
+
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                if (activeWrapper) {
+                    var switchEl = activeWrapper.querySelector('.disp-switch');
+                    var valHidden = activeWrapper.querySelector('.disp-val-hidden');
+                    if (switchEl && valHidden && valHidden.value === '1' && !switchEl.checked) {
+                        switchEl.checked = true;
+                    }
+                }
+            });
+        }
     });
 })();
 </script>

@@ -198,15 +198,51 @@ class DocentesController extends AppController
 
         $disponibilidades = [];
         if ($configuracaoAtual !== null) {
-            $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
-                ->find()
-                ->where(['configuraplanejamento_id' => $configuracaoAtual->id])
-                ->all();
+            $docenteIds = [];
+            foreach ($docentes as $docente) {
+                $docenteIds[] = $docente->id;
+            }
 
-            foreach ($disponibilidadesRows as $disponibilidade) {
-                $disponibilidades[$disponibilidade->docente_id] = $disponibilidade;
+            if (!empty($docenteIds)) {
+                $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
+                    ->find()
+                    ->where([
+                        'configuraplanejamento_id' => $configuracaoAtual->id,
+                        'docente_id IN' => $docenteIds,
+                    ])
+                    ->all();
+
+                foreach ($disponibilidadesRows as $disponibilidade) {
+                    $disponibilidades[$disponibilidade->docente_id] = $disponibilidade;
+                }
             }
         }
+
+        // Quick statistics for the header metrics cards
+        $totalDocentesCount = $this->Docentes->find()->count();
+        $ativosCount = $this->Docentes->find()
+            ->where(['Docentes.status IN' => self::STATUS_ALIASES['ativo']])
+            ->count();
+        $inativosAposentadosCount = $this->Docentes->find()
+            ->where(['Docentes.status IN' => array_merge(self::STATUS_ALIASES['aposentado'], self::STATUS_ALIASES['inativo'])])
+            ->count();
+        $indisponiveisSemestreCount = 0;
+        if ($configuracaoAtual !== null) {
+            $indisponiveisSemestreCount = $this->Docentes->DocenteDisponibilidades
+                ->find()
+                ->where([
+                    'configuraplanejamento_id' => $configuracaoAtual->id,
+                    'disponivel' => false,
+                ])
+                ->count();
+        }
+
+        $statsDocentes = [
+            'total' => $totalDocentesCount,
+            'ativos' => $ativosCount,
+            'inativos' => $inativosAposentadosCount,
+            'indisponiveisSemestre' => $indisponiveisSemestreCount,
+        ];
 
         $this->set(compact(
             'docentes',
@@ -222,7 +258,8 @@ class DocentesController extends AppController
             'configuracaoFilterLabel',
             'disponibilidades',
             'configuracaoAtiva',
-            'configuracaoAtual'
+            'configuracaoAtual',
+            'statsDocentes'
         ));
     }
 
@@ -277,13 +314,14 @@ class DocentesController extends AppController
 
     private function canonicalStatus(string $status): string
     {
+        $statusLower = mb_strtolower(trim($status));
         foreach (self::STATUS_ALIASES as $canonicalStatus => $aliases) {
-            if (\in_array($status, $aliases, true)) {
+            if (\in_array($statusLower, $aliases, true)) {
                 return $canonicalStatus;
             }
         }
 
-        return $status;
+        return $statusLower;
     }
 
     public function edit($id = null): \Cake\Http\Response|null
