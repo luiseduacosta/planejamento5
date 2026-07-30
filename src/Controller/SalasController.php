@@ -71,6 +71,7 @@ class SalasController extends AppController
             $this->Flash->error(__('Não foi possível salvar a sala. Tente novamente.'));
         }
         $this->set(compact('sala'));
+        return null;
     }
 
     /**
@@ -94,6 +95,7 @@ class SalasController extends AppController
             $this->Flash->error(__('Não foi possível atualizar a sala. Tente novamente.'));
         }
         $this->set(compact('sala'));
+        return null;
     }
 
     /**

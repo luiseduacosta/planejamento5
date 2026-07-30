@@ -34,27 +34,55 @@ class DocentesController extends AppController
     public function index(): void
     {
         $this->Authorization->skipAuthorization();
-        
+
+        // Valor sentinela para "todos os status" no multi-select.
+        $statusAllSentinel = 'all';
+
         // Get filter parameters from query string.
-        // Status is frozen to 'ativo' by default and persisted for the whole
-        // session. When the user explicitly submits the filter (query present,
-        // including empty string = "Todos"), that choice is stored and reused
-        // for the rest of the session.
+        // Status é persistido na sessão e agora é SEMPRE um array (multi-select).
+        // A entrada "all" (ou array vazio) significa "sem filtro".
+        // Quando a chave não está presente nem na query nem na sessão, o
+        // padrão é exibir apenas docentes ativos.
         $statusSessionKey = 'Docentes.statusFilter';
         $session = $this->request->getSession();
-        $statusQuery = $this->request->getQuery('status');
-        if ($statusQuery !== null) {
+
+        // Normaliza qualquer entrada (string única ou array) para array de strings.
+        $normalizeStatusList = function ($raw) use ($statusAllSentinel): array {
+            if ($raw === null) { return []; }
+            if (is_array($raw)) {
+                $res = [];
+                foreach ($raw as $v) {
+                    if ($v === null || $v === '') { continue; }
+                    $res[] = (string)$v;
+                }
+                return $res;
+            }
+            if ($raw === '') { return []; }
+            return [(string)$raw];
+        };
+
+        $statusQueryRaw = $this->request->getQuery('status');
+        $statusQuery = $normalizeStatusList($statusQueryRaw);
+        if ($statusQueryRaw !== null) {
             $session->write($statusSessionKey, $statusQuery);
             $statusFilter = $statusQuery;
         } else {
-            $statusFilter = $session->read($statusSessionKey);
-            if ($statusFilter === null) {
-                $statusFilter = 'ativo';
+            $stored = $session->read($statusSessionKey);
+            if ($stored === null) {
+                // Padrão da sessão nunca usada: exibe apenas ativos.
+                $statusFilter = ['ativo'];
+            } else {
+                $statusFilter = $normalizeStatusList($stored);
             }
         }
+
         $departamentoFilter = $this->request->getQuery('departamento');
         $configuraplanejamentoFilter = $this->request->getQuery('configuraplanejamento_id');
-        
+
+        // Determina se o filtro de status deve ser aplicado (isto é, se NÃO
+        // está em modo "todos"). "Todos" = array vazio ou presença do sentinela.
+        $statusIsAll = count($statusFilter) === 0 || in_array($statusAllSentinel, $statusFilter, true);
+
         // Get unique departamentos for dropdown
         $departamentos = $this->Docentes->find()
             ->select(['departamento'])
@@ -62,27 +90,23 @@ class DocentesController extends AppController
             ->where(['departamento IS NOT' => null])
             ->orderBy(['departamento' => 'ASC'])
             ->toArray();
-        
+
         $departamentosList = [];
         foreach ($departamentos as $departamento) {
             $departamentosList[$departamento->departamento] = $departamento->departamento;
         }
 
-        // Get unique status for dropdown
-        $status = $this->Docentes->find()
-            ->select(['status'])
-            ->distinct(['status'])
-            ->where(['status IS NOT' => null])
-            ->orderBy(['status' => 'ASC'])
-            ->toArray();
-        $statusList = [];
-        foreach ($status as $statusItem) {
-            $canonicalStatus = $this->canonicalStatus((string)$statusItem->status);
-            $statusList[$canonicalStatus] = self::STATUS_LABELS[$canonicalStatus] ?? $canonicalStatus;
-        }
-        asort($statusList);
+        // Opções fixas do filtro de status (multi-select). Sempre: ativo,
+        // inativo, aposentado, e a opção "Todos" (sentinela 'all').
+        $statusList = [
+            $statusAllSentinel => __('Todos'),
+            'ativo' => self::STATUS_LABELS['ativo'],
+            'inativo' => self::STATUS_LABELS['inativo'],
+            'aposentado' => self::STATUS_LABELS['aposentado'],
+        ];
 
-        // Get planning configurations that have availability records for dropdown
+        // Get planning configurations (dropdown que seleciona QUAL semestre é
+        // exibido na coluna Disponibilidade — NÃO filtra as linhas da tabela).
         $configuracoes = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
             ->find()
             ->select(['id', 'semestre', 'versao'])
@@ -98,26 +122,31 @@ class DocentesController extends AppController
 
         // Build query
         $query = $this->Docentes->find();
-        
-        // Apply status filter
-        if ($statusFilter) {
-            $query->where(['Docentes.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
+
+        // Apply status filter (apenas se NÃO estiver em "Todos").
+        if (!$statusIsAll) {
+            $statusAliasesExpanded = [];
+            foreach ($statusFilter as $s) {
+                $canonical = $this->canonicalStatus((string)$s);
+                $aliases = self::STATUS_ALIASES[$canonical] ?? [$canonical];
+                foreach ($aliases as $a) { $statusAliasesExpanded[$a] = true; }
+            }
+            if ($statusAliasesExpanded !== []) {
+                $query->where(['Docentes.status IN' => array_keys($statusAliasesExpanded)]);
+            }
         }
-        
+
         // Apply departamento filter
         if ($departamentoFilter) {
             $query->where(['Docentes.departamento' => $departamentoFilter]);
         }
 
-        // Apply availability filter for a planning configuration
-        if ($configuraplanejamentoFilter) {
-            $query->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoFilter) {
-                return $q->where([
-                    'DocenteDisponibilidades.configuraplanejamento_id' => (int)$configuraplanejamentoFilter,
-                    'DocenteDisponibilidades.disponivel' => true,
-                ]);
-            });
-        }
+        // NOTA: NÃO aplicamos mais nenhum matching() / filtro por
+        // disponibilidade baseado em $configuraplanejamentoFilter. O parâmetro
+        // serve apenas para decidir qual semestre é exibido na coluna
+        // "Disponibilidade" e no seu botão toggle. Todas as linhas de
+        // docentes que passam pelos filtros de status/departamento são
+        // exibidas, conforme requisito #1.
 
         $config = [
             'order' => ['nome' => 'ASC'],
@@ -137,7 +166,14 @@ class DocentesController extends AppController
 
         $docentes = $this->paginate($query, $config);
 
-        $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
+        // Monta os rótulos dos status ativos para exibição no badge.
+        $statusFilterLabels = [];
+        if (!$statusIsAll) {
+            foreach ($statusFilter as $s) {
+                $canonical = $this->canonicalStatus((string)$s);
+                $statusFilterLabels[$canonical] = self::STATUS_LABELS[$canonical] ?? $canonical;
+            }
+        }
         $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int)$configuraplanejamentoFilter] ?? null) : null;
 
         // Determine which planning configuration to show in the availability column
@@ -177,7 +213,9 @@ class DocentesController extends AppController
             'departamentosList',
             'statusList',
             'statusFilter',
-            'statusFilterLabel',
+            'statusFilterLabels',
+            'statusIsAll',
+            'statusAllSentinel',
             'departamentoFilter',
             'configuracoesList',
             'configuraplanejamentoFilter',

@@ -119,6 +119,12 @@ class DocenteDisponibilidadesController extends AppController
      * Upsert rápido da disponibilidade de um docente numa configuração.
      * Usado pelo botão de alternar (Sim/Não) no index de Docentes.
      * Respeita o índice único (docente_id, configuraplanejamento_id).
+     *
+     * Para submissões AJAX (header X-Requested-With: XMLHttpRequest ou campo
+     * _ajax=1) retorna uma resposta JSON com o resultado e omite o redirect e
+     * as mensagens Flash (essas serão exibidas inline no cliente). Para
+     * submissões normais via formulário, mantém o comportamento legado de
+     * redirect + Flash (100% retrocompatível).
      */
     public function salvarRapido(): \Cake\Http\Response|null
     {
@@ -132,7 +138,20 @@ class DocenteDisponibilidadesController extends AppController
 
         $fallback = $this->referer(['controller' => 'Docentes', 'action' => 'index']);
 
+        $isAjax = $this->request->is('ajax')
+            || $this->request->getData('_ajax') !== null
+            || mb_strtolower((string)$this->request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
+
         if ($docenteId <= 0 || $configId <= 0) {
+            if ($isAjax) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('application/json')
+                    ->withStringBody((string)json_encode([
+                        'ok' => false,
+                        'message' => __('Dados inválidos para atualizar a disponibilidade.'),
+                    ], JSON_UNESCAPED_UNICODE));
+            }
             $this->Flash->error(__('Dados inválidos para atualizar a disponibilidade.'));
 
             return $this->redirect($fallback);
@@ -156,10 +175,32 @@ class DocenteDisponibilidadesController extends AppController
         // O motivo só faz sentido quando o docente está indisponível.
         $disponibilidade->motivo = $disponivel ? null : ($motivo !== '' ? $motivo : null);
 
-        if ($table->save($disponibilidade)) {
-            $this->Flash->success(__('Disponibilidade atualizada.'));
+        $saved = $table->save($disponibilidade);
+        if ($saved) {
+            $message = __('Disponibilidade atualizada.');
+            if ($isAjax) {
+                return $this->response
+                    ->withType('application/json')
+                    ->withStringBody((string)json_encode([
+                        'ok' => true,
+                        'message' => $message,
+                        'disponivel' => (bool)$disponibilidade->disponivel,
+                        'motivo' => $disponibilidade->motivo,
+                    ], JSON_UNESCAPED_UNICODE));
+            }
+            $this->Flash->success($message);
         } else {
-            $this->Flash->error(__('Não foi possível atualizar a disponibilidade.'));
+            $message = __('Não foi possível atualizar a disponibilidade.');
+            if ($isAjax) {
+                return $this->response
+                    ->withStatus(422)
+                    ->withType('application/json')
+                    ->withStringBody((string)json_encode([
+                        'ok' => false,
+                        'message' => $message,
+                    ], JSON_UNESCAPED_UNICODE));
+            }
+            $this->Flash->error($message);
         }
 
         return $this->redirect($fallback);

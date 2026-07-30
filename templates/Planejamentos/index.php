@@ -18,7 +18,7 @@ declare(strict_types=1);
             <?= $this->Form->create(null, ['type' => 'get', 'class' => 'd-flex align-items-center gap-2']) ?>
             <label class="form-label mb-0"><?= __('Filtrar por Semestre:') ?></label>
             <?= $this->Form->control('semestre', [
-                'options' => ['' => __('Todos os Semestres')] + $semestresList,
+                'options' => ['todos' => __('Todos os Semestres')] + $semestresList,
                 'default' => $selectedSemestre,
                 'label' => false,
                 'onchange' => 'this.form.submit()'
@@ -32,11 +32,11 @@ declare(strict_types=1);
             ]) ?>
             <?= $this->Form->end() ?>
         </div>
-        <?php if ($selectedSemestre || $selectedTurno): ?>
+        <?php if (($selectedSemestre && $selectedSemestre !== 'todos') || $selectedTurno !== ''): ?>
         <div class="col-auto">
             <?= $this->Html->link(
                 '<i class="bi bi-x-circle"></i> ' . __('Limpar Filtro'),
-                ['action' => 'index', '?' => ['semestre' => '', 'turno' => '']],
+                ['action' => 'index', '?' => ['semestre' => 'todos', 'turno' => '']],
                 ['class' => 'btn btn-outline-secondary', 'escape' => false]
             ) ?>
         </div>
