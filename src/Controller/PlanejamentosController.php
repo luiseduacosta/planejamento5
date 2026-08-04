@@ -421,11 +421,12 @@ class PlanejamentosController extends AppController
         $horarios = $this->Planejamentos->Horarios->find('list')->all();
 
         $docentesQuery = $this->Planejamentos->Docentes
-            ->find('list', limit: 200)
+            ->find('list')
             ->where(['Docentes.status IN' => ['ativo', 'active', 'activo']])
             ->orderBy(['Docentes.nome' => 'ASC']);
 
         $docentesFilteredByDisponibilidade = false;
+
         if ($configuraplanejamentoId !== null) {
             $docentesFilteredByDisponibilidade = true;
             $docentesQuery->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoId) {
@@ -437,6 +438,7 @@ class PlanejamentosController extends AppController
         }
 
         $docentes = $docentesQuery->toArray();
+
         if ($currentDocenteId !== null && !isset($docentes[$currentDocenteId])) {
             $currentDocente = $this->Planejamentos->Docentes->find()
                 ->select(['id', 'nome'])

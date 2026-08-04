@@ -150,7 +150,7 @@ declare(strict_types=1);
 
             <!-- Buttons -->
             <div class="col-12 col-lg-3 d-flex gap-2">
-                <?= $this->Form->button('<i class="bi bi-funnel me-1"></i>' . __('Filtrar'), [
+                <?= $this->Form->button(__('Aplicar Filtros'), [
                     'class' => 'btn btn-sm btn-primary flex-grow-1',
                     'escape' => false,
                 ]) ?>
@@ -179,10 +179,10 @@ declare(strict_types=1);
                         <?php endforeach; ?>
                     <?php endif; ?>
                     <?php if ($temDepartamento): ?>
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-building me-1"></i>Dept: <?= h($departamentoFilter) ?></span>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-building me-1"></i>Departamento: <?= h($departamentoFilter) ?></span>
                     <?php endif; ?>
                     <?php if ($temSemestreDisp): ?>
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-calendar-event me-1"></i>Semestre: <?= h($configuracaoFilterLabel ?? '') ?></span>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-calendar-event me-1"></i>Semestre: <?= h($configuraplanejamentoFilter ?? '') ?></span>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -261,8 +261,39 @@ declare(strict_types=1);
                                 <?php elseif ($configuracaoAtual !== null): ?>
                                     <?php
                                         $disp = $disponibilidades[$docente->id] ?? null;
-                                        $isDisponivel = $disp ? (bool)$disp->disponivel : true;
-                                        $motivoAtual = $disp ? (string)$disp->motivo : '';
+                                        $temRegistro = ($disp !== null);
+
+                                        // Três estados:
+                                        //   - $temRegistro && disponivel=true → "Disponível" (verde, explicito)
+                                        //   - $temRegistro && disponivel=false → "Indisponível" (vermelho, explicito)
+                                        //   - !$temRegistro (nenhuma linha na tabela) → "Não definido" (amarelo,
+                                        //     tratado como indisponível). Conforme requisito: a falta de um
+                                        //     registro NÃO quer dizer disponível.
+                                        if ($temRegistro) {
+                                            $isDisponivel = (isset($disp->disponivel) && filter_var($disp->disponivel, FILTER_VALIDATE_BOOLEAN));
+                                            $motivoAtual = isset($disp->motivo) ? (string)$disp->motivo : '';
+                                        } else {
+                                            $isDisponivel = false;
+                                            $motivoAtual = '';
+                                        }
+
+                                        if ($temRegistro && $isDisponivel) {
+                                            $badgeClass = 'bg-success text-white';
+                                            $badgeIcon = 'bi-check-circle-fill';
+                                            $badgeLabel = __('Disponível');
+                                            $badgeTooltip = __('Status definido: docente está disponível neste semestre. Clique para marcar como indisponível.');
+                                        } elseif ($temRegistro) {
+                                            $badgeClass = 'bg-danger text-white';
+                                            $badgeIcon = 'bi-x-circle-fill';
+                                            $badgeLabel = __('Indisponível');
+                                            $badgeTooltip = __('Status definido: docente está indisponível neste semestre. Clique para marcar como disponível.');
+                                        } else {
+                                            // Nenhum registro → amarelo (warning), label "Não definido"
+                                            $badgeClass = 'bg-warning text-dark border border-warning-subtle';
+                                            $badgeIcon = 'bi-question-circle-fill';
+                                            $badgeLabel = __('Não definido');
+                                            $badgeTooltip = __('Nenhuma disponibilidade definida para este semestre. Tratado como indisponível até que seja configurado.');
+                                        }
                                     ?>
                                     <div class="disp-wrapper" data-docente-id="<?= $docente->id ?>" data-docente-nome="<?= h($docente->nome) ?>">
                                         <?= $this->Form->create(null, [
@@ -284,32 +315,41 @@ declare(strict_types=1);
                                                         id="disp-switch-<?= $docente->id ?>"
                                                         <?= $isDisponivel ? 'checked="checked"' : '' ?>
                                                         aria-label="<?= h(__('Alternar disponibilidade do docente')) ?>"
+                                                        title="<?= h($badgeTooltip) ?>"
+                                                        data-bs-toggle="tooltip"
                                                     >
                                                 </div>
-
                                                 <!-- Status Badge Indicator -->
-                                                <span class="disp-badge badge <?= $isDisponivel ? 'bg-success text-white' : 'bg-danger text-white' ?> px-2 py-1 rounded-pill shadow-xs transition-all">
-                                                    <span class="disp-badge-icon me-1"><i class="bi <?= $isDisponivel ? 'bi-check-circle-fill' : 'bi-x-circle-fill' ?>"></i></span>
-                                                    <span class="disp-badge-text"><?= $isDisponivel ? __('Disponível') : __('Indisponível') ?></span>
+                                                <span
+                                                    class="disp-badge badge <?= $badgeClass ?> px-2 py-1 rounded-pill shadow-xs transition-all"
+                                                    data-bs-toggle="tooltip"
+                                                    title="<?= h($badgeTooltip) ?>"
+                                                    data-role="<?= $temRegistro ? ($isDisponivel ? 'available' : 'unavailable') : 'undefined' ?>"
+                                                >
+                                                    <span class="disp-badge-icon me-1"><i class="bi <?= $badgeIcon ?>"></i></span>
+                                                    <span class="disp-badge-text"><?= h($badgeLabel) ?></span>
                                                 </span>
 
-                                                <?php if ($disp === null): ?>
-                                                    <span class="badge bg-light text-secondary border border-secondary-subtle small ms-1" data-bs-toggle="tooltip" title="<?= h(__('Sem registro explícito; assume padrão disponível')) ?>"><?= __('padrão') ?></span>
-                                                <?php endif; ?>
-                                                
                                                 <span class="disp-spinner spinner-border spinner-border-sm text-primary d-none ms-1" role="status" aria-hidden="true"></span>
                                             </div>
 
-                                            <!-- Motivo text (for Indisponível status) -->
+                                            <!-- Motivo text (for Indisponível / undefined status) -->
                                             <div class="disp-motivo-display small mt-1 <?= $isDisponivel ? 'd-none' : '' ?>">
-                                                <?php if (!empty($motivoAtual)): ?>
+                                                <?php if (!$temRegistro): ?>
+                                                    <span class="text-warning-emphasis fw-medium">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        <?= __('Nenhuma definição registrada — clique no botão para configurar este docente.') ?>
+                                                    </span>
+                                                <?php elseif (!empty($motivoAtual)): ?>
                                                     <span class="text-danger fw-medium"><i class="bi bi-info-circle me-1"></i><?= h($motivoAtual) ?></span>
                                                 <?php else: ?>
                                                     <span class="text-muted fst-italic"><?= __('Sem motivo registrado') ?></span>
                                                 <?php endif; ?>
-                                                <button type="button" class="btn btn-link p-0 ms-1 text-decoration-none btn-edit-motivo text-secondary small" title="<?= h(__('Editar motivo da indisponibilidade')) ?>">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
+                                                <?php if (!$isDisponivel): ?>
+                                                    <button type="button" class="btn btn-link p-0 ms-1 text-decoration-none btn-edit-motivo text-secondary small" title="<?= h(__('Editar motivo da indisponibilidade')) ?>">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             </div>
                                         <?= $this->Form->end() ?>
                                     </div>

@@ -27,6 +27,12 @@ class DocenteDisponibilidadesTable extends Table
             'foreignKey' => 'configuraplanejamento_id',
             'joinType' => 'INNER',
         ]);
+
+        // Garante que a coluna TINYINT do MySQL seja sempre hidratada como
+        // boolean do PHP (em vez de string "0"/"1" ou int 0/1). Sem isso,
+        // (bool)"0" = true, pois string não-vazia → true, e displays como
+        // "Disponível" mesmo quando o registro diz indisponível.
+        $this->getSchema()->setColumnType('disponivel', 'boolean');
     }
 
     public function validationDefault(Validator $validator): Validator

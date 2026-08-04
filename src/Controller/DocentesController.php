@@ -200,20 +200,29 @@ class DocentesController extends AppController
         if ($configuracaoAtual !== null) {
             $docenteIds = [];
             foreach ($docentes as $docente) {
-                $docenteIds[] = $docente->id;
+                $id = (int)$docente->id;
+                if ($id > 0) { $docenteIds[] = $id; }
             }
 
             if (!empty($docenteIds)) {
                 $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
                     ->find()
                     ->where([
-                        'configuraplanejamento_id' => $configuracaoAtual->id,
+                        'configuraplanejamento_id' => (int)$configuracaoAtual->id,
                         'docente_id IN' => $docenteIds,
                     ])
                     ->all();
 
                 foreach ($disponibilidadesRows as $disponibilidade) {
-                    $disponibilidades[$disponibilidade->docente_id] = $disponibilidade;
+                    // Garante que $disponivel é estritamente true/false
+                    // (defesa adicional contra TINYINT retornado como string "0").
+                    if (isset($disponibilidade->disponivel) && !is_bool($disponibilidade->disponivel)) {
+                        $disponibilidade->disponivel = (bool)$disponibilidade->disponivel;
+                    }
+                    $docenteId = (int)$disponibilidade->docente_id;
+                    if ($docenteId > 0) {
+                        $disponibilidades[$docenteId] = $disponibilidade;
+                    }
                 }
             }
         }

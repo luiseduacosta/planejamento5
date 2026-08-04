@@ -101,11 +101,40 @@ declare(strict_types=1);
         <div class="card-body">
             <?php if ($configuracaoAtiva !== null): ?>
                 <?php
-                    $isDisponivel = $disponibilidadeAtiva ? (bool)$disponibilidadeAtiva->disponivel : true;
-                    $motivoAtual = $disponibilidadeAtiva ? (string)$disponibilidadeAtiva->motivo : '';
+                    $temRegistroAtivo = ($disponibilidadeAtiva !== null);
+                    if ($temRegistroAtivo) {
+                        $isDisponivel = (isset($disponibilidadeAtiva->disponivel) && filter_var($disponibilidadeAtiva->disponivel, FILTER_VALIDATE_BOOLEAN));
+                        $motivoAtual = isset($disponibilidadeAtiva->motivo) ? (string)$disponibilidadeAtiva->motivo : '';
+                    } else {
+                        $isDisponivel = false;
+                        $motivoAtual = '';
+                    }
+
+                    if ($temRegistroAtivo && $isDisponivel) {
+                        $badgeClass = 'bg-success text-white';
+                        $badgeIcon = 'bi-check-circle-fill';
+                        $badgeLabel = __('Disponível');
+                    } elseif ($temRegistroAtivo) {
+                        $badgeClass = 'bg-danger text-white';
+                        $badgeIcon = 'bi-x-circle-fill';
+                        $badgeLabel = __('Indisponível');
+                    } else {
+                        $badgeClass = 'bg-warning text-dark border border-warning-subtle';
+                        $badgeIcon = 'bi-question-circle-fill';
+                        $badgeLabel = __('Não definido');
+                    }
                 ?>
                 <div class="alert alert-light border d-flex flex-wrap align-items-center gap-3 mb-3">
                     <strong><?= __('Semestre ativo:') ?> <?= h($configuracaoAtiva->semestre) ?></strong>
+                    <span class="badge <?= $badgeClass ?> px-2 py-1 rounded-pill">
+                        <i class="bi <?= $badgeIcon ?> me-1"></i><?= h($badgeLabel) ?>
+                    </span>
+                    <?php if (!$temRegistroAtivo): ?>
+                        <small class="text-warning-emphasis">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            <?= __('Nenhuma definição para o semestre ativo — tratado como indisponível.') ?>
+                        </small>
+                    <?php endif; ?>
                     <?= $this->Form->create(null, [
                         'url' => ['controller' => 'DocenteDisponibilidades', 'action' => 'salvarRapido'],
                         'class' => 'disp-form d-flex align-items-center gap-2 mb-0',
@@ -126,7 +155,7 @@ declare(strict_types=1);
                         <div class="disp-motivo" style="<?= $isDisponivel ? 'display:none;' : '' ?>">
                             <?= $this->Form->text('motivo', [
                                 'value' => $motivoAtual,
-                                'placeholder' => __('Motivo'),
+                                'placeholder' => $temRegistroAtivo ? __('Motivo') : __('Opcional: motivo da indisponibilidade'),
                                 'maxlength' => 100,
                                 'class' => 'form-control form-control-sm',
                             ]) ?>
