@@ -434,7 +434,7 @@ class PlanejamentosController extends AppController
                     'DocenteDisponibilidades.configuraplanejamento_id' => $configuraplanejamentoId,
                     'DocenteDisponibilidades.disponivel' => true,
                 ]);
-            });
+            });  
         }
 
         $docentes = $docentesQuery->toArray();

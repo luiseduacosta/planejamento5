@@ -18,6 +18,7 @@ declare(strict_types=1);
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
 use Cake\TestSuite\ConnectionHelper;
+use Cake\TestSuite\Fixture\SchemaLoader;
 use Migrations\TestSuite\Migrator;
 
 /**
@@ -58,3 +59,12 @@ ConnectionHelper::addTestAliases();
 // (new SchemaLoader())->loadSqlFiles('./tests/schema.sql', 'test');
 
 (new Migrator())->run();
+
+// Tabelas sem migration (turmaotps, configuraplanejamentos, docentes) são
+// criadas de forma aditiva (sem dropar/truncar nada) para os fixtures.
+(new SchemaLoader())->loadSqlFiles(
+    dirname(__DIR__) . '/tests/schema.sql',
+    'test',
+    dropTables: false,
+    truncateTables: false,
+);

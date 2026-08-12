@@ -79,41 +79,25 @@ CREATE TABLE IF NOT EXISTS `disciplinas` (
 CREATE TABLE IF NOT EXISTS `docentes` (
   `id` int(3) NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
-  `cpf` char(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `cpf` char(14) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `siape` mediumint(10) DEFAULT NULL,
-  `datanascimento` date DEFAULT NULL,
-  `localnascimento` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `sexo` enum('2','1') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT '2',
-  `ddd_telefone` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
-  `telefone` varchar(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `ddd_celular` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
-  `celular` varchar(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `cress` int(10) DEFAULT NULL,
+  `region` int(3) DEFAULT NULL,
+  `codigo_telefone` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
+  `telefone` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `codigo_celular` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
+  `celular` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `email` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `homepage` varchar(120) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `redesocial` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `curriculolattes` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `atualizacaolattes` date DEFAULT NULL,
-  `curriculosigma` varchar(7) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `pesquisadordgp` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `formacaoprofissional` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `universidadedegraduacao` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `anoformacao` mediumint(4) DEFAULT NULL,
-  `mestradoarea` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `mestradouniversidade` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `mestradoanoconclusao` mediumint(4) DEFAULT NULL,
-  `doutoradoarea` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `doutoradouniversidade` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `doutoradoanoconclusao` mediumint(4) DEFAULT NULL,
   `dataingresso` date DEFAULT NULL,
-  `formaingresso` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `tipocargo` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `categoria` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `regimetrabalho` varchar(5) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `departamento` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `dataegresso` date DEFAULT NULL,
   `motivoegresso` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `observacoes` text CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL,
+  `estagiarios_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -237,6 +221,27 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 COMMIT;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `turmaotps`
+--
+
+CREATE TABLE IF NOT EXISTS `turmaotps` (
+  `id` int(11) NOT NULL,
+  `configuraplanejamento_id` int(11) NOT NULL,
+  `turno` varchar(10) DEFAULT NULL,
+  `periodo` tinyint(4) DEFAULT NULL,
+  `turmaotp` varchar(5) NOT NULL,
+  `docente_id` int(11) DEFAULT NULL,
+  `dia_id` int(11) DEFAULT NULL,
+  `horario_id` int(11) DEFAULT NULL,
+  `sala_id` int(11) DEFAULT NULL,
+  `observacoes` varchar(255) DEFAULT NULL,
+  `created` datetime DEFAULT current_timestamp(),
+  `modified` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
