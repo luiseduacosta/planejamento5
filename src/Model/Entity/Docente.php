@@ -22,8 +22,8 @@ use Cake\ORM\Entity;
  * @property string |null $departamento
  * @property \Cake\I18n\Date|null $dataegresso
  * @property string |null $motivoegresso
+ * @property string |null $status * 
  * @property string |null $observacoes
- * @property string |null $status
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
  */
@@ -48,8 +48,8 @@ class Docente extends Entity
         'departamento' => true,
         'dataegresso' => true,
         'motivoegresso' => true,
-        'observacoes' => true,
         'status' => true,
+        'observacoes' => true,
         'created' => true,
         'modified' => true,
     ];

@@ -101,12 +101,12 @@ class DocentesTable extends Table
             ->allowEmptyString('motivoegresso');
 
         $validator
-            ->scalar('observacoes')
-            ->allowEmptyString('observacoes');
-
-        $validator
             ->scalar('status')
             ->allowEmptyString('status');
+    
+        $validator
+            ->scalar('observacoes')
+            ->allowEmptyString('observacoes');
 
         return $validator;
     }
