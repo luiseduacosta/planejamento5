@@ -43,7 +43,10 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "platform-check": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.2.12"
+        }
     },
     "scripts": {
         "post-install-cmd": "App\\Console\\Installer::postInstall",

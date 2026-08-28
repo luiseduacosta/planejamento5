@@ -86,7 +86,8 @@ class DocentesController extends AppController
         
         // Apply status filter
         if ($statusFilter) {
-            $query->where(['Docentes.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
+            $canonical = $this->canonicalStatus((string)$statusFilter);
+            $query->where(['Docentes.status IN' => self::STATUS_ALIASES[$canonical] ?? [$canonical]]);
         }
         
         // Apply departamento filter
@@ -113,8 +114,6 @@ class DocentesController extends AppController
                 'siape',
                 'departamento',
                 'tipocargo',
-                'periodo_diurno',
-                'periodo_noturno',
                 'status',
                 'email',
             ],
@@ -213,7 +212,9 @@ class DocentesController extends AppController
     public function edit($id = null): \Cake\Http\Response|null
     {
         $docente = $this->Docentes->get($id, contain: []);
-        $docente->status = $this->canonicalStatus((string)$docente->status);
+        if (is_string($docente->status) && $docente->status !== '') {
+            $docente->status = $this->canonicalStatus($docente->status);
+        }
         $this->Authorization->authorize($docente, 'edit');
         
         if ($this->request->is(['patch', 'post', 'put'])) {

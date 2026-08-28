@@ -121,7 +121,7 @@ declare(strict_types=1);
                     <td><?= h($docente->siape) ?></td>
                     <td><?= h($docente->departamento) ?></td>
                     <td><?= h($docente->tipocargo ?? '-') ?></td>
-                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
+                    <td><?= $docente->status !== null ? h($statusLabels[$docente->status] ?? $docente->status) : '-' ?></td>
                     <td>
                         <?php if (isset($disponibilidades[$docente->id])): ?>
                             <?php if ($disponibilidades[$docente->id]->disponivel): ?>

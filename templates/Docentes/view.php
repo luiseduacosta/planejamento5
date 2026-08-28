@@ -79,7 +79,7 @@ declare(strict_types=1);
                 </tr>
                 <tr>
                     <th><?= __('Status') ?></th>
-                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
+                    <td><?= $docente->status !== null ? h($statusLabels[$docente->status] ?? $docente->status) : '-' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Observações') ?></th>
