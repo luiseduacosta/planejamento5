@@ -40,11 +40,11 @@ class TurmaotpsTableTest extends TestCase
         $this->assertNotEmpty($entity->getErrors()['turmaotp'] ?? []);
     }
 
-    public function testValidationTurmaotpMaxLengthFive(): void
+    public function testValidationTurmaotpMaxLengthTwenty(): void
     {
         $entity = $this->Turmaotps->newEntity([
             'configuraplanejamento_id' => 1,
-            'turmaotp' => 'ABCDEF',
+            'turmaotp' => str_repeat('A', 21),
         ]);
         $this->assertNotEmpty($entity->getErrors()['turmaotp'] ?? []);
     }

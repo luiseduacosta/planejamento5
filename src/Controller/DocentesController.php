@@ -157,8 +157,6 @@ class DocentesController extends AppController
                 'siape',
                 'departamento',
                 'tipocargo',
-                'periodo_diurno',
-                'periodo_noturno',
                 'status',
                 'email',
             ],

@@ -54,34 +54,42 @@ class DocentesTable extends Table
 
         $validator
             ->scalar('cpf')
+            ->maxLength('cpf', 14)
             ->allowEmptyString('cpf');
 
         $validator
             ->scalar('siape')
+            ->maxLength('siape', 20)
             ->allowEmptyString('siape');
 
         $validator
             ->scalar('cress')
+            ->maxLength('cress', 10)
             ->allowEmptyString('cress');
 
         $validator
             ->scalar('regiao')
+            ->maxLength('regiao', 2)
             ->allowEmptyString('regiao');
 
         $validator
             ->scalar('telefone')
+            ->maxLength('telefone', 20)
             ->allowEmptyString('telefone');
 
         $validator
             ->scalar('celular')
+            ->maxLength('celular', 20)
             ->allowEmptyString('celular');
 
         $validator
             ->scalar('departamento')
+            ->maxLength('departamento', 30)
             ->allowEmptyString('departamento');
 
         $validator
             ->email('email', false)
+            ->maxLength('email', 255)
             ->allowEmptyString('email');
 
         $validator
@@ -90,20 +98,23 @@ class DocentesTable extends Table
 
         $validator
             ->scalar('tipocargo')
+            ->maxLength('tipocargo', 20)
             ->allowEmptyString('tipocargo');
-            
+
         $validator
             ->date('dataegresso')
             ->allowEmptyDate('dataegresso');
 
         $validator
             ->scalar('motivoegresso')
+            ->maxLength('motivoegresso', 100)
             ->allowEmptyString('motivoegresso');
 
         $validator
             ->scalar('status')
+            ->maxLength('status', 10)
             ->allowEmptyString('status');
-    
+
         $validator
             ->scalar('observacoes')
             ->allowEmptyString('observacoes');
@@ -120,6 +131,9 @@ class DocentesTable extends Table
             return;
         }
 
+        // Normaliza caixa/espaços antes de procurar na tabela de alias para
+        // ficar consistente com DocentesController::canonicalStatus().
+        $status = mb_strtolower(trim($status));
         $data['status'] = self::STATUS_NORMALIZATION_MAP[$status] ?? $status;
     }
 }

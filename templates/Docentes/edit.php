@@ -40,7 +40,7 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
                 ]);
             ?>
         </fieldset>
-        <?= $this->Form->button(__('Salvar')) ?>
+        <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-primary']) ?>
         <?= $this->Html->link(__('Cancelar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
         <?= $this->Form->end() ?>
     </div>

@@ -22,7 +22,7 @@ use Cake\ORM\Entity;
  * @property string |null $departamento
  * @property \Cake\I18n\Date|null $dataegresso
  * @property string |null $motivoegresso
- * @property string |null $status * 
+ * @property string |null $status
  * @property string |null $observacoes
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified

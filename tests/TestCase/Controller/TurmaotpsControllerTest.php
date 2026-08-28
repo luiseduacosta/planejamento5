@@ -30,11 +30,28 @@ class TurmaotpsControllerTest extends TestCase
         ]);
     }
 
+    /**
+     * O harness de integração não persiste automaticamente, entre uma
+     * requisição e a próxima, o que a aplicação escreveu na sessão: cada
+     * requisição nova reinicia a sessão apenas com os dados definidos via
+     * session(). Este helper copia o estado da sessão ao final da última
+     * requisição (preservado em $_SESSION pelo Server ao fechar a sessão)
+     * para a próxima requisição, simulando o mesmo usuário na mesma sessão
+     * do navegador.
+     */
+    private function carrySessionFromLastRequest(): void
+    {
+        $data = $_SESSION ?? [];
+        if ($data !== []) {
+            $this->session($data);
+        }
+    }
+
     public function testIndexIsAccessibleWithoutAuthentication(): void
     {
         $this->get('/turmaotps');
         $this->assertResponseOk();
-        $this->assertResponseContains('Turmas de Optativas');
+        $this->assertResponseContains('Turmas de OTP');
         $this->assertResponseContains('Segunda-feira');
         $this->assertResponseContains('Maria Silva');
     }
@@ -43,7 +60,7 @@ class TurmaotpsControllerTest extends TestCase
     {
         $this->get('/turmaotps/view/1');
         $this->assertResponseOk();
-        $this->assertResponseContains('Turma de Optativa');
+        $this->assertResponseContains('Turma de OTP');
         $this->assertResponseContains('08:00-10:00');
     }
 
@@ -145,6 +162,7 @@ class TurmaotpsControllerTest extends TestCase
     {
         // Escolha explícita congela a configuração na sessão...
         $this->get('/turmaotps?configuraplanejamento_id=2');
+        $this->carrySessionFromLastRequest();
         // ...e o próximo acesso sem parâmetro continua usando a mesma.
         $this->get('/turmaotps');
         $this->assertResponseOk();
@@ -170,6 +188,7 @@ class TurmaotpsControllerTest extends TestCase
         $this->assertResponseContains('value="2" selected');
 
         // A escolha feita no add congela a configuração para a sessão toda.
+        $this->carrySessionFromLastRequest();
         $this->get('/turmaotps');
         $this->assertResponseOk();
         $this->assertResponseContains('BB');

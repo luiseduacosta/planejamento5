@@ -40,6 +40,7 @@ class TurmaotpsTable extends Table
     {
         $validator
             ->integer('configuraplanejamento_id')
+            ->requirePresence('configuraplanejamento_id', 'create')
             ->notEmptyString('configuraplanejamento_id');
 
         $validator
