@@ -7,16 +7,16 @@ declare(strict_types=1);
     </div>
     <h3><?= h($professor->nome) ?></h3>
     <?php
-        $statusLabels = [
-            'ativo' => __('Ativo'),
-            'active' => __('Ativo'),
-            'activo' => __('Ativo'),
-            'aposentado' => __('Aposentado'),
-            'retired' => __('Aposentado'),
-            'inativo' => __('Inativo'),
-            'inactive' => __('Inativo'),
-            'inactivo' => __('Inativo'),
-        ];
+    $statusLabels = [
+        'ativo' => __('Ativo'),
+        'active' => __('Ativo'),
+        'activo' => __('Ativo'),
+        'aposentado' => __('Aposentado'),
+        'retired' => __('Aposentado'),
+        'inativo' => __('Inativo'),
+        'inactive' => __('Inativo'),
+        'inactivo' => __('Inativo'),
+    ];
     ?>
     <div class="row">
         <div class="col">
@@ -118,8 +118,10 @@ declare(strict_types=1);
                         <?php if (!empty($professor->docente_disponibilidades)): ?>
                             <?php foreach ($professor->docente_disponibilidades as $disp): ?>
                                 <tr>
-                                    <td><?= $disp->hasValue('configuraplanejamento') ? h($disp->configuraplanejamento->semestre) : '-' ?></td>
-                                    <td><?= $disp->disponivel ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>' ?></td>
+                                    <td><?= $disp->hasValue('configuraplanejamento') ? h($disp->configuraplanejamento->semestre) : '-' ?>
+                                    </td>
+                                    <td><?= $disp->disponivel ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>' ?>
+                                    </td>
                                     <td><?= h($disp->motivo) ?></td>
                                     <td><?= $disp->observacoes !== null ? nl2br(h($disp->observacoes)) : '-' ?></td>
                                     <td class="text-nowrap">

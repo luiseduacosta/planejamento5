@@ -34,12 +34,12 @@ class ProfessoresController extends AppController
     public function index(): void
     {
         $this->Authorization->skipAuthorization();
-        
+
         // Get filter parameters from query string
         $statusFilter = $this->request->getQuery('status');
         $departamentoFilter = $this->request->getQuery('departamento');
         $configuraplanejamentoFilter = $this->request->getQuery('configuraplanejamento_id');
-        
+
         // Get unique departamentos for dropdown
         $departamentos = $this->Professores->find()
             ->select(['departamento'])
@@ -47,7 +47,7 @@ class ProfessoresController extends AppController
             ->where(['departamento IS NOT' => null])
             ->orderBy(['departamento' => 'ASC'])
             ->toArray();
-        
+
         $departamentosList = [];
         foreach ($departamentos as $departamento) {
             $departamentosList[$departamento->departamento] = $departamento->departamento;
@@ -62,7 +62,7 @@ class ProfessoresController extends AppController
             ->toArray();
         $statusList = [];
         foreach ($status as $statusItem) {
-            $canonicalStatus = $this->canonicalStatus((string)$statusItem->status);
+            $canonicalStatus = $this->canonicalStatus((string) $statusItem->status);
             $statusList[$canonicalStatus] = self::STATUS_LABELS[$canonicalStatus] ?? $canonicalStatus;
         }
         asort($statusList);
@@ -83,12 +83,12 @@ class ProfessoresController extends AppController
 
         // Build query
         $query = $this->Professores->find();
-        
+
         // Apply status filter
         if ($statusFilter) {
             $query->where(['Professores.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
         }
-        
+
         // Apply departamento filter
         if ($departamentoFilter) {
             $query->where(['Professores.departamento' => $departamentoFilter]);
@@ -98,7 +98,7 @@ class ProfessoresController extends AppController
         if ($configuraplanejamentoFilter) {
             $query->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoFilter) {
                 return $q->where([
-                    'DocenteDisponibilidades.configuraplanejamento_id' => (int)$configuraplanejamentoFilter,
+                    'DocenteDisponibilidades.configuraplanejamento_id' => (int) $configuraplanejamentoFilter,
                     'DocenteDisponibilidades.disponivel' => true,
                 ]);
             });
@@ -122,7 +122,7 @@ class ProfessoresController extends AppController
         $professores = $this->paginate($query, $config);
 
         $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
-        $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int)$configuraplanejamentoFilter] ?? null) : null;
+        $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int) $configuraplanejamentoFilter] ?? null) : null;
 
         // Determine which planning configuration to show in the availability column
         $configuracaoAtiva = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
@@ -135,7 +135,7 @@ class ProfessoresController extends AppController
         if ($configuraplanejamentoFilter) {
             $configuracaoAtual = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
                 ->find()
-                ->where(['id' => (int)$configuraplanejamentoFilter])
+                ->where(['id' => (int) $configuraplanejamentoFilter])
                 ->first();
         } else {
             $configuracaoAtual = $configuracaoAtiva;
@@ -184,7 +184,7 @@ class ProfessoresController extends AppController
         $professor = $this->Professores->newEmptyEntity();
         $professor->status = 'ativo';
         $this->Authorization->authorize($professor, 'add');
-        
+
         if ($this->request->is('post')) {
             $professor = $this->Professores->patchEntity($professor, $this->request->getData());
             if ($this->Professores->save($professor)) {
@@ -212,9 +212,9 @@ class ProfessoresController extends AppController
     public function edit($id = null): \Cake\Http\Response|null
     {
         $professor = $this->Professores->get($id, contain: []);
-        $professor->status = $this->canonicalStatus((string)$professor->status);
+        $professor->status = $this->canonicalStatus((string) $professor->status);
         $this->Authorization->authorize($professor, 'edit');
-        
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $professor = $this->Professores->patchEntity($professor, $this->request->getData());
             if ($this->Professores->save($professor)) {
@@ -233,7 +233,7 @@ class ProfessoresController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $professor = $this->Professores->get($id);
         $this->Authorization->authorize($professor, 'delete');
-        
+
         if ($this->Professores->delete($professor)) {
             $this->Flash->success(__('O professor foi excluído com sucesso.'));
         } else {
