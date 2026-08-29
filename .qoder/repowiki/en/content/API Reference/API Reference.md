@@ -6,7 +6,8 @@
 - [AppController.php](file://src/Controller/AppController.php)
 - [UsersController.php](file://src/Controller/UsersController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [SalasController.php](file://src/Controller/SalasController.php)
 - [DisciplinasController.php](file://src/Controller/DisciplinasController.php)
 - [HorariosController.php](file://src/Controller/HorariosController.php)
@@ -218,10 +219,10 @@ Notes:
 **Section sources**
 - [PlanejamentosController.php:11-256](file://src/Controller/PlanejamentosController.php#L11-L256)
 
-### Faculty Administration (Docentes)
-Base path: /docentes
+### Faculty Administration (Professores)
+Base path: /professores
 
-- GET /docentes
+- GET /professores
   - Purpose: List faculty with filters and availability context.
   - Query parameters:
     - status: string (optional) — normalized aliases supported (e.g., ativo/active/activo).
@@ -229,32 +230,32 @@ Base path: /docentes
     - configuraplanejamento_id: integer (optional) — show only available faculty for this configuration.
   - Response: 200 HTML index view with lists and availability mapping.
 
-- GET /docentes/{id}
+- GET /professores/{id}
   - Purpose: View faculty details.
   - Response: 200 HTML view.
 
-- GET /docentes/add
+- GET /professores/add
   - Purpose: Add faculty form.
   - Response: 200 HTML form.
 
-- POST /docentes
+- POST /professores
   - Purpose: Create faculty.
   - Body fields include nome, cpf, siape, departamento, tipocargo, periodo_diurno, periodo_noturno, status, email, etc.
   - Response:
     - Success: 302 redirect to view/{id}.
     - Failure: 200 with errors.
 
-- GET /docentes/edit/{id}
+- GET /professores/edit/{id}
   - Purpose: Edit faculty form.
   - Response: 200 HTML form.
 
-- PATCH|POST|PUT /docentes/{id}
+- PATCH|POST|PUT /professores/{id}
   - Purpose: Update faculty.
   - Response:
     - Success: 302 redirect to view/{id}.
     - Failure: 200 with errors.
 
-- DELETE|POST /docentes/{id}
+- DELETE|POST /professores/{id}
   - Purpose: Delete faculty.
   - Response:
     - Success: 302 redirect to index.
@@ -265,7 +266,7 @@ Notes:
 - Status normalization supports multiple language variants.
 
 **Section sources**
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
 
 ### Classroom Management (Salas)
 Base path: /salas

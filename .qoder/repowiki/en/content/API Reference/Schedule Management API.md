@@ -6,7 +6,7 @@
 - [PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [Planejamento.php](file://src/Model/Entity/Planejamento.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DisciplinasTable.php](file://src/Model/Table/DisciplinasTable.php)
 - [PlanejamentoPolicy.php](file://src/Policy/PlanejamentoPolicy.php)
 - [routes.php](file://config/routes.php)
@@ -39,7 +39,7 @@ Ctrl --> Authz["Authorization Middleware"]
 Ctrl --> ORM["ORM Tables"]
 ORM --> T_P["PlanejamentosTable"]
 ORM --> T_C["ConfiguraplanejamentosTable"]
-ORM --> T_Doc["DocentesTable"]
+ORM --> T_Doc["ProfessoresTable"]
 ORM --> T_Dis["DisciplinasTable"]
 T_P --> DB["Database: planejamentos"]
 T_C --> DB
@@ -52,7 +52,7 @@ T_Dis --> DB
 - [PlanejamentosController.php:1-256](file://src/Controller/PlanejamentosController.php#L1-L256)
 - [PlanejamentosTable.php:1-57](file://src/Model/Table/PlanejamentosTable.php#L1-L57)
 - [ConfiguraplanejamentosTable.php:1-62](file://src/Model/Table/ConfiguraplanejamentosTable.php#L1-L62)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [DisciplinasTable.php:1-85](file://src/Model/Table/DisciplinasTable.php#L1-L85)
 
 **Section sources**
@@ -64,7 +64,7 @@ T_Dis --> DB
 - Model: PlanejamentosTable defines relationships and validation rules.
 - Entity: Planejamento defines accessible fields.
 - Policy: PlanejamentoPolicy enforces authorization rules per action.
-- Related Models: ConfiguraplanejamentosTable (semesters), DocentesTable (faculty), DisciplinasTable (courses).
+- Related Models: ConfiguraplanejamentosTable (semesters), ProfessoresTable (faculty), DisciplinasTable (courses).
 
 Key responsibilities:
 - Filtering schedules by semester via query parameter.
@@ -119,7 +119,7 @@ Ctrl-->>C : JSON response
 - Query Parameters:
   - semestre: Filter schedules by semester string from Configuraplanejamentos.semestre
 - Response:
-  - Paginated list of schedules with related entities (Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios)
+  - Paginated list of schedules with related entities (Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios)
   - Additional context: semestresList (unique semesters), selectedSemestre
 - Validation: None on input; server filters by provided semester if present
 - Business Logic:
@@ -178,7 +178,7 @@ Notes:
 - Path Parameter:
   - id: Integer primary key of the schedule
 - Response:
-  - Single schedule object with related entities (Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios)
+  - Single schedule object with related entities (Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios)
 - Error Responses:
   - 404 Not Found if the schedule does not exist
 
@@ -387,7 +387,7 @@ class ConfiguraplanejamentosTable {
 +initialize(config)
 +validationDefault(validator)
 }
-class DocentesTable {
+class ProfessoresTable {
 +initialize(config)
 +validationDefault(validator)
 }
@@ -404,7 +404,7 @@ class PlanejamentoPolicy {
 }
 PlanejamentosController --> PlanejamentosTable : "uses"
 PlanejamentosController --> ConfiguraplanejamentosTable : "uses"
-PlanejamentosController --> DocentesTable : "uses"
+PlanejamentosController --> ProfessoresTable : "uses"
 PlanejamentosController --> DisciplinasTable : "uses"
 PlanejamentosController --> PlanejamentoPolicy : "authorizes"
 ```
@@ -413,7 +413,7 @@ PlanejamentosController --> PlanejamentoPolicy : "authorizes"
 - [PlanejamentosController.php:1-256](file://src/Controller/PlanejamentosController.php#L1-L256)
 - [PlanejamentosTable.php:1-57](file://src/Model/Table/PlanejamentosTable.php#L1-L57)
 - [ConfiguraplanejamentosTable.php:1-62](file://src/Model/Table/ConfiguraplanejamentosTable.php#L1-L62)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [DisciplinasTable.php:1-85](file://src/Model/Table/DisciplinasTable.php#L1-L85)
 - [PlanejamentoPolicy.php:1-46](file://src/Policy/PlanejamentoPolicy.php#L1-L46)
 
@@ -424,7 +424,7 @@ PlanejamentosController --> PlanejamentoPolicy : "authorizes"
 ## Performance Considerations
 - Use pagination for large datasets (already applied in index and listar).
 - Minimize N+1 queries by leveraging contains in queries (implemented in index and view).
-- Cache frequently accessed reference data (semestresList, disciplines, docentes) if needed.
+- Cache frequently accessed reference data (semestresList, disciplines, professores) if needed.
 - Avoid unnecessary deep contains for read-only endpoints unless required by clients.
 
 [No sources needed since this section provides general guidance]

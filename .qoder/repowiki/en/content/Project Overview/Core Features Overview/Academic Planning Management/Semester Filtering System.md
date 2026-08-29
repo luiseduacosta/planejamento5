@@ -129,12 +129,12 @@ Example URL parameters:
 - Combined with sort/pagination: /planejamentos?semestre=2024.1&page=2&sort=Disciplinas.disciplina&direction=asc
 
 Query construction overview:
-- Base query: find() with contains([Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios]).
+- Base query: find() with contains([Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios]).
 - Optional filter: matching('Configuraplanejamentos', function($q){ return $q->where(['Configuraplanejamentos.semestre' => $selectedSemestre]); }).
 - Pagination: paginate($query, ['sortableFields' => [...]]).
 
 Sorting configuration:
-- Fields include IDs and display names from Disciplinas, Docentes, Configuraplanejamentos, Dias, Horarios, and Salas.
+- Fields include IDs and display names from Disciplinas, Professores, Configuraplanejamentos, Dias, Horarios, and Salas.
 
 Pagination integration:
 - The Paginator helper in the template renders first/prev/numbers/next/last links and a counter.
@@ -160,7 +160,7 @@ Relevance to filtering:
 
 ### Model: PlanejamentosTable
 Purpose:
-- Maps the planejamentos table and defines belongsTo relationships to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, and Horarios.
+- Maps the planejamentos table and defines belongsTo relationships to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, and Horarios.
 - Validates required and optional fields for persistence.
 
 Relevance to filtering:

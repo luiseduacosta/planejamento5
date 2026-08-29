@@ -32,11 +32,11 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-planejamento5 is a university course scheduling and resource allocation management system built on CakePHP 5.3 using the MVC pattern. It enables academic administrators to create and manage academic schedules (planejamentos), assign docentes (faculty members), allocate salas (classrooms), and coordinate time slots across dias (days) and horarios (time periods). The system supports multi-semester planning via configuration entities, tracks docente availability per planning period, and provides user authentication and authorization for secure access.
+planejamento5 is a university course scheduling and resource allocation management system built on CakePHP 5.3 using the MVC pattern. It enables academic administrators to create and manage academic schedules (planejamentos), assign professores (faculty members), allocate salas (classrooms), and coordinate time slots across dias (days) and horarios (time periods). The system supports multi-semester planning via configuration entities, tracks docente availability per planning period, and provides user authentication and authorization for secure access.
 
 Key concepts:
 - planejamentos: academic schedule entries linking disciplines, faculty, classrooms, days, and time slots within a specific planning configuration and semester context.
-- docentes: faculty records with contact and employment details; availability can be tracked per planning configuration.
+- professores: faculty records with contact and employment details; availability can be tracked per planning configuration.
 - salas: classroom resources used for teaching sessions.
 - dias/horarios: canonical lists of weekdays and class time slots used to build timetables.
 - configuraplanejamento: represents a planning cycle or semester context that groups related data such as docente availability.
@@ -56,7 +56,7 @@ graph TB
 subgraph "CakePHP Application"
 A["Application<br/>bootstrap & middleware"]
 R["Routes<br/>URL -> Controller::Action"]
-C["Controllers<br/>Planejamentos, Docentes, Salas, etc."]
+C["Controllers<br/>Planejamentos, Professores, Salas, etc."]
 M["Models<br/>Entities + Tables"]
 V["Views<br/>templates/*"]
 MW["Middleware<br/>Auth, Authz, CSRF, HostHeader"]
@@ -175,7 +175,7 @@ Deny --> Redirect["Redirect to /users/login?redirect=..."]
 - [src/Application.php:124-162](file://src/Application.php#L124-L162)
 
 ### Scheduling Entities and Relationships
-The core scheduling concept revolves around planejamentos, which connect courses (disciplinas), faculty (docentes), rooms (salas), days (dias), and time slots (horarios) within a planning configuration (configuraplanejamento) and a specific period (periodo).
+The core scheduling concept revolves around planejamentos, which connect courses (disciplinas), faculty (professores), rooms (salas), days (dias), and time slots (horarios) within a planning configuration (configuraplanejamento) and a specific period (periodo).
 
 ```mermaid
 erDiagram
@@ -334,7 +334,7 @@ Validation considerations:
 Steps:
 1. For a given configuraplanejamento, create or update a docente_disponibilidades record for a docente.
 2. Mark disponivel as true/false and optionally provide motivo and observacoes.
-3. Use this information when validating new planejamentos to avoid assigning unavailable docentes.
+3. Use this information when validating new planejamentos to avoid assigning unavailable professores.
 
 **Section sources**
 - [config/Migrations/20260613100000_CreateDocenteDisponibilidades.php:8-46](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L8-L46)
@@ -427,7 +427,7 @@ planejamento5 provides a robust foundation for university course scheduling and 
 
 ### Public Interfaces and Routes
 - Default landing route points to Planejamentos index.
-- Fallback routes expose standard RESTful endpoints for all controllers (e.g., /planejamentos, /docentes, /salas).
+- Fallback routes expose standard RESTful endpoints for all controllers (e.g., /planejamentos, /professores, /salas).
 
 **Section sources**
 - [config/routes.php:52-79](file://config/routes.php#L52-L79)

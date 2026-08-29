@@ -200,7 +200,7 @@ FlashErr2 --> ReRender["Re-render form with errors"]
 ### Form Fields and Validation Rules
 Form fields rendered by add.php:
 - Disciplina (select): Required by validation.
-- Semestre (configuraplanejamento_id, select): Required by validation; supports preselection via query parameter and auto-refreshes docentes list.
+- Semestre (configuraplanejamento_id, select): Required by validation; supports preselection via query parameter and auto-refreshes professores list.
 - Docente (select): Optional; filtered by availability when a semester is selected.
 - Dia (select): Optional.
 - Horário (select): Optional; drives turno computation.
@@ -216,7 +216,7 @@ Additional constraints relevant to automatic calculations:
 - DisciplinasTable ensures periodo_diurno ∈ [1..8] and periodo_noturno ∈ [1..10].
 
 User interaction patterns:
-- Selecting a semester updates available docentes via server-side filtering.
+- Selecting a semester updates available professores via server-side filtering.
 - Selecting a time slot determines turno automatically.
 - Selecting a discipline determines periodo automatically.
 
@@ -337,7 +337,7 @@ PlanejamentosController --> FlashError : "sets message"
 
 ## Performance Considerations
 - Related data loading: The controller loads multiple lists (disciplines, semesters, teachers, days, times, rooms). Ensure database indexes exist on foreign keys and frequently filtered columns (e.g., status, disponivel flags) to keep queries fast.
-- Teacher filtering: Filtering docentes by availability per semester uses matching queries; ensure appropriate indexes on availability tables to avoid slow joins.
+- Teacher filtering: Filtering professores by availability per semester uses matching queries; ensure appropriate indexes on availability tables to avoid slow joins.
 - Pagination: The index/list endpoints use pagination; verify page sizes and sorting fields are indexed where necessary.
 
 [No sources needed since this section provides general guidance]

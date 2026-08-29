@@ -195,18 +195,18 @@ Before rendering the form, the controller prepares dropdown options:
 - Disciplinas list
 - Configuraplanejamentos (semesters) list
 - Salas, Dias, Horarios lists
-- Docentes filtered by availability when a semester is selected
+- Professores filtered by availability when a semester is selected
 
 Faculty filtering:
-- When configuraplanejamento_id is provided, only docentes marked available for that configuration are shown
-- Status filter ensures only active docentes are included
+- When configuraplanejamento_id is provided, only professores marked available for that configuration are shown
+- Status filter ensures only active professores are included
 
 ```mermaid
 flowchart TD
 Start(["Prepare related data"]) --> LoadLists["Load disciplinas, configuracoes, salas, dias, horarios"]
-LoadLists --> BuildDocentes["Build docente list"]
-BuildDocentes --> HasSemester{"configuraplanejamento_id provided?"}
-HasSemester --> |Yes| FilterAvail["Filter docentes by availability=true for config"]
+LoadLists --> BuildProfessores["Build docente list"]
+BuildProfessores --> HasSemester{"configuraplanejamento_id provided?"}
+HasSemester --> |Yes| FilterAvail["Filter professores by availability=true for config"]
 HasSemester --> |No| NoFilter["No availability filter"]
 FilterAvail --> EnsureCurrent["Ensure current docente preserved if needed"]
 NoFilter --> EnsureCurrent

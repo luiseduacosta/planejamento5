@@ -8,7 +8,7 @@
 - [src/Application.php](file://src/Application.php)
 - [src/Model/Table/PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [src/Model/Table/DisciplinasTable.php](file://src/Model/Table/DisciplinasTable.php)
-- [src/Model/Table/DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [src/Model/Table/ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [src/Model/Table/SalasTable.php](file://src/Model/Table/SalasTable.php)
 - [src/Model/Table/HorariosTable.php](file://src/Model/Table/HorariosTable.php)
 - [src/Model/Table/DiasTable.php](file://src/Model/Table/DiasTable.php)
@@ -36,7 +36,7 @@
 ## Introduction
 This document explains the core features of the planejamento5 academic planning system, focusing on:
 - Academic schedule management (planejamentos)
-- Faculty administration (docentes)
+- Faculty administration (professores)
 - Classroom resource management (salas)
 - Course definition (disciplinas)
 - Time slot scheduling (horarios)
@@ -91,7 +91,7 @@ Key responsibilities:
 - [src/Model/Entity/Planejamento.php:13-25](file://src/Model/Entity/Planejamento.php#L13-L25)
 - [src/Model/Table/DisciplinasTable.php:15-83](file://src/Model/Table/DisciplinasTable.php#L15-L83)
 - [src/Model/Entity/Disciplina.php:33-47](file://src/Model/Entity/Disciplina.php#L33-L47)
-- [src/Model/Table/DocentesTable.php:26-125](file://src/Model/Table/DocentesTable.php#L26-L125)
+- [src/Model/Table/ProfessoresTable.php:26-125](file://src/Model/Table/ProfessoresTable.php#L26-L125)
 - [src/Model/Entity/Docente.php:37-55](file://src/Model/Entity/Docente.php#L37-L55)
 - [src/Model/Table/SalasTable.php:33-58](file://src/Model/Table/SalasTable.php#L33-L58)
 - [src/Model/Entity/Sala.php:23-27](file://src/Model/Entity/Sala.php#L23-L27)
@@ -110,7 +110,7 @@ participant U as "User"
 participant C as "PlanejamentosController"
 participant T as "PlanejamentosTable"
 participant D as "DisciplinasTable"
-participant F as "DocentesTable"
+participant F as "ProfessoresTable"
 participant A as "DocenteDisponibilidadesTable"
 participant R as "SalasTable"
 participant DY as "DiasTable"
@@ -130,7 +130,7 @@ C-->>U : redirect with flash message
 **Diagram sources**
 - [src/Controller/PlanejamentosController.php:83-127](file://src/Controller/PlanejamentosController.php#L83-L127)
 - [src/Model/Table/DocenteDisponibilidadesTable.php:66-74](file://src/Model/Table/DocenteDisponibilidadesTable.php#L66-L74)
-- [src/Model/Table/DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [src/Model/Table/ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 
 ## Detailed Component Analysis
 
@@ -145,7 +145,7 @@ Business rules and derived fields:
 
 Validation and relationships:
 - Requires integer discipline and configuration IDs; allows empty strings for optional foreign keys.
-- Belongs-to relations to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+- Belongs-to relations to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
 
 Common operations:
 - Add/Edit: populate related lists, compute derived fields, persist entity.
@@ -157,7 +157,7 @@ class PlanejamentosTable {
 +initialize(config)
 +validationDefault(validator)
 -belongsTo("Disciplinas")
--belongsTo("Docentes")
+-belongsTo("Professores")
 -belongsTo("Configuraplanejamentos")
 -belongsTo("Salas")
 -belongsTo("Dias")
@@ -187,7 +187,7 @@ PlanejamentosTable --> Planejamento : "persists"
 - [src/Model/Table/PlanejamentosTable.php:11-55](file://src/Model/Table/PlanejamentosTable.php#L11-L55)
 - [src/Model/Entity/Planejamento.php:13-25](file://src/Model/Entity/Planejamento.php#L13-L25)
 
-### Faculty Administration (Docentes)
+### Faculty Administration (Professores)
 Purpose:
 - Maintain faculty profiles and normalize status values across inputs.
 
@@ -212,10 +212,10 @@ Map --> End
 ```
 
 **Diagram sources**
-- [src/Model/Table/DocentesTable.php:114-125](file://src/Model/Table/DocentesTable.php#L114-L125)
+- [src/Model/Table/ProfessoresTable.php:114-125](file://src/Model/Table/ProfessoresTable.php#L114-L125)
 
 **Section sources**
-- [src/Model/Table/DocentesTable.php:26-125](file://src/Model/Table/DocentesTable.php#L26-L125)
+- [src/Model/Table/ProfessoresTable.php:26-125](file://src/Model/Table/ProfessoresTable.php#L26-L125)
 - [src/Model/Entity/Docente.php:37-55](file://src/Model/Entity/Docente.php#L37-L55)
 
 ### Classroom Resource Management (Salas)
@@ -272,7 +272,7 @@ Purpose:
 Validation and rules:
 - Required: docente_id, configuraplanejamento_id, disponivel (boolean).
 - Optional: motivo (max length), observacoes.
-- Existence rules ensure referenced docentes and configuraplanejamentos exist.
+- Existence rules ensure referenced professores and configuraplanejamentos exist.
 
 Query helper:
 - findForDocente filters by docente_id when provided.
@@ -288,7 +288,7 @@ sequenceDiagram
 participant User as "User"
 participant Ctrl as "PlanejamentosController"
 participant Avail as "DocenteDisponibilidadesTable"
-participant Fac as "DocentesTable"
+participant Fac as "ProfessoresTable"
 participant Disc as "DisciplinasTable"
 participant Sched as "PlanejamentosTable"
 User->>Ctrl : GET /planejamentos/add?configuraplanejamento_id=1
@@ -373,21 +373,21 @@ High-level dependencies among core components:
 ```mermaid
 graph LR
 Planejamentos["PlanejamentosTable"] --> Disciplinas["DisciplinasTable"]
-Planejamentos --> Docentes["DocentesTable"]
+Planejamentos --> Professores["ProfessoresTable"]
 Planejamentos --> Salas["SalasTable"]
 Planejamentos --> Dias["DiasTable"]
 Planejamentos --> Horarios["HorariosTable"]
-Docentes --> Disponibilidades["DocenteDisponibilidadesTable"]
+Professores --> Disponibilidades["DocenteDisponibilidadesTable"]
 ```
 
 **Diagram sources**
 - [src/Model/Table/PlanejamentosTable.php:19-39](file://src/Model/Table/PlanejamentosTable.php#L19-L39)
-- [src/Model/Table/DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [src/Model/Table/ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [src/Model/Table/DocenteDisponibilidadesTable.php:22-29](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L29)
 
 **Section sources**
 - [src/Model/Table/PlanejamentosTable.php:19-39](file://src/Model/Table/PlanejamentosTable.php#L19-L39)
-- [src/Model/Table/DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [src/Model/Table/ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [src/Model/Table/DocenteDisponibilidadesTable.php:22-29](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L29)
 
 ## Performance Considerations
@@ -411,7 +411,7 @@ Operational tips:
 **Section sources**
 - [src/Controller/PlanejamentosController.php:107-114](file://src/Controller/PlanejamentosController.php#L107-L114)
 - [src/Controller/PlanejamentosController.php:234-242](file://src/Controller/PlanejamentosController.php#L234-L242)
-- [src/Model/Table/DocentesTable.php:114-125](file://src/Model/Table/DocentesTable.php#L114-L125)
+- [src/Model/Table/ProfessoresTable.php:114-125](file://src/Model/Table/ProfessoresTable.php#L114-L125)
 - [src/Application.php:80-83](file://src/Application.php#L80-L83)
 - [config/app.php:277-343](file://config/app.php#L277-L343)
 

@@ -85,7 +85,7 @@ T2 --> S4
 
 ## Core Components
 - Planejamento entity and table:
-  - Relationships to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+  - Relationships to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
   - Basic field validation for required integers and optional scalars.
 - DocenteDisponibilidades table and entity:
   - Availability flags per docente and configuracao.
@@ -97,7 +97,7 @@ T2 --> S4
 
 Key responsibilities:
 - Validate input types and presence.
-- Enforce availability-based filtering for docentes.
+- Enforce availability-based filtering for professores.
 - Provide user-friendly feedback on save failures.
 
 **Section sources**
@@ -108,7 +108,7 @@ Key responsibilities:
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
 
 ## Architecture Overview
-The scheduling workflow integrates controller-driven data preparation with model-level validation and database constraints. Availability filtering ensures only available docentes are presented during planning creation or editing.
+The scheduling workflow integrates controller-driven data preparation with model-level validation and database constraints. Availability filtering ensures only available professores are presented during planning creation or editing.
 
 ```mermaid
 sequenceDiagram
@@ -122,8 +122,8 @@ C->>C : "Derive turno from horario_id"
 C->>C : "Load disciplina and derive periodo"
 C->>T : "patchEntity(data)"
 T-->>C : "Entity with validation errors if any"
-C->>D : "Filter available docentes (if configuracao selected)"
-D-->>C : "Filtered docentes list"
+C->>D : "Filter available professores (if configuracao selected)"
+D-->>C : "Filtered professores list"
 C->>T : "save(entity)"
 T->>DB : "INSERT/UPDATE planejamentos"
 DB-->>T : "Success or unique/index violation"
@@ -164,12 +164,12 @@ Implementation patterns:
 - [Planejamento.php](file://src/Model/Entity/Planejamento.php)
 
 ### Docente Disponibilidade Integration
-- Availability records link docentes to configuracoes with a boolean flag disponivel.
+- Availability records link professores to configuracoes with a boolean flag disponivel.
 - A unique index enforces one availability record per (docente_id, configuraplanejamento_id).
-- The controller filters docentes by availability when a configuracao is selected, using matching queries.
+- The controller filters professores by availability when a configuracao is selected, using matching queries.
 
 Business rule:
-- Only docentes marked available for the selected configuracao should be selectable during planning.
+- Only professores marked available for the selected configuracao should be selectable during planning.
 
 Integration points:
 - Controller _setRelatedData applies availability filtering based on configuraplanejamento_id.
@@ -335,8 +335,8 @@ Error handling tips:
 
 ## Conclusion
 To robustly prevent scheduling conflicts, combine application-layer validation with database-level constraints:
-- Enforce availability via DocenteDisponibilidades and filter docentes accordingly.
-- Prevent same-time overlaps for docentes and salas through unique constraints or custom validation.
+- Enforce availability via DocenteDisponibilidades and filter professores accordingly.
+- Prevent same-time overlaps for professores and salas through unique constraints or custom validation.
 - Validate classroom capacity by extending the schema and adding validation rules.
 - Provide clear, actionable feedback to users through field-level errors and summary messages.
 

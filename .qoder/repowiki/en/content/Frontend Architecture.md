@@ -9,7 +9,7 @@
 - [ajax.php](file://templates/layout/ajax.php)
 - [error.php](file://templates/layout/error.php)
 - [form_templates.php](file://config/form_templates.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
 - [add.php (Planejamentos)](file://templates/Planejamentos/add.php)
 - [default.php (Flash Element)](file://templates/element/flash/default.php)
 - [success.php (Flash Element)](file://templates/element/flash/success.php)
@@ -50,7 +50,7 @@ LDEF["Layout: default.php"]
 LAJX["Layout: ajax.php"]
 LERR["Layout: error.php"]
 EFL["Element: flash/*"]
-TDOC["Template: Docentes/index.php"]
+TDOC["Template: Professores/index.php"]
 TPLAN["Template: Planejamentos/add.php"]
 end
 subgraph "Config"
@@ -74,7 +74,7 @@ LDEF -.-> APPCFG
 - [ajax.php:1-18](file://templates/layout/ajax.php#L1-L18)
 - [error.php:1-40](file://templates/layout/error.php#L1-L40)
 - [form_templates.php:1-29](file://config/form_templates.php#L1-L29)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 - [app.php:1-200](file://config/app.php#L1-L200)
 
@@ -86,7 +86,7 @@ LDEF -.-> APPCFG
 - [ajax.php:1-18](file://templates/layout/ajax.php#L1-L18)
 - [error.php:1-40](file://templates/layout/error.php#L1-L40)
 - [form_templates.php:1-29](file://config/form_templates.php#L1-L29)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 - [app.php:1-200](file://config/app.php#L1-L200)
 
@@ -108,7 +108,7 @@ LDEF -.-> APPCFG
 - [default.php (Flash Element):1-19](file://templates/element/flash/default.php#L1-L19)
 - [success.php (Flash Element):1-19](file://templates/element/flash/success.php#L1-L19)
 - [error.php (Flash Element):1-19](file://templates/element/flash/error.php#L1-L19)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 
 ## Architecture Overview
@@ -278,11 +278,11 @@ L --> FE2["Element: flash/error.php"]
 - Partial rendering: Forms and tables are assembled using helpers and inline PHP constructs within templates.
 
 Examples:
-- Filtering and listing with pagination and filters in the Docentes index template.
+- Filtering and listing with pagination and filters in the Professores index template.
 - Creating forms with dynamic options and client-side behavior in the Planejamentos add template.
 
 **Section sources**
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 
 ## Dependency Analysis
@@ -299,7 +299,7 @@ AJV["AjaxView"] --> AV
 LDEF["Layout: default.php"] --> FH
 LDEF --> FLASH["Flash Elements"]
 LDEF --> PAG["Paginator (via AppView)"]
-TDOC["Docentes/index.php"] --> LDEF
+TDOC["Professores/index.php"] --> LDEF
 TPLAN["Planejamentos/add.php"] --> LDEF
 ```
 
@@ -309,7 +309,7 @@ TPLAN["Planejamentos/add.php"] --> LDEF
 - [FormHelper.php:1-91](file://src/View/Helper/FormHelper.php#L1-L91)
 - [form_templates.php:1-29](file://config/form_templates.php#L1-L29)
 - [default.php:1-124](file://templates/layout/default.php#L1-L124)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 
 **Section sources**
@@ -318,7 +318,7 @@ TPLAN["Planejamentos/add.php"] --> LDEF
 - [FormHelper.php:1-91](file://src/View/Helper/FormHelper.php#L1-L91)
 - [form_templates.php:1-29](file://config/form_templates.php#L1-L29)
 - [default.php:1-124](file://templates/layout/default.php#L1-L124)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 - [add.php (Planejamentos):1-32](file://templates/Planejamentos/add.php#L1-L32)
 
 ## Performance Considerations

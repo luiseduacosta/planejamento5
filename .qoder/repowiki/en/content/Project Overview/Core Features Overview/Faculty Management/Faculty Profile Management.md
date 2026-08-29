@@ -3,12 +3,12 @@
 <cite>
 **Referenced Files in This Document**
 - [Docente.php](file://src/Model/Entity/Docente.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 - [CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
@@ -38,28 +38,28 @@ The system is implemented using CakePHP conventions with an MVC architecture.
 
 ## Project Structure
 Faculty profile management spans controllers, models, entities, views, and a related availability table:
-- Controller: DocentesController handles index, view, add, edit, delete
-- Model: DocentesTable defines validation, relationships, and status normalization
+- Controller: ProfessoresController handles index, view, add, edit, delete
+- Model: ProfessoresTable defines validation, relationships, and status normalization
 - Entity: Docente defines accessible fields and metadata
-- Views: templates/Docentes/* provide UI for listing, viewing, adding, and editing
+- Views: templates/Professores/* provide UI for listing, viewing, adding, and editing
 - Related model: DocenteDisponibilidades manages availability per planning configuration
 
 ```mermaid
 graph TB
 subgraph "Controllers"
-C["DocentesController"]
+C["ProfessoresController"]
 end
 subgraph "Models"
-T["DocentesTable"]
+T["ProfessoresTable"]
 E["Docente (Entity)"]
 TD["DocenteDisponibilidadesTable"]
 ED["DocenteDisponibilidade (Entity)"]
 end
 subgraph "Views"
-VIdx["templates/Docentes/index.php"]
-VAdd["templates/Docentes/add.php"]
-VEdit["templates/Docentes/edit.php"]
-VView["templates/Docentes/view.php"]
+VIdx["templates/Professores/index.php"]
+VAdd["templates/Professores/add.php"]
+VEdit["templates/Professores/edit.php"]
+VView["templates/Professores/view.php"]
 end
 subgraph "DB Migrations"
 MAvail["CreateDocenteDisponibilidades migration"]
@@ -76,33 +76,33 @@ TD -.-> MAvail
 ```
 
 **Diagram sources**
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 - [CreateDocenteDisponibilidades.php:1-48](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L1-L48)
-- [index.php:1-166](file://templates/Docentes/index.php#L1-L166)
-- [add.php:1-44](file://templates/Docentes/add.php#L1-L44)
-- [edit.php:1-44](file://templates/Docentes/edit.php#L1-L44)
-- [view.php:1-153](file://templates/Docentes/view.php#L1-L153)
+- [index.php:1-166](file://templates/Professores/index.php#L1-L166)
+- [add.php:1-44](file://templates/Professores/add.php#L1-L44)
+- [edit.php:1-44](file://templates/Professores/edit.php#L1-L44)
+- [view.php:1-153](file://templates/Professores/view.php#L1-L153)
 
 **Section sources**
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
-- [index.php:1-166](file://templates/Docentes/index.php#L1-L166)
-- [add.php:1-44](file://templates/Docentes/add.php#L1-L44)
-- [edit.php:1-44](file://templates/Docentes/edit.php#L1-L44)
-- [view.php:1-153](file://templates/Docentes/view.php#L1-L153)
+- [index.php:1-166](file://templates/Professores/index.php#L1-L166)
+- [add.php:1-44](file://templates/Professores/add.php#L1-L44)
+- [edit.php:1-44](file://templates/Professores/edit.php#L1-L44)
+- [view.php:1-153](file://templates/Professores/view.php#L1-L153)
 - [CreateDocenteDisponibilidades.php:1-48](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L1-L48)
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 
 ## Core Components
 - Docente entity: Defines all fields that can be mass-assigned and persisted. Includes identification, contact info, employment details, and status.
-- DocentesTable: Provides validation rules, relationships to Planejamento and DocenteDisponibilidade, and status normalization on input.
-- DocentesController: Implements full CRUD and advanced filtering on the index action.
+- ProfessoresTable: Provides validation rules, relationships to Planejamento and DocenteDisponibilidade, and status normalization on input.
+- ProfessoresController: Implements full CRUD and advanced filtering on the index action.
 - Templates: Provide forms and list views with sorting, pagination, and filters.
 
 Key responsibilities:
@@ -113,17 +113,17 @@ Key responsibilities:
 
 **Section sources**
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
-- [index.php:1-166](file://templates/Docentes/index.php#L1-L166)
-- [add.php:1-44](file://templates/Docentes/add.php#L1-L44)
-- [edit.php:1-44](file://templates/Docentes/edit.php#L1-L44)
-- [view.php:1-153](file://templates/Docentes/view.php#L1-L153)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
+- [index.php:1-166](file://templates/Professores/index.php#L1-L166)
+- [add.php:1-44](file://templates/Professores/add.php#L1-L44)
+- [edit.php:1-44](file://templates/Professores/edit.php#L1-L44)
+- [view.php:1-153](file://templates/Professores/view.php#L1-L153)
 
 ## Architecture Overview
 The application follows MVC:
-- Requests hit DocentesController methods
-- Controllers use DocentesTable to query/save data
+- Requests hit ProfessoresController methods
+- Controllers use ProfessoresTable to query/save data
 - Entities represent rows and define accessibility
 - Views render lists, forms, and detail pages
 - Availability is managed via DocenteDisponibilidades linked to Docente and Configuraplanejamento
@@ -131,37 +131,37 @@ The application follows MVC:
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant C as "DocentesController"
-participant T as "DocentesTable"
+participant C as "ProfessoresController"
+participant T as "ProfessoresTable"
 participant D as "DocenteDisponibilidadesTable"
-participant V as "Templates/Docentes/*"
-U->>C : GET /docentes (index)
+participant V as "Templates/Professores/*"
+U->>C : GET /professores (index)
 C->>T : find() + filters (status, departamento, configuracao)
 C->>D : load available configurations and current active one
 C-->>V : render index with filtered/sorted results
-U->>C : POST /docentes/add
+U->>C : POST /professores/add
 C->>T : patchEntity() + save()
 C-->>U : redirect to view
-U->>C : PATCH /docentes/edit/{id}
+U->>C : PATCH /professores/edit/{id}
 C->>T : patchEntity() + save()
 C-->>U : redirect to view
-U->>C : DELETE /docentes/delete/{id}
+U->>C : DELETE /professores/delete/{id}
 C->>T : delete()
 C-->>U : redirect to index
 ```
 
 **Diagram sources**
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
-- [DocentesTable.php:26-42](file://src/Model/Table/DocentesTable.php#L26-L42)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
+- [ProfessoresTable.php:26-42](file://src/Model/Table/ProfessoresTable.php#L26-L42)
 - [DocenteDisponibilidadesTable.php:13-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L13-L30)
-- [index.php:1-166](file://templates/Docentes/index.php#L1-L166)
-- [add.php:1-44](file://templates/Docentes/add.php#L1-L44)
-- [edit.php:1-44](file://templates/Docentes/edit.php#L1-L44)
-- [view.php:1-153](file://templates/Docentes/view.php#L1-L153)
+- [index.php:1-166](file://templates/Professores/index.php#L1-L166)
+- [add.php:1-44](file://templates/Professores/add.php#L1-L44)
+- [edit.php:1-44](file://templates/Professores/edit.php#L1-L44)
+- [view.php:1-153](file://templates/Professores/view.php#L1-L153)
 
 ## Detailed Component Analysis
 
-### Docente Entity Structure
+### Professor Entity Structure
 Fields supported by the entity include:
 - Identification: id, nome, cpf, siape, cress, regiao
 - Contact: telefone, celular, email
@@ -179,8 +179,8 @@ Normalization occurs during marshalling so stored values are always canonical.
 
 **Section sources**
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 
 ### Validation Rules
 - nome: required on create, scalar, max length
@@ -192,7 +192,7 @@ Normalization occurs during marshalling so stored values are always canonical.
 These rules ensure consistent and safe data entry.
 
 **Section sources**
-- [DocentesTable.php:47-112](file://src/Model/Table/DocentesTable.php#L47-L112)
+- [ProfessoresTable.php:47-112](file://src/Model/Table/ProfessoresTable.php#L47-L112)
 
 ### Relationships
 - One-to-many to Planejamentos via docente_id
@@ -201,7 +201,7 @@ These rules ensure consistent and safe data entry.
 Availability records link each docente to a planning configuration and indicate whether they are available.
 
 **Section sources**
-- [DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [DocenteDisponibilidadesTable.php:22-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L30)
 - [CreateDocenteDisponibilidades.php:10-45](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L10-L45)
 
@@ -231,19 +231,19 @@ Keep --> End
 ```
 
 **Diagram sources**
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 
 **Section sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
 
 ### Filtering System
 Index supports three filters:
 - Status: uses canonical values and aliases; displays friendly labels
 - Department: exact match against departamento
-- Planning availability: shows docentes who have a disponivel=true record for the selected configuraplanejamento
+- Planning availability: shows professores who have a disponivel=true record for the selected configuraplanejamento
 
 The controller builds a query with optional where clauses and matching joins for availability.
 
@@ -262,12 +262,12 @@ H --> I["Render index with sortable columns and badges"]
 ```
 
 **Diagram sources**
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
-- [index.php:40-94](file://templates/Docentes/index.php#L40-L94)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
+- [index.php:40-94](file://templates/Professores/index.php#L40-L94)
 
 **Section sources**
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
-- [index.php:40-94](file://templates/Docentes/index.php#L40-L94)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
+- [index.php:40-94](file://templates/Professores/index.php#L40-L94)
 
 ### Index Page Features
 - Sortable columns: id, nome, siape, departamento, tipocargo, status, email
@@ -278,8 +278,8 @@ H --> I["Render index with sortable columns and badges"]
 Note: While the prompt mentions periodo_diurno and periodo_noturno, the Docente entity does not include those fields. Availability is modeled via DocenteDisponibilidades instead.
 
 **Section sources**
-- [index.php:96-165](file://templates/Docentes/index.php#L96-L165)
-- [DocentesController.php:107-123](file://src/Controller/DocentesController.php#L107-L123)
+- [index.php:96-165](file://templates/Professores/index.php#L96-L165)
+- [ProfessoresController.php:107-123](file://src/Controller/ProfessoresController.php#L107-L123)
 
 ### Add New Faculty Member
 - Default status is set to ativo
@@ -293,8 +293,8 @@ Example flow:
 - Flash message displayed and redirect to view
 
 **Section sources**
-- [DocentesController.php:183-200](file://src/Controller/DocentesController.php#L183-L200)
-- [add.php:1-44](file://templates/Docentes/add.php#L1-L44)
+- [ProfessoresController.php:183-200](file://src/Controller/ProfessoresController.php#L183-L200)
+- [add.php:1-44](file://templates/Professores/add.php#L1-L44)
 
 ### Edit Existing Profile
 - Loads existing record
@@ -303,8 +303,8 @@ Example flow:
 - Redirects to view after success
 
 **Section sources**
-- [DocentesController.php:213-230](file://src/Controller/DocentesController.php#L213-L230)
-- [edit.php:1-44](file://templates/Docentes/edit.php#L1-L44)
+- [ProfessoresController.php:213-230](file://src/Controller/ProfessoresController.php#L213-L230)
+- [edit.php:1-44](file://templates/Professores/edit.php#L1-L44)
 
 ### Delete Record
 - Requires POST or DELETE method
@@ -312,7 +312,7 @@ Example flow:
 - Deletes record and redirects to index with flash messages
 
 **Section sources**
-- [DocentesController.php:232-245](file://src/Controller/DocentesController.php#L232-L245)
+- [ProfessoresController.php:232-245](file://src/Controller/ProfessoresController.php#L232-L245)
 
 ### Managing Faculty Status Transitions
 To change a professor’s status:
@@ -326,12 +326,12 @@ Bulk operations:
 - There is no explicit multi-select bulk action implementation in the provided files
 
 **Section sources**
-- [DocentesController.php:213-230](file://src/Controller/DocentesController.php#L213-L230)
-- [index.php:140-147](file://templates/Docentes/index.php#L140-L147)
+- [ProfessoresController.php:213-230](file://src/Controller/ProfessoresController.php#L213-L230)
+- [index.php:140-147](file://templates/Professores/index.php#L140-L147)
 
 ### Availability Per Planning Configuration
 - Each docente can be marked available or unavailable for a specific planning configuration
-- The index can filter docentes who are available for a given configuration
+- The index can filter professores who are available for a given configuration
 - The view page lists availability records with semester, availability flag, reason, and actions
 
 ```mermaid
@@ -371,23 +371,23 @@ CONFIGURAPLANJAMENTO ||--o{ DOCENTE_DISPONIBILIDADE : "has many"
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 - [CreateDocenteDisponibilidades.php:1-48](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L1-L48)
-- [view.php:100-144](file://templates/Docentes/view.php#L100-L144)
+- [view.php:100-144](file://templates/Professores/view.php#L100-L144)
 
 ## Dependency Analysis
-- DocentesController depends on DocentesTable and DocenteDisponibilidadesTable
-- DocentesTable has relationships to Planejamentos and DocenteDisponibilidades
+- ProfessoresController depends on ProfessoresTable and DocenteDisponibilidadesTable
+- ProfessoresTable has relationships to Planejamentos and DocenteDisponibilidades
 - Views depend on controller-provided variables for rendering filters, lists, and actions
 
 ```mermaid
 classDiagram
-class DocentesController {
+class ProfessoresController {
 +index()
 +view(id)
 +add()
 +edit(id)
 +delete(id)
 }
-class DocentesTable {
+class ProfessoresTable {
 +initialize(config)
 +validationDefault(validator)
 +beforeMarshal(event, data, options)
@@ -424,22 +424,22 @@ class DocenteDisponibilidade {
 +created
 +modified
 }
-DocentesController --> DocentesTable : "uses"
-DocentesController --> DocenteDisponibilidadesTable : "uses"
-DocentesTable --> Docente : "manages"
+ProfessoresController --> ProfessoresTable : "uses"
+ProfessoresController --> DocenteDisponibilidadesTable : "uses"
+ProfessoresTable --> Docente : "manages"
 DocenteDisponibilidadesTable --> DocenteDisponibilidade : "manages"
 ```
 
 **Diagram sources**
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 
 **Section sources**
-- [DocentesController.php:1-247](file://src/Controller/DocentesController.php#L1-L247)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresController.php:1-247](file://src/Controller/ProfessoresController.php#L1-L247)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
@@ -456,16 +456,16 @@ DocenteDisponibilidadesTable --> DocenteDisponibilidade : "manages"
 ## Troubleshooting Guide
 Common issues and resolutions:
 - Status not saved as expected: Verify that input values are recognized aliases; the system normalizes them to canonical values during marshalling.
-- Filter not returning results: Confirm that the selected planning configuration has availability records with disponivel=true for the intended docentes.
+- Filter not returning results: Confirm that the selected planning configuration has availability records with disponivel=true for the intended professores.
 - Validation errors on submit: Check required fields like nome and ensure email format if provided.
 - Missing availability information: Ensure availability records exist for the selected configuration; otherwise, the index will show “Not informed.”
 
 **Section sources**
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
-- [DocentesController.php:88-105](file://src/Controller/DocentesController.php#L88-L105)
-- [index.php:125-137](file://templates/Docentes/index.php#L125-L137)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
+- [ProfessoresController.php:88-105](file://src/Controller/ProfessoresController.php#L88-L105)
+- [index.php:125-137](file://templates/Professores/index.php#L125-L137)
 
 ## Conclusion
-The faculty profile management module provides robust CRUD capabilities for docentes, with strong validation, canonical status handling, and flexible filtering by status, department, and planning availability. The index page supports sorting and pagination, while the view page exposes availability per planning configuration. The design cleanly separates concerns across controller, model, entity, and template layers, making maintenance and extension straightforward.
+The faculty profile management module provides robust CRUD capabilities for professores, with strong validation, canonical status handling, and flexible filtering by status, department, and planning availability. The index page supports sorting and pagination, while the view page exposes availability per planning configuration. The design cleanly separates concerns across controller, model, entity, and template layers, making maintenance and extension straightforward.
 
 [No sources needed since this section summarizes without analyzing specific files]

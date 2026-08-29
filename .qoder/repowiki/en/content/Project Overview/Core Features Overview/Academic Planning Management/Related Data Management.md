@@ -26,7 +26,7 @@
 
 ## Introduction
 This document explains how related data is managed for dropdown options in the academic planning system, focusing on the _setRelatedData() method in the Planejamento controller. It covers:
-- Populating dropdowns for disciplines, faculty members (docentes), classrooms (salas), days (dias), and time slots (horarios).
+- Populating dropdowns for disciplines, faculty members (professores), classrooms (salas), days (dias), and time slots (horarios).
 - Filtering faculty by availability per semester using the DocenteDisponibilidade configuration.
 - Status-based filtering to include only active faculty members.
 - Dynamic data loading patterns when a semester (semestre/configuraplanejamento_id) is selected.
@@ -100,7 +100,7 @@ PT --> SALAS
 Key responsibilities:
 - Load small lists for dias, horarios, salas without limits.
 - Limit disciplines and configuracoes lists to 200 items to control payload size.
-- Filter docentes by status IN ('ativo', 'active', 'activo').
+- Filter professores by status IN ('ativo', 'active', 'activo').
 - Optionally match docente_disponibilidades where disponivel = true for the selected configuraplanejamento_id.
 - Ensure the current docente remains selectable during edit via fallback logic.
 
@@ -127,14 +127,14 @@ Template->>Controller : Request with optional "configuraplanejamento_id"
 Controller->>Controller : _setRelatedData(configuraplanejamento_id, current_docente_id)
 Controller->>ORM : Load Disciplinas, Configuraplanejamentos, Salas, Dias, Horarios
 ORM->>DB : SELECT ... LIMIT 200 (for disciplines/configs)
-Controller->>ORM : Build Docentes query with status filter
+Controller->>ORM : Build Professores query with status filter
 alt configuraplanejamento_id provided
 Controller->>ORM : matching('DocenteDisponibilidades') WHERE disponivel=true
 end
 ORM->>DB : Execute queries
 DB-->>ORM : Result sets
 ORM-->>Controller : Arrays for dropdowns
-Controller->>Template : Set variables (disciplinas, docentes, etc.)
+Controller->>Template : Set variables (disciplinas, professores, etc.)
 Template-->>User : Rendered form with dropdown options
 ```
 
@@ -158,7 +158,7 @@ Responsibilities:
 
 Implementation highlights:
 - Uses find('list') to generate key-value pairs for select controls.
-- Applies ->where(['Docentes.status IN' => ['ativo', 'active', 'activo']]) to restrict to active faculty.
+- Applies ->where(['Professores.status IN' => ['ativo', 'active', 'activo']]) to restrict to active faculty.
 - Uses ->matching('DocenteDisponibilidades', ...) to join availability records and filter by disponivel = true for the given configuraplanejamento_id.
 - After building the array, checks if the current docente_id exists; if not, fetches and injects it into the options so the existing selection remains valid.
 
@@ -192,7 +192,7 @@ Inject --> End
 - This ensures only professors marked available for the chosen semester are shown.
 
 Matching query pattern (conceptual):
-- Select docentes where status IN ('ativo','active','activo') AND EXISTS (SELECT 1 FROM docente_disponibilidades WHERE docente_id = docentes.id AND configuraplanejamento_id = :id AND disponivel = true).
+- Select professores where status IN ('ativo','active','activo') AND EXISTS (SELECT 1 FROM docente_disponibilidades WHERE docente_id = professores.id AND configuraplanejamento_id = :id AND disponivel = true).
 
 **Section sources**
 - [PlanejamentosController.php:223-231](file://src/Controller/PlanejamentosController.php#L223-L231)
@@ -219,8 +219,8 @@ participant View as "add.php / edit.php"
 User->>Form : Change semester selection
 Form->>Controller : Redirect with ?configuraplanejamento_id=...
 Controller->>Controller : _setRelatedData(selected_semester, current_docente_id)
-Controller->>View : Set docentesFilteredByDisponibilidade flag and updated options
-View-->>User : Show message about filtered docentes and updated list
+Controller->>View : Set professoresFilteredByDisponibilidade flag and updated options
+View-->>User : Show message about filtered professores and updated list
 ```
 
 **Diagram sources**
@@ -241,8 +241,8 @@ View-->>User : Show message about filtered docentes and updated list
 - [PlanejamentosController.php:234-242](file://src/Controller/PlanejamentosController.php#L234-L242)
 
 ### Database Relationships and Schema
-- PlanejamentosTable defines belongsTo relationships to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, and Horarios. These enable efficient joins and containments.
-- DocenteDisponibilidadesTable defines belongsTo relationships to Docentes and Configuraplanejamentos and includes validation rules.
+- PlanejamentosTable defines belongsTo relationships to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, and Horarios. These enable efficient joins and containments.
+- DocenteDisponibilidadesTable defines belongsTo relationships to Professores and Configuraplanejamentos and includes validation rules.
 - Migrations define the structure and indexes for availability and reference tables.
 
 ```mermaid
@@ -354,9 +354,9 @@ PT --> SALAS["salas"]
   - Symptom: The currently assigned professor does not appear in the filtered list.
   - Cause: Availability filter excludes the professor for the selected semester.
   - Resolution: The fallback logic injects the current professor into the options; verify that the current docente_id is passed correctly to _setRelatedData() during edit.
-- No docentes shown after selecting a semester:
-  - Cause: No docentes have disponivel = true for the selected configuraplanejamento_id.
-  - Resolution: Configure availability records for docentes in the selected semester.
+- No professores shown after selecting a semester:
+  - Cause: No professores have disponivel = true for the selected configuraplanejamento_id.
+  - Resolution: Configure availability records for professores in the selected semester.
 - Slow form load times:
   - Cause: Large datasets for disciplinas/configuracoes or unbounded lists for salas/dias/horarios.
   - Resolution: Maintain limits (already applied to disciplinas/configuracoes); consider adding limits or pagination for other lists if they grow.

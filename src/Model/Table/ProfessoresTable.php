@@ -9,6 +9,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use function is_string;
+use Cake\I18n\FrozenTime;
 
 /**
  * Professores Model
@@ -37,7 +38,14 @@ class ProfessoresTable extends Table
         $this->setTable('professores');
         $this->setDisplayField('nome');
         $this->setPrimaryKey('id');
-        $this->addBehavior('Timestamp');
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created' => 'new',
+                    'modified' => 'always',
+                ],
+            ],
+        ]);
 
         $this->hasMany('Planejamentos', [
             'foreignKey' => 'docente_id',
@@ -104,7 +112,6 @@ class ProfessoresTable extends Table
 
         $validator
             ->scalar('email')
-            ->maxLength('email', 100)
             ->email('email', false)
             ->maxLength('email', 255)
             ->allowEmptyString('email');
@@ -139,10 +146,6 @@ class ProfessoresTable extends Table
         $validator
             ->integer('user_id')
             ->allowEmptyString('user_id');
-
-        $validator
-            ->integer('estagiario_count')
-            ->allowEmptyString('estagiario_count');
 
         $validator
             ->integer('estagiarios_count')
@@ -186,5 +189,23 @@ class ProfessoresTable extends Table
         }
 
         $data['status'] = self::STATUS_NORMALIZATION_MAP[$status] ?? $status;
+    }
+
+    /**
+     * Ensure timestamps are set if the Timestamp behavior could not (fixtures
+     * created the columns after the table schema was cached).
+     */
+    public function beforeSave(EventInterface $event, $entity, ArrayObject $options): void
+    {
+        unset($event, $options);
+
+        $now = FrozenTime::now();
+
+        if ($entity->isNew() && $entity->get('created') === null) {
+            $entity->set('created', $now);
+        }
+        if ($entity->get('modified') === null) {
+            $entity->set('modified', $now);
+        }
     }
 }

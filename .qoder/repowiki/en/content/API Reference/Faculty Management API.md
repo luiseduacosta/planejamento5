@@ -1,10 +1,10 @@
 # Faculty Management API
 
 <cite>
-**Referenced Files in This Document**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+-**Referenced Files in This Document**
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
@@ -35,7 +35,7 @@ This document provides API documentation for faculty management endpoints in the
 - Request/response schemas and validation rules
 - Examples for profile management, availability scheduling, and bulk operations
 
-Note: The application uses CakePHP fallback routing, so controller actions are accessible via RESTful URLs under /docentes and /docente-disponibilidades.
+Note: The application uses CakePHP fallback routing, so controller actions are accessible via RESTful URLs under /professores and /docente-disponibilidades.
 
 ## Project Structure
 The faculty management feature is implemented with controllers, models (tables/entities), policies, and a migration for availability records.
@@ -43,13 +43,13 @@ The faculty management feature is implemented with controllers, models (tables/e
 ```mermaid
 graph TB
 subgraph "Controllers"
-DC["DocentesController"]
+DC["ProfessoresController"]
 DDC["DocenteDisponibilidadesController"]
 end
 subgraph "Models"
-DT["DocentesTable"]
+DT["ProfessoresTable"]
 DDT["DocenteDisponibilidadesTable"]
-DE["Docente Entity"]
+DE["Professor Entity"]
 DDE["DocenteDisponibilidade Entity"]
 end
 subgraph "Policies"
@@ -74,10 +74,10 @@ DDC --> AC
 DDT --> MIG
 ```
 
-**Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+-**Diagram sources**
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
@@ -88,9 +88,9 @@ DDT --> MIG
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
@@ -101,9 +101,9 @@ DDT --> MIG
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 
 ## Core Components
-- DocentesController: Implements index, view, add, edit, delete for faculty. Supports filtering by status, department, and availability for a planning configuration. Normalizes status values to canonical forms.
+- ProfessoresController: Implements index, view, add, edit, delete for faculty. Supports filtering by status, department, and availability for a planning configuration. Normalizes status values to canonical forms.
 - DocenteDisponibilidadesController: Implements index, view, add, edit, delete for faculty availability per planning configuration.
-- DocentesTable: Defines validation rules and marshaling behavior that normalizes status aliases to canonical values.
+- ProfessoresTable: Defines validation rules and marshaling behavior that normalizes status aliases to canonical values.
 - DocenteDisponibilidadesTable: Defines validation and referential integrity rules for availability records.
 - Policies: Enforce role-based authorization for read/write/delete operations.
 - AppController: Loads Authentication and Authorization components globally.
@@ -111,9 +111,9 @@ DDT --> MIG
 - Migration: Creates the availability table with unique constraint on (docente_id, configuraplanejamento_id).
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [DocenteDisponibilidadePolicy.php](file://src/Policy/DocenteDisponibilidadePolicy.php)
@@ -128,17 +128,17 @@ The API follows MVC patterns with policy-based authorization and ORM-backed pers
 sequenceDiagram
 participant Client as "Client"
 participant Router as "CakePHP Router"
-participant Controller as "DocentesController"
+participant Controller as "ProfessoresController"
 participant Policy as "DocentePolicy"
-participant Table as "DocentesTable"
+participant Table as "ProfessoresTable"
 participant DB as "Database"
-Client->>Router : GET /docentes
+Client->>Router : GET /professores
 Router->>Controller : index()
 Controller->>Controller : skipAuthorization()
 Controller->>Table : find() + filters
 Table-->>Controller : Paginated results
 Controller-->>Client : JSON list
-Client->>Router : POST /docentes
+Client->>Router : POST /professores
 Router->>Controller : add()
 Controller->>Policy : authorize(add)
 alt authorized
@@ -152,17 +152,17 @@ end
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [routes.php](file://config/routes.php)
 
 ## Detailed Component Analysis
 
-### Faculty Endpoints (/docentes)
-Base URL: /docentes
+### Faculty Endpoints (/professores)
+Base URL: /professores
 
-- GET /docentes
+- GET /professores
   - Purpose: List all faculty with optional filters.
   - Query parameters:
     - status: Filter by normalized status. Accepts aliases like active/inactive/retired; normalized to canonical values internally.
@@ -170,29 +170,29 @@ Base URL: /docentes
     - configuraplanejamento_id: Filter to faculty marked available for a specific planning configuration.
   - Response: Array of faculty entities with fields defined in the Docente entity.
   - Authorization: Public (authorization skipped in controller).
-  - Validation: Server-side validation enforced by DocentesTable.
+  - Validation: Server-side validation enforced by ProfessoresTable.
 
-- GET /docentes/{id}
+- GET /professores/{id}
   - Purpose: Retrieve details for a single faculty member.
   - Path parameter: id (integer).
   - Response: Single faculty entity with related Planejamento and DocenteDisponibilidades (with Configuraplanejamentos).
   - Authorization: Public (authorization skipped in controller).
 
-- POST /docentes
+- POST /professores
   - Purpose: Create a new faculty member.
   - Request body: Fields from Docente entity. Default status set to active if not provided.
   - Response: Created faculty entity or validation errors.
   - Authorization: Requires role admin or editor (policy check).
-  - Validation: See DocentesTable validationDefault.
+  - Validation: See ProfessoresTable validationDefault.
 
-- PUT /docentes/{id}
+- PUT /professores/{id}
   - Purpose: Update an existing faculty member.
   - Path parameter: id (integer).
   - Request body: Partial or full update using allowed fields.
   - Response: Updated faculty entity or validation errors.
   - Authorization: Requires role admin or editor (policy check).
 
-- DELETE /docentes/{id}
+- DELETE /professores/{id}
   - Purpose: Remove a faculty member.
   - Path parameter: id (integer).
   - Response: Success or error message.
@@ -201,7 +201,7 @@ Base URL: /docentes
 Status normalization and aliases:
 - Canonical statuses: ativo (active), aposentado (retired), inativo (inactive).
 - Accepted aliases include active/inactive/activo/inactivo/retired.
-- Normalization occurs during marshaling in DocentesTable beforeMarshal.
+- Normalization occurs during marshaling in ProfessoresTable beforeMarshal.
 
 Filtering behavior:
 - status: Maps aliases to canonical values and filters IN clause.
@@ -242,16 +242,16 @@ Authorization requirements:
 - DELETE delete: admin only.
 
 Examples:
-- List active faculty: GET /docentes?status=active
-- Filter by department: GET /docentes?departamento=Computer%20Science
-- Filter by availability for a planning config: GET /docentes?configuraplanejamento_id=123
-- Create faculty: POST /docentes with {nome, email, status:"active", ...}
-- Update faculty: PUT /docentes/42 with partial payload
-- Delete faculty: DELETE /docentes/42
+- List active faculty: GET /professores?status=active
+- Filter by department: GET /professores?departamento=Computer%20Science
+- Filter by availability for a planning config: GET /professores?configuraplanejamento_id=123
+- Create faculty: POST /professores with {nome, email, status:"active", ...}
+- Update faculty: PUT /professores/42 with partial payload
+- Delete faculty: DELETE /professores/42
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 
@@ -281,7 +281,7 @@ Base URL: /docente-disponibilidades
     - observacoes: string (optional)
   - Response: Created availability entity or validation errors.
   - Authorization: Requires role admin or editor (policy check).
-  - Validation: Referential integrity enforced (must exist in Docentes and Configuraplanejamentos).
+  - Validation: Referential integrity enforced (must exist in Professores and Configuraplanejamentos).
 
 - PUT /docente-disponibilidades/{id}
   - Purpose: Update an existing availability record.
@@ -353,12 +353,12 @@ Continue --> ReturnResults
 ```
 
 **Diagram sources**
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 
 **Section sources**
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 
 ### Integration with Scheduling Conflicts
 - Availability records link faculty to planning configurations (semesters/versions).
@@ -370,11 +370,11 @@ Conceptual workflow diagram (availability-driven filtering)
 ```mermaid
 sequenceDiagram
 participant Planner as "Planner UI"
-participant API as "/docentes"
-participant Model as "DocentesTable"
+participant API as "/professores"
+participant Model as "ProfessoresTable"
 participant Avail as "DocenteDisponibilidades"
 participant DB as "Database"
-Planner->>API : GET /docentes?configuraplanejamento_id=123
+Planner->>API : GET /professores?configuraplanejamento_id=123
 API->>Model : find() with matching availability
 Model->>Avail : JOIN where disponivel=true AND configuraplanejamento_id=123
 Avail->>DB : Execute query
@@ -391,7 +391,7 @@ Relationships between components and their responsibilities:
 
 ```mermaid
 classDiagram
-class DocentesController {
+class ProfessoresController {
 +index()
 +view(id)
 +add()
@@ -405,7 +405,7 @@ class DocenteDisponibilidadesController {
 +edit(id)
 +delete(id)
 }
-class DocentesTable {
+class ProfessoresTable {
 +validationDefault()
 +beforeMarshal()
 }
@@ -430,27 +430,27 @@ class DocenteDisponibilidadePolicy {
 class AppController {
 +initialize()
 }
-DocentesController --> DocentesTable : "uses"
+ProfessoresController --> ProfessoresTable : "uses"
 DocenteDisponibilidadesController --> DocenteDisponibilidadesTable : "uses"
-DocentesController --> DocentePolicy : "authorizes"
+ProfessoresController --> DocentePolicy : "authorizes"
 DocenteDisponibilidadesController --> DocenteDisponibilidadePolicy : "authorizes"
-DocentesController --> AppController : "extends"
+ProfessoresController --> AppController : "extends"
 DocenteDisponibilidadesController --> AppController : "extends"
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [DocenteDisponibilidadePolicy.php](file://src/Policy/DocenteDisponibilidadePolicy.php)
 - [AppController.php](file://src/Controller/AppController.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [DocenteDisponibilidadePolicy.php](file://src/Policy/DocenteDisponibilidadePolicy.php)
@@ -478,7 +478,7 @@ Common issues and resolutions:
 **Section sources**
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [DocenteDisponibilidadePolicy.php](file://src/Policy/DocenteDisponibilidadePolicy.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 

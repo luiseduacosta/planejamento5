@@ -1,18 +1,18 @@
 # Faculty Management
 
 <cite>
-**Referenced Files in This Document**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+-**Referenced Files in This Document**
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [Configuraplanejamento.php](file://src/Model/Entity/Configuraplanejamento.php)
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
 - [add.php (DocenteDisponibilidades)](file://templates/DocenteDisponibilidades/add.php)
 </cite>
 
@@ -41,33 +41,33 @@ The system is implemented using CakePHP conventions with controllers, tables/ent
 
 ## Project Structure
 Key components related to faculty management:
-- Controllers: DocentesController, DocenteDisponibilidadesController, PlanejamentoController
-- Models: DocentesTable, DocenteDisponibilidadesTable, ConfiguraplanejamentosTable; Entities Docente, DocenteDisponibilidade, Configuraplanejamento
+  - Controllers: ProfessoresController, DocenteDisponibilidadesController, PlanejamentoController
+  - Models: ProfessoresTable, DocenteDisponibilidadesTable, ConfiguraplanejamentosTable; Entities Docente, DocenteDisponibilidade, Configuraplanejamento
 - Database migration: CreateDocenteDisponibilidades
-- Templates: Docentes index view, DocenteDisponibilidades add form
+- Templates: Professores index view, DocenteDisponibilidades add form
 
 ```mermaid
 graph TB
 subgraph "Controllers"
-DC["DocentesController"]
+DC["ProfessoresController"]
 DDC["DocenteDisponibilidadesController"]
 PC["PlanejamentosController"]
 end
 subgraph "Models"
-DT["DocentesTable"]
+DT["ProfessoresTable"]
 DDT["DocenteDisponibilidadesTable"]
 CT["ConfiguraplanejamentosTable"]
-DE["Docente Entity"]
+DE["Professor Entity"]
 DDE["DocenteDisponibilidade Entity"]
 CE["Configuraplanejamento Entity"]
 end
 subgraph "Database"
-T1["docentes"]
+T1["professores"]
 T2["docente_disponibilidades"]
 T3["configuraplanejamentos"]
 end
 subgraph "Templates"
-V1["Docentes/index"]
+V1["Professores/index"]
 V2["DocenteDisponibilidades/add"]
 end
 DC --> DT
@@ -83,30 +83,30 @@ DC --> V1
 DDC --> V2
 ```
 
-**Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+-**Diagram sources**
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [Configuraplanejamento.php](file://src/Model/Entity/Configuraplanejamento.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
 - [add.php (DocenteDisponibilidades)](file://templates/DocenteDisponibilidades/add.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [Configuraplanejamento.php](file://src/Model/Entity/Configuraplanejamento.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
 - [add.php (DocenteDisponibilidades)](file://templates/DocenteDisponibilidades/add.php)
 
 ## Core Components
@@ -127,11 +127,11 @@ Operational highlights:
 
 **Section sources**
 - [Docente.php](file://src/Model/Entity/Docente.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
 
@@ -146,12 +146,12 @@ The system follows MVC patterns:
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant DC as "DocentesController"
-participant DT as "DocentesTable"
+participant DC as "ProfessoresController"
+participant DT as "ProfessoresTable"
 participant DDT as "DocenteDisponibilidadesTable"
 participant CT as "ConfiguraplanejamentosTable"
 participant DB as "Database"
-U->>DC : GET /docentes?status=...&departamento=...&configuraplanejamento_id=...
+U->>DC : GET /professores?status=...&departamento=...&configuraplanejamento_id=...
 DC->>DT : find() with filters
 alt availability filter present
 DC->>DDT : matching('DocenteDisponibilidades') where configuraplanejamento_id and disponivel=true
@@ -165,13 +165,13 @@ DC-->>U : HTML list with availability column
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 
 ## Detailed Component Analysis
 
-### Faculty Profile Management (Docentes)
+### Faculty Profile Management (Professores)
 Responsibilities:
 - CRUD operations for faculty members
 - Default status assignment when adding
@@ -199,10 +199,10 @@ Example usage paths:
 - Filter faculty: applies WHERE clauses based on query parameters; uses matching for availability filter.
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
 
 ### Availability Preferences (DocenteDisponibilidades)
 Purpose:
@@ -210,7 +210,7 @@ Purpose:
 - Store boolean availability flag, optional reason, and notes
 
 Data model:
-- Foreign keys to docentes and configuraplanejamentos
+- Foreign keys to professores and configuraplanejamentos
 - Unique composite key prevents duplicate availability entries per faculty per configuration
 - Timestamps automatically managed
 
@@ -304,15 +304,15 @@ class Configuraplanejamento {
 +DateTime created
 +DateTime modified
 }
-class DocentesTable
+class ProfessoresTable
 class DocenteDisponibilidadesTable
 class ConfiguraplanejamentosTable
-DocentesTable --> Docente : "entity"
+ProfessoresTable --> Docente : "entity"
 DocenteDisponibilidadesTable --> DocenteDisponibilidade : "entity"
 ConfiguraplanejamentosTable --> Configuraplanejamento : "entity"
 DocenteDisponibilidade --> Docente : "belongsTo"
 DocenteDisponibilidade --> Configuraplanejamento : "belongsTo"
-DocentesTable --> DocenteDisponibilidadesTable : "hasMany"
+ProfessoresTable --> DocenteDisponibilidadesTable : "hasMany"
 ConfiguraplanejamentosTable --> DocenteDisponibilidadesTable : "hasMany"
 ```
 
@@ -320,7 +320,7 @@ ConfiguraplanejamentosTable --> DocenteDisponibilidadesTable : "hasMany"
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocenteDisponibilidade.php](file://src/Model/Entity/DocenteDisponibilidade.php)
 - [Configuraplanejamento.php](file://src/Model/Entity/Configuraplanejamento.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 
@@ -347,8 +347,8 @@ DDC-->>U : Redirect to index with docente_id
 ### Flowchart: Faculty Filtering Logic
 ```mermaid
 flowchart TD
-Start(["Request /docentes"]) --> ReadParams["Read query params<br/>status, departamento, configuraplanejamento_id"]
-ReadParams --> BuildQuery["Build base query on Docentes"]
+Start(["Request /professores"]) --> ReadParams["Read query params<br/>status, departamento, configuraplanejamento_id"]
+ReadParams --> BuildQuery["Build base query on Professores"]
 BuildQuery --> CheckStatus{"status provided?"}
 CheckStatus --> |Yes| ApplyStatus["Apply IN filter with normalized aliases"]
 CheckStatus --> |No| CheckDept
@@ -364,23 +364,23 @@ Render --> End(["Response"])
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 
 ## Dependency Analysis
-- DocentesController depends on:
-  - DocentesTable for queries and persistence
+- ProfessoresController depends on:
+  - ProfessoresTable for queries and persistence
   - DocenteDisponibilidadesTable for availability matching
   - ConfiguraplanejamentosTable for active configuration lookup
 - DocenteDisponibilidadesController depends on:
   - DocenteDisponibilidadesTable for CRUD
-  - DocentesTable and ConfiguraplanejamentosTable for list forms
+  - ProfessoresTable and ConfiguraplanejamentosTable for list forms
 - PlanejamentoController depends on:
-  - DocentesTable for listing eligible faculty
+  - ProfessoresTable for listing eligible faculty
   - DocenteDisponibilidadesTable for availability-based filtering
 
 ```mermaid
 graph LR
-DC["DocentesController"] --> DT["DocentesTable"]
+DC["ProfessoresController"] --> DT["ProfessoresTable"]
 DC --> DDT["DocenteDisponibilidadesTable"]
 DC --> CT["ConfiguraplanejamentosTable"]
 DDC["DocenteDisponibilidadesController"] --> DDT
@@ -391,15 +391,15 @@ PC --> DDT
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocenteDisponibilidadesTable.php](file://src/Model/Table/DocenteDisponibilidadesTable.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
 
@@ -429,7 +429,7 @@ Common issues and resolutions:
 
 **Section sources**
 - [20260613100000_CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
 
 ## Conclusion

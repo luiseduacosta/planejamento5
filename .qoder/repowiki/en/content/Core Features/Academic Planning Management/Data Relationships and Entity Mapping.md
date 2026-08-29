@@ -5,7 +5,7 @@
 - [PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [Planejamento.php](file://src/Model/Entity/Planejamento.php)
 - [DisciplinasTable.php](file://src/Model/Table/DisciplinasTable.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [SalasTable.php](file://src/Model/Table/SalasTable.php)
 - [DiasTable.php](file://src/Model/Table/DiasTable.php)
 - [HorariosTable.php](file://src/Model/Table/HorariosTable.php)
@@ -27,7 +27,7 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-This document explains the data relationships and entity mapping for the academic planning system with a focus on the Planejamento entity and its associations to Disciplinas, Docentes, Salas, Dias, Horarios, and Configuraplanejamentos. It covers CakePHP ORM association types (belongsTo/hasMany), foreign key constraints, validation rules, referential integrity, migration structure, and practical guidance for querying related data and eager loading strategies.
+This document explains the data relationships and entity mapping for the academic planning system with a focus on the Planejamento entity and its associations to Disciplinas, Professores, Salas, Dias, Horarios, and Configuraplanejamentos. It covers CakePHP ORM association types (belongsTo/hasMany), foreign key constraints, validation rules, referential integrity, migration structure, and practical guidance for querying related data and eager loading strategies.
 
 ## Project Structure
 The application follows CakePHP conventions:
@@ -40,7 +40,7 @@ graph TB
 subgraph "ORM Layer"
 P["PlanejamentosTable"]
 D["DisciplinasTable"]
-T["DocentesTable"]
+T["ProfessoresTable"]
 S["SalasTable"]
 DI["DiasTable"]
 H["HorariosTable"]
@@ -49,7 +49,7 @@ end
 subgraph "Entities"
 PE["Planejamento Entity"]
 DE["Disciplina Entity"]
-TE["Docente Entity"]
+TE["Professor Entity"]
 SE["Sala Entity"]
 DIE["Dia Entity"]
 HE["Horario Entity"]
@@ -58,7 +58,7 @@ end
 subgraph "Database Schema"
 DBP["planejamentos"]
 DBD["disciplinas"]
-DBT["docentes"]
+DBT["professores"]
 DBS["salas"]
 DBDI["dias"]
 DBH["horarios"]
@@ -89,7 +89,7 @@ C -.-> DBC
 **Diagram sources**
 - [PlanejamentosTable.php:11-40](file://src/Model/Table/PlanejamentosTable.php#L11-L40)
 - [DisciplinasTable.php:15-27](file://src/Model/Table/DisciplinasTable.php#L15-L27)
-- [DocentesTable.php:26-42](file://src/Model/Table/DocentesTable.php#L26-L42)
+- [ProfessoresTable.php:26-42](file://src/Model/Table/ProfessoresTable.php#L26-L42)
 - [SalasTable.php:33-41](file://src/Model/Table/SalasTable.php#L33-L41)
 - [DiasTable.php:33-41](file://src/Model/Table/DiasTable.php#L33-L41)
 - [HorariosTable.php:33-41](file://src/Model/Table/HorariosTable.php#L33-L41)
@@ -98,7 +98,7 @@ C -.-> DBC
 **Section sources**
 - [PlanejamentosTable.php:11-40](file://src/Model/Table/PlanejamentosTable.php#L11-L40)
 - [DisciplinasTable.php:15-27](file://src/Model/Table/DisciplinasTable.php#L15-L27)
-- [DocentesTable.php:26-42](file://src/Model/Table/DocentesTable.php#L26-L42)
+- [ProfessoresTable.php:26-42](file://src/Model/Table/ProfessoresTable.php#L26-L42)
 - [SalasTable.php:33-41](file://src/Model/Table/SalasTable.php#L33-L41)
 - [DiasTable.php:33-41](file://src/Model/Table/DiasTable.php#L33-L41)
 - [HorariosTable.php:33-41](file://src/Model/Table/HorariosTable.php#L33-L41)
@@ -108,7 +108,7 @@ C -.-> DBC
 - Planejamento is the central scheduling record linking course offerings to instructors, rooms, days, time slots, and planning configurations.
 - Referenced entities provide master/reference data:
   - Disciplinas: courses offered.
-  - Docentes: faculty members.
+  - Professores: faculty members.
   - Salas: classrooms.
   - Dias: weekdays or calendar days.
   - Horarios: time slots.
@@ -116,7 +116,7 @@ C -.-> DBC
 
 Key association definitions:
 - Planejamento belongsTo Disciplinas via disciplina_id (INNER join).
-- Planejamento belongsTo Docentes via docente_id (INNER join).
+- Planejamento belongsTo Professores via docente_id (INNER join).
 - Planejamento belongsTo Configuraplanejamentos via configuraplanejamento_id (INNER join).
 - Planejamento optionally belongsTo Salas via sala_id.
 - Planejamento optionally belongsTo Dias via dia_id.
@@ -227,7 +227,7 @@ CONFIGURAPLANEJAMENTOS ||--o{ PLANJAMENTOS : "has many"
 **Diagram sources**
 - [PlanejamentosTable.php:11-40](file://src/Model/Table/PlanejamentosTable.php#L11-L40)
 - [DisciplinasTable.php:15-27](file://src/Model/Table/DisciplinasTable.php#L15-L27)
-- [DocentesTable.php:26-42](file://src/Model/Table/DocentesTable.php#L26-L42)
+- [ProfessoresTable.php:26-42](file://src/Model/Table/ProfessoresTable.php#L26-L42)
 - [SalasTable.php:33-41](file://src/Model/Table/SalasTable.php#L33-L41)
 - [DiasTable.php:33-41](file://src/Model/Table/DiasTable.php#L33-L41)
 - [HorariosTable.php:33-41](file://src/Model/Table/HorariosTable.php#L33-L41)
@@ -238,7 +238,7 @@ CONFIGURAPLANEJAMENTOS ||--o{ PLANJAMENTOS : "has many"
 ### Planejamento Entity and Associations
 - Association types:
   - belongsTo Disciplinas (foreignKey: disciplina_id; INNER join).
-  - belongsTo Docentes (foreignKey: docente_id; INNER join).
+  - belongsTo Professores (foreignKey: docente_id; INNER join).
   - belongsTo Configuraplanejamentos (foreignKey: configuraplanejamento_id; INNER join).
   - belongsTo Salas (foreignKey: sala_id; default join).
   - belongsTo Dias (foreignKey: dia_id; default join).
@@ -259,7 +259,7 @@ class DisciplinasTable {
 +initialize(config)
 +validationDefault(validator)
 }
-class DocentesTable {
+class ProfessoresTable {
 +initialize(config)
 +validationDefault(validator)
 }
@@ -280,7 +280,7 @@ class HorariosTable {
 +validationDefault(validator)
 }
 PlanejamentosTable --> DisciplinasTable : "belongsTo disciplina_id"
-PlanejamentosTable --> DocentesTable : "belongsTo docente_id"
+PlanejamentosTable --> ProfessoresTable : "belongsTo docente_id"
 PlanejamentosTable --> ConfiguraplanejamentosTable : "belongsTo configuraplanejamento_id"
 PlanejamentosTable --> SalasTable : "belongsTo sala_id"
 PlanejamentosTable --> DiasTable : "belongsTo dia_id"
@@ -292,7 +292,7 @@ Planejamento --> PlanejamentosTable : "entity"
 - [PlanejamentosTable.php:11-55](file://src/Model/Table/PlanejamentosTable.php#L11-L55)
 - [Planejamento.php:13-25](file://src/Model/Entity/Planejamento.php#L13-L25)
 - [DisciplinasTable.php:15-27](file://src/Model/Table/DisciplinasTable.php#L15-L27)
-- [DocentesTable.php:26-42](file://src/Model/Table/DocentesTable.php#L26-L42)
+- [ProfessoresTable.php:26-42](file://src/Model/Table/ProfessoresTable.php#L26-L42)
 - [ConfiguraplanejamentosTable.php:11-31](file://src/Model/Table/ConfiguraplanejamentosTable.php#L11-L31)
 - [SalasTable.php:33-58](file://src/Model/Table/SalasTable.php#L33-L58)
 - [DiasTable.php:33-63](file://src/Model/Table/DiasTable.php#L33-L63)
@@ -304,7 +304,7 @@ Planejamento --> PlanejamentosTable : "entity"
 
 ### Reference Entities Overview
 - Disciplinas: hasMany Planejamento via disciplina_id. Includes validation for code, name, credits, hours, periods, requirements, optionality, department, curriculum, and observations.
-- Docentes: hasMany Planejamento via docente_id. Includes extensive validation for personal and employment details, plus normalization logic for status values.
+- Professores: hasMany Planejamento via docente_id. Includes extensive validation for personal and employment details, plus normalization logic for status values.
 - Salas: hasMany Planejamento via sala_id. Validates room name presence.
 - Dias: hasMany Planejamento via dia_id. Validates day label and order.
 - Horarios: hasMany Planejamento via horario_id. Validates time slot label and order.
@@ -312,7 +312,7 @@ Planejamento --> PlanejamentosTable : "entity"
 
 **Section sources**
 - [DisciplinasTable.php:15-83](file://src/Model/Table/DisciplinasTable.php#L15-L83)
-- [DocentesTable.php:26-125](file://src/Model/Table/DocentesTable.php#L26-L125)
+- [ProfessoresTable.php:26-125](file://src/Model/Table/ProfessoresTable.php#L26-L125)
 - [SalasTable.php:33-58](file://src/Model/Table/SalasTable.php#L33-L58)
 - [DiasTable.php:33-63](file://src/Model/Table/DiasTable.php#L33-L63)
 - [HorariosTable.php:33-63](file://src/Model/Table/HorariosTable.php#L33-L63)
@@ -348,7 +348,7 @@ CreateSalas --> End(["Schema Ready"])
 - To load Planejamento with associated references efficiently, use CakePHP’s contain strategy to avoid N+1 queries.
 - For required associations (INNER joins), configure joinType as needed in the Table definition.
 - Example patterns:
-  - Load a single Planejamento with Disciplinas, Docentes, and Configuraplanejamentos eagerly.
+  - Load a single Planejamento with Disciplinas, Professores, and Configuraplanejamentos eagerly.
   - List Planejamentos with minimal includes for performance.
   - Filter by reference attributes (e.g., discipline code or instructor name) using joined conditions.
 
@@ -370,7 +370,7 @@ The Planejamento entity depends on multiple reference entities. The direction of
 ```mermaid
 graph LR
 P["PlanejamentosTable"] --> D["DisciplinasTable"]
-P --> T["DocentesTable"]
+P --> T["ProfessoresTable"]
 P --> C["ConfiguraplanejamentosTable"]
 P --> S["SalasTable"]
 P --> DI["DiasTable"]

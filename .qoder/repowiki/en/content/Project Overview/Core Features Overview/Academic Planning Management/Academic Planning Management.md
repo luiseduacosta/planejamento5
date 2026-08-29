@@ -8,7 +8,7 @@
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 - [Configuraplanejamento Entity.php](file://src/Model/Entity/Configuraplanejamento.php)
 - [Disciplina Entity.php](file://src/Model/Entity/Disciplina.php)
-- [Docente Entity.php](file://src/Model/Entity/Docente.php)
+- [Professor Entity.php](file://src/Model/Entity/Docente.php)
 - [Sala Entity.php](file://src/Model/Entity/Sala.php)
 - [Dia Entity.php](file://src/Model/Entity/Dia.php)
 - [Horario Entity.php](file://src/Model/Entity/Horario.php)
@@ -29,7 +29,7 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-This document explains the academic planning management system with a focus on how the Planejamento entity acts as the central scheduling component. It links Disciplinas (courses), Docentes (faculty), Salas (classrooms), Horarios (time slots), and Dias (days) within Configuraplanejamentos (semester configurations). The documentation covers multi-semester filtering, automatic period assignment based on discipline configuration, the relationship between turno (day/night shift) and horario_id mapping, and the availability filtering system for faculty selection. It also provides workflow examples for creating and editing schedules and managing semester-specific planning data.
+This document explains the academic planning management system with a focus on how the Planejamento entity acts as the central scheduling component. It links Disciplinas (courses), Professores (faculty), Salas (classrooms), Horarios (time slots), and Dias (days) within Configuraplanejamentos (semester configurations). The documentation covers multi-semester filtering, automatic period assignment based on discipline configuration, the relationship between turno (day/night shift) and horario_id mapping, and the availability filtering system for faculty selection. It also provides workflow examples for creating and editing schedules and managing semester-specific planning data.
 
 ## Project Structure
 The application follows a standard MVC structure:
@@ -49,7 +49,7 @@ PE["Planejamento Entity"]
 CT["ConfiguraplanejamentosTable"]
 CE["Configuraplanejamento Entity"]
 DE["Disciplina Entity"]
-DO["Docente Entity"]
+DO["Professor Entity"]
 SA["Sala Entity"]
 DI["Dia Entity"]
 HO["Horario Entity"]
@@ -80,7 +80,7 @@ SA --> S
 - [Planejamento Entity.php:1-27](file://src/Model/Entity/Planejamento.php#L1-L27)
 - [Configuraplanejamento Entity.php:1-23](file://src/Model/Entity/Configuraplanejamento.php#L1-L23)
 - [Disciplina Entity.php:1-49](file://src/Model/Entity/Disciplina.php#L1-L49)
-- [Docente Entity.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
+- [Professor Entity.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
 - [Sala Entity.php:1-29](file://src/Model/Entity/Sala.php#L1-L29)
 - [Dia Entity.php:1-31](file://src/Model/Entity/Dia.php#L1-L31)
 - [Horario Entity.php:1-31](file://src/Model/Entity/Horario.php#L1-L31)
@@ -104,14 +104,14 @@ Key responsibilities:
 - Multi-semester filtering via Configuraplanejamento.semestre.
 - Automatic assignment of periodo based on Disciplina.periodo_diurno or Disciplina.periodo_noturno depending on turno.
 - Mapping of turno to horario_id ranges.
-- Availability-based filtering of Docentes using DocenteDisponibilidades linked to Configuraplanejamento.
+- Availability-based filtering of Professores using DocenteDisponibilidades linked to Configuraplanejamento.
 
 **Section sources**
 - [Planejamento Entity.php:13-25](file://src/Model/Entity/Planejamento.php#L13-L25)
 - [PlanejamentosTable.php:19-39](file://src/Model/Table/PlanejamentosTable.php#L19-L39)
 - [Configuraplanejamento Entity.php:13-21](file://src/Model/Entity/Configuraplanejamento.php#L13-L21)
 - [Disciplina Entity.php:16-17](file://src/Model/Entity/Disciplina.php#L16-L17)
-- [Docente Entity.php:26](file://src/Model/Entity/Docente.php#L26)
+- [Professor Entity.php:26](file://src/Model/Entity/Docente.php#L26)
 
 ## Architecture Overview
 At runtime, the controller orchestrates queries across related tables and applies filters and transformations before rendering views. Relationships are defined in the table layer, while entities expose accessible fields.
@@ -121,7 +121,7 @@ sequenceDiagram
 participant U as "User"
 participant C as "PlanejamentosController"
 participant T as "PlanejamentosTable"
-participant R as "Related Tables<br/>Disciplinas|Docentes|Configuraplanejamentos|Salas|Dias|Horarios"
+participant R as "Related Tables<br/>Disciplinas|Professores|Configuraplanejamentos|Salas|Dias|Horarios"
 U->>C : GET /planejamentos?semestre=...
 C->>T : find().contain([...])
 T->>R : JOIN/CONTAIN queries
@@ -145,7 +145,7 @@ C-->>U : Redirect to index
 
 ### Planejamento Entity and Table
 - Fields: disciplina_id, docente_id, configuraplanejamento_id, periodo, turno, sala_id, dia_id, horario_id, observacoes, timestamps.
-- Relationships: belongsTo Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+- Relationships: belongsTo Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
 - Validation: Ensures required presence for core identifiers and allows optional fields where appropriate.
 
 ```mermaid
@@ -210,7 +210,7 @@ Planejamento --> Horario : "belongsTo"
 - [PlanejamentosTable.php:19-39](file://src/Model/Table/PlanejamentosTable.php#L19-L39)
 - [Configuraplanejamento Entity.php:13-21](file://src/Model/Entity/Configuraplanejamento.php#L13-L21)
 - [Disciplina Entity.php:16-17](file://src/Model/Entity/Disciplina.php#L16-L17)
-- [Docente Entity.php:26](file://src/Model/Entity/Docente.php#L26)
+- [Professor Entity.php:26](file://src/Model/Entity/Docente.php#L26)
 - [Sala Entity.php:23-27](file://src/Model/Entity/Sala.php#L23-L27)
 - [Dia Entity.php:24-29](file://src/Model/Entity/Dia.php#L24-L29)
 - [Horario Entity.php:24-29](file://src/Model/Entity/Horario.php#L24-L29)
@@ -294,14 +294,14 @@ Assign --> Save["Save Planejamento"]
 - [Disciplina Entity.php:16-17](file://src/Model/Entity/Disciplina.php#L16-L17)
 
 ### Faculty Availability Filtering
-- When a Configuraplanejamento is selected, the system filters Docentes to those marked available for that configuration.
+- When a Configuraplanejamento is selected, the system filters Professores to those marked available for that configuration.
 - The filter uses a matching join on DocenteDisponibilidades where configuraplanejamento_id matches and disponivel is true.
 - If the currently assigned docente is excluded by the filter, it is temporarily re-included to avoid losing context during edit.
 
 ```mermaid
 flowchart TD
 Start(["Open add/edit"]) --> HasConfig{"configuraplanejamento_id provided?"}
-HasConfig --> |No| ListAll["List all active docentes"]
+HasConfig --> |No| ListAll["List all active professores"]
 HasConfig --> |Yes| FilterAvail["Match DocenteDisponibilidades<br/>where configuraplanejamento_id = X AND disponivel = true"]
 FilterAvail --> EnsureCurrent{"Current docente included?"}
 EnsureCurrent --> |No| Reinsert["Re-insert current docente into list"]
@@ -337,8 +337,8 @@ participant D as "Disciplinas Table"
 participant DD as "DocenteDisponibilidades Table"
 U->>C : GET /planejamentos/add?configuraplanejamento_id=X
 C->>C : _setRelatedData(X, null)
-C->>DD : Matching filter for available docentes
-DD-->>C : Available docentes
+C->>DD : Matching filter for available professores
+DD-->>C : Available professores
 C-->>U : Render form
 U->>C : POST /planejamentos/add
 C->>C : Compute turno from horario_id
@@ -426,7 +426,7 @@ PT --> PE["Planejamento Entity"]
 PT --> CT["ConfiguraplanejamentosTable"]
 CT --> CE["Configuraplanejamento Entity"]
 PT --> DE["Disciplina Entity"]
-PT --> DO["Docente Entity"]
+PT --> DO["Professor Entity"]
 PT --> SA["Sala Entity"]
 PT --> DI["Dia Entity"]
 PT --> HO["Horario Entity"]

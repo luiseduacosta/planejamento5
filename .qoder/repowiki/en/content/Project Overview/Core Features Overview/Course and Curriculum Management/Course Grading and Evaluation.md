@@ -224,7 +224,7 @@ Planejamento binds a course to a teacher, room, day/time slot, and a planning co
 
 Processing logic:
 - Load available semestres from Configuraplanejamentos
-- Fetch Planejamentos with related Disciplinas, Docentes, Salas, Dias, Horarios
+- Fetch Planejamentos with related Disciplinas, Professores, Salas, Dias, Horarios
 - Group by periodo_diurno/noturno, horario, and dia
 - Determine the active configuration for “add” links
 
@@ -264,7 +264,7 @@ Represents a planning instance defined by semester and version, with an active f
 
 ## Dependency Analysis
 Relationships among key entities:
-- Planejamento belongs to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios
+- Planejamento belongs to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios
 - Configuraplanejamentos has many Planejamentos and DocenteDisponibilidades
 - Disciplinas has many Planejamentos
 

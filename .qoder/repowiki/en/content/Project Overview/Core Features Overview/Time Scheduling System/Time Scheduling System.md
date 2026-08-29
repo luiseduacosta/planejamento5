@@ -144,7 +144,7 @@ DB-->>PT : Persisted record
 PT-->>PC : Success/Failure
 PC-->>User : Redirect or error message
 User->>View : GET /disciplinas/grade
-View->>DB : Load Configuraplanejamentos, Disciplinas, Docentes, Salas, Dias, Horarios
+View->>DB : Load Configuraplanejamentos, Disciplinas, Professores, Salas, Dias, Horarios
 View-->>User : Render diurno/noturno grids by period and day
 ```
 

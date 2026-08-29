@@ -6,7 +6,7 @@
 - [AppController.php](file://src/Controller/AppController.php)
 - [routes.php](file://config/routes.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [SalasController.php](file://src/Controller/SalasController.php)
 - [DisciplinasController.php](file://src/Controller/DisciplinasController.php)
 - [HorariosController.php](file://src/Controller/HorariosController.php)
@@ -31,7 +31,7 @@
 9. Conclusion
 
 ## Introduction
-This document provides a comprehensive overview of the core features of planejamento5, a university scheduling system built on CakePHP 5. It explains how academic schedule management (planejamentos), faculty administration (docentes), classroom resource management (salas), course definitions (disciplinas), time slot scheduling (horarios), and user authentication work together to deliver complete scheduling capabilities. The system supports multi-semester planning via configuration entities and enforces role-based access control across all features.
+This document provides a comprehensive overview of the core features of planejamento5, a university scheduling system built on CakePHP 5. It explains how academic schedule management (planejamentos), faculty administration (professores), classroom resource management (salas), course definitions (disciplinas), time slot scheduling (horarios), and user authentication work together to deliver complete scheduling capabilities. The system supports multi-semester planning via configuration entities and enforces role-based access control across all features.
 
 ## Project Structure
 The application follows CakePHP conventions with controllers for each domain area, entity models defining data structures, and middleware handling security and authorization. Routes default to the academic schedule list view, while standard CRUD endpoints are available through fallback routing.
@@ -43,7 +43,7 @@ Router --> AppCtrl["AppController<br/>src/Controller/AppController.php"]
 AppCtrl --> Authz["Authorization Middleware<br/>src/Application.php"]
 AppCtrl --> Authn["Authentication Middleware<br/>src/Application.php"]
 AppCtrl --> C_Planejamentos["PlanejamentosController<br/>src/Controller/PlanejamentosController.php"]
-AppCtrl --> C_Docentes["DocentesController<br/>src/Controller/DocentesController.php"]
+AppCtrl --> C_Professores["ProfessoresController<br/>src/Controller/ProfessoresController.php"]
 AppCtrl --> C_Salas["SalasController<br/>src/Controller/SalasController.php"]
 AppCtrl --> C_Disciplinas["DisciplinasController<br/>src/Controller/DisciplinasController.php"]
 AppCtrl --> C_Horarios["HorariosController<br/>src/Controller/HorariosController.php"]
@@ -55,7 +55,7 @@ AppCtrl --> C_Users["UsersController<br/>src/Controller/UsersController.php"]
 - [AppController.php:40-53](file://src/Controller/AppController.php#L40-L53)
 - [Application.php:73-122](file://src/Application.php#L73-L122)
 - [PlanejamentosController.php:1-20](file://src/Controller/PlanejamentosController.php#L1-L20)
-- [DocentesController.php:1-20](file://src/Controller/DocentesController.php#L1-L20)
+- [ProfessoresController.php:1-20](file://src/Controller/ProfessoresController.php#L1-L20)
 - [SalasController.php:1-20](file://src/Controller/SalasController.php#L1-L20)
 - [DisciplinasController.php:1-20](file://src/Controller/DisciplinasController.php#L1-L20)
 - [HorariosController.php:1-20](file://src/Controller/HorariosController.php#L1-L20)
@@ -68,7 +68,7 @@ AppCtrl --> C_Users["UsersController<br/>src/Controller/UsersController.php"]
 
 ## Core Components
 - Academic Schedule Management (Planejamentos): Create, edit, filter, and view scheduled sessions that link courses, professors, rooms, days, and time slots within a specific semester configuration. Supports filtering by semestre and auto-computing turno and periodo based on related entities.
-- Faculty Administration (Docentes): Manage professor records with status normalization and availability per planning configuration. Provides filtering by department, status, and availability for a selected configuration.
+- Faculty Administration (Professores): Manage professor records with status normalization and availability per planning configuration. Provides filtering by department, status, and availability for a selected configuration.
 - Classroom Resource Management (Salas): Maintain room inventory with full CRUD operations.
 - Course Definitions (Disciplinas): Define courses with curriculum, workload, period constraints, and prerequisites. Includes a grade view that aggregates schedules into a timetable grid.
 - Time Slot Scheduling (Horarios): Define ordered time slots used across schedules.
@@ -78,7 +78,7 @@ Key workflows include creating a semester schedule by selecting a configuration 
 
 **Section sources**
 - [PlanejamentosController.php:17-127](file://src/Controller/PlanejamentosController.php#L17-L127)
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
 - [SalasController.php:32-97](file://src/Controller/SalasController.php#L32-L97)
 - [DisciplinasController.php:20-171](file://src/Controller/DisciplinasController.php#L20-L171)
 - [HorariosController.php:32-97](file://src/Controller/HorariosController.php#L32-L97)
@@ -115,18 +115,18 @@ Ctrl-->>Browser : Response
 
 ### Academic Schedule Management (Planejamentos)
 Purpose:
-- Model and manage academic sessions (planejamentos) linking disciplines, docentes, salas, dias, horarios, and a configuraplanejamento representing a semester version.
+- Model and manage academic sessions (planejamentos) linking disciplines, professores, salas, dias, horarios, and a configuraplanejamento representing a semester version.
 - Provide listing, viewing, adding, editing, and deleting of schedules.
 - Support filtering by semestre and computing derived fields like turno and periodo.
 
 Key workflows:
 - Listing: Retrieve schedules with related entities; optionally filter by selected semestre.
 - Adding/Editing: Validate inputs, compute turno from horario_id, derive periodo from disciplina attributes, persist changes, and flash feedback.
-- Availability-aware selection: When a configuraplanejamento is selected, only docentes marked available for that configuration are shown.
+- Availability-aware selection: When a configuraplanejamento is selected, only professores marked available for that configuration are shown.
 
 Interdependencies:
 - Disciplinas: Determines periodo constraints.
-- Docentes: Filters by availability per configuration.
+- Professores: Filters by availability per configuration.
 - Salas, Dias, Horarios: Provide resources and time slots.
 - Configuraplanejamentos: Groups schedules by semester/version.
 
@@ -135,12 +135,12 @@ Typical scenario:
 
 ```mermaid
 flowchart TD
-Start(["Add/Edit Planejamento"]) --> LoadRelated["Load related lists<br/>disciplinas, docentes, salas, dias, horarios"]
-LoadRelated --> FilterDocentes{"Configuracao selected?"}
-FilterDocentes --> |Yes| AvailFilter["Filter docentes by availability for config"]
-FilterDocentes --> |No| AllDocentes["Show all active docentes"]
+Start(["Add/Edit Planejamento"]) --> LoadRelated["Load related lists<br/>disciplinas, professores, salas, dias, horarios"]
+LoadRelated --> FilterProfessores{"Configuracao selected?"}
+FilterProfessores --> |Yes| AvailFilter["Filter professores by availability for config"]
+FilterProfessores --> |No| AllProfessores["Show all active professores"]
 AvailFilter --> SubmitForm["Submit form"]
-AllDocentes --> SubmitForm
+AllProfessores --> SubmitForm
 SubmitForm --> ComputeTurno["Compute turno from horario_id"]
 ComputeTurno --> ComputePeriodo["Derive periodo from disciplina"]
 ComputePeriodo --> Save["Persist Planejamento"]
@@ -160,7 +160,7 @@ Success --> |No| ShowError["Flash error message"]
 - [PlanejamentosController.php:209-254](file://src/Controller/PlanejamentosController.php#L209-L254)
 - [Planejamento.php:11-26](file://src/Model/Entity/Planejamento.php#L11-L26)
 
-### Faculty Administration (Docentes)
+### Faculty Administration (Professores)
 Purpose:
 - Maintain professor records with normalized statuses and availability per planning configuration.
 - Provide filtering by department, canonicalized status, and availability for a selected configuration.
@@ -171,7 +171,7 @@ Key workflows:
 - Availability integration: Display availability state for the active or selected configuration.
 
 Typical scenario:
-- Assign professors to courses: Filter docentes by availability for a given semestre configuration, then select them when creating a schedule.
+- Assign professors to courses: Filter professores by availability for a given semestre configuration, then select them when creating a schedule.
 
 ```mermaid
 classDiagram
@@ -201,7 +201,7 @@ class Docente {
 - [Docente.php:30-56](file://src/Model/Entity/Docente.php#L30-L56)
 
 **Section sources**
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
 - [Docente.php:30-56](file://src/Model/Entity/Docente.php#L30-L56)
 
 ### Classroom Resource Management (Salas)
@@ -300,8 +300,8 @@ end
 
 ## Dependency Analysis
 High-level dependencies among core components:
-- Planejamentos depends on Disciplinas, Docentes, Salas, Dias, Horarios, and Configuraplanejamentos.
-- Docentes integrates with availability records tied to Configuraplanejamentos.
+- Planejamentos depends on Disciplinas, Professores, Salas, Dias, Horarios, and Configuraplanejamentos.
+- Professores integrates with availability records tied to Configuraplanejamentos.
 - Disciplinas drives period constraints used by Planejamentos.
 - Horarios defines ordered slots referenced by Planejamentos.
 - Authentication and Authorization middleware protect all controllers.
@@ -309,7 +309,7 @@ High-level dependencies among core components:
 ```mermaid
 graph LR
 P["Planejamentos"] --> D["Disciplinas"]
-P --> DOC["Docentes"]
+P --> DOC["Professores"]
 P --> S["Salas"]
 P --> H["Horarios"]
 P --> CFG["Configuraplanejamentos"]
@@ -321,16 +321,16 @@ AUTHZ["Authorization<br/>src/Application.php"] --> ALL
 
 **Diagram sources**
 - [PlanejamentosController.php:17-67](file://src/Controller/PlanejamentosController.php#L17-L67)
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
 - [Application.php:73-122](file://src/Application.php#L73-L122)
 
 **Section sources**
 - [PlanejamentosController.php:17-67](file://src/Controller/PlanejamentosController.php#L17-L67)
-- [DocentesController.php:34-171](file://src/Controller/DocentesController.php#L34-L171)
+- [ProfessoresController.php:34-171](file://src/Controller/ProfessoresController.php#L34-L171)
 - [Application.php:73-122](file://src/Application.php#L73-L122)
 
 ## Performance Considerations
-- Pagination: Controllers use pagination for large datasets (e.g., Planejamentos, Docentes). Ensure indexes on frequently filtered columns (semestre, status, departamento, curriculo).
+- Pagination: Controllers use pagination for large datasets (e.g., Planejamentos, Professores). Ensure indexes on frequently filtered columns (semestre, status, departamento, curriculo).
 - Eager loading: Contain statements load related entities efficiently; avoid unnecessary contains in high-traffic paths.
 - Filtering: Prefer server-side filtering via query parameters to reduce payload size.
 - Grade view aggregation: Building grids involves grouping and iteration; consider caching aggregated results per semestre if needed.
@@ -342,7 +342,7 @@ Common issues and resolutions:
 - Unauthenticated access: If redirected to login, verify credentials and ensure the correct authenticator is configured. Check middleware order and unauthenticated actions.
 - Forbidden errors: Authorization may deny actions; review policy enforcement and required roles.
 - Missing related data: Ensure related entities exist (e.g., disciplina, docente, sala, dia, horario) before creating a schedule.
-- Status normalization: For docentes, ensure status values map to canonical forms to display correctly in filters.
+- Status normalization: For professores, ensure status values map to canonical forms to display correctly in filters.
 
 Operational checks:
 - Verify routes point to expected controllers and actions.
@@ -356,4 +356,4 @@ Operational checks:
 - [Usuarioplanejamento.php:30-37](file://src/Model/Entity/Usuarioplanejamento.php#L30-L37)
 
 ## Conclusion
-planejamento5 delivers a robust university scheduling platform centered around academic schedules (planejamentos) that integrate courses (disciplinas), professors (docentes), rooms (salas), and time slots (horarios) under multi-semester configurations. Role-based access control and secure authentication ensure safe operation, while clear workflows enable typical tasks such as creating semester schedules, assigning professors, and managing classroom availability. The architecture leverages CakePHP’s middleware, routing, and ORM patterns for maintainability and scalability.
+planejamento5 delivers a robust university scheduling platform centered around academic schedules (planejamentos) that integrate courses (disciplinas), professors (professores), rooms (salas), and time slots (horarios) under multi-semester configurations. Role-based access control and secure authentication ensure safe operation, while clear workflows enable typical tasks such as creating semester schedules, assigning professors, and managing classroom availability. The architecture leverages CakePHP’s middleware, routing, and ORM patterns for maintainability and scalability.

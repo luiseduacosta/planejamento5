@@ -84,9 +84,11 @@ class ProfessoresController extends AppController
         // Build query
         $query = $this->Professores->find();
 
-        // Apply status filter
+        // Apply status filter (normalize aliases to canonical status first)
         if ($statusFilter) {
-            $query->where(['Professores.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
+            $canonical = $this->canonicalStatus($statusFilter);
+            $aliases = self::STATUS_ALIASES[$canonical] ?? [$canonical];
+            $query->where(['Professores.status IN' => $aliases]);
         }
 
         // Apply departamento filter

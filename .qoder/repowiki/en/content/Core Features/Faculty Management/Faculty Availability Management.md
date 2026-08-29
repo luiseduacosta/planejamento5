@@ -9,11 +9,11 @@
 - [Configuraplanejamento.php](file://src/Model/Entity/Configuraplanejamento.php)
 - [ConfiguraplanejamentosTable.php](file://src/Model/Table/ConfiguraplanejamentosTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [index.php (DocenteDisponibilidades)](file://templates/DocenteDisponibilidades/index.php)
 - [add.php (DocenteDisponibilidades)](file://templates/DocenteDisponibilidades/add.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
-- [view.php (Docentes)](file://templates/Docentes/view.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
+- [view.php (Professores)](file://templates/Professores/view.php)
 </cite>
 
 ## Table of Contents
@@ -44,7 +44,7 @@ subgraph "Model"
 EDD["Entity: DocenteDisponibilidade"]
 TDD["Table: DocenteDisponibilidadesTable"]
 ED["Entity: Docente"]
-TD["Table: DocentesTable"]
+TD["Table: ProfessoresTable"]
 EC["Entity: Configuraplanejamento"]
 TC["Table: ConfiguraplanejamentosTable"]
 end
@@ -54,8 +54,8 @@ end
 subgraph "Templates"
 VDDI["View: DocenteDisponibilidades/index.php"]
 VDDA["View: DocenteDisponibilidades/add.php"]
-VDIndex["View: Docentes/index.php"]
-VDView["View: Docentes/view.php"]
+VDIndex["View: Professores/index.php"]
+VDView["View: Professores/view.php"]
 end
 subgraph "Database"
 DB["Schema: docente_disponibilidades"]
@@ -79,14 +79,14 @@ TDD --> DB
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 - [DocenteDisponibilidadesTable.php:1-77](file://src/Model/Table/DocenteDisponibilidadesTable.php#L1-L77)
 - [Docente.php:1-57](file://src/Model/Entity/Docente.php#L1-L57)
-- [DocentesTable.php:1-126](file://src/Model/Table/DocentesTable.php#L1-L126)
+- [ProfessoresTable.php:1-126](file://src/Model/Table/ProfessoresTable.php#L1-L126)
 - [Configuraplanejamento.php:1-23](file://src/Model/Entity/Configuraplanejamento.php#L1-L23)
 - [ConfiguraplanejamentosTable.php:1-62](file://src/Model/Table/ConfiguraplanejamentosTable.php#L1-L62)
 - [DocenteDisponibilidadesController.php:1-118](file://src/Controller/DocenteDisponibilidadesController.php#L1-L118)
 - [index.php (DocenteDisponibilidades):1-61](file://templates/DocenteDisponibilidades/index.php#L1-L61)
 - [add.php (DocenteDisponibilidades):1-21](file://templates/DocenteDisponibilidades/add.php#L1-L21)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
-- [view.php (Docentes):100-125](file://templates/Docentes/view.php#L100-L125)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
+- [view.php (Professores):100-125](file://templates/Professores/view.php#L100-L125)
 
 **Section sources**
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
@@ -94,12 +94,12 @@ TDD --> DB
 - [DocenteDisponibilidadesController.php:1-118](file://src/Controller/DocenteDisponibilidadesController.php#L1-L118)
 - [index.php (DocenteDisponibilidades):1-61](file://templates/DocenteDisponibilidades/index.php#L1-L61)
 - [add.php (DocenteDisponibilidades):1-21](file://templates/DocenteDisponibilidades/add.php#L1-L21)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
-- [view.php (Docentes):100-125](file://templates/Docentes/view.php#L100-L125)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
+- [view.php (Professores):100-125](file://templates/Professores/view.php#L100-L125)
 
 ## Core Components
 - DocenteDisponibilidade entity defines accessible fields for mass assignment and exposes related associations (docente, configuraplanejamento).
-- DocenteDisponibilidadesTable configures table metadata, behaviors, belongsTo associations to Docentes and Configuraplanejamentos, validation rules, and existence rules.
+- DocenteDisponibilidadesTable configures table metadata, behaviors, belongsTo associations to Professores and Configuraplanejamentos, validation rules, and existence rules.
 - DocenteDisponibilidadesController provides CRUD endpoints with authorization handling, prefilling from query parameters, pagination, and flash messages.
 - Templates provide list and add forms, and display availability inline on the faculty index view.
 
@@ -114,7 +114,7 @@ Key responsibilities:
 - [DocenteDisponibilidadesController.php:1-118](file://src/Controller/DocenteDisponibilidadesController.php#L1-L118)
 - [index.php (DocenteDisponibilidades):1-61](file://templates/DocenteDisponibilidades/index.php#L1-L61)
 - [add.php (DocenteDisponibilidades):1-21](file://templates/DocenteDisponibilidades/add.php#L1-L21)
-- [index.php (Docentes):1-166](file://templates/Docentes/index.php#L1-L166)
+- [index.php (Professores):1-166](file://templates/Professores/index.php#L1-L166)
 
 ## Architecture Overview
 Availability is scoped per planning configuration (semester). Each professor can have one availability record per planning configuration due to a unique constraint. The controller manages creation, update, deletion, and listing. Views present availability inline on the faculty index and detail pages.
@@ -124,7 +124,7 @@ sequenceDiagram
 participant U as "User"
 participant C as "DocenteDisponibilidadesController"
 participant T as "DocenteDisponibilidadesTable"
-participant D as "DocentesTable"
+participant D as "ProfessoresTable"
 participant P as "ConfiguraplanejamentosTable"
 participant DB as "Database"
 U->>C : POST /docente_disponibilidades/add
@@ -150,9 +150,9 @@ C-->>U : Redirect to index with docente_id
   - Columns: id (PK), docente_id (FK), configuraplanejamento_id (FK), disponivel (boolean default true), motivo (string max 100), observacoes (text), created, modified
   - Indexes: docente_id, configuraplanejamento_id, unique(docente_id, configuraplanejamento_id)
 - Relationships:
-  - belongsTo Docentes (via docente_id)
+  - belongsTo Professores (via docente_id)
   - belongsTo Configuraplanejamentos (via configuraplanejamento_id)
-  - Docentes hasMany DocenteDisponibilidades
+  - Professores hasMany DocenteDisponibilidades
   - Configuraplanejamentos hasMany DocenteDisponibilidades
 
 ```mermaid
@@ -182,13 +182,13 @@ CONFIGURAPLANEJAMENTO ||--o{ DOCENTE_DISPONIBILIDADE : "has many"
 **Diagram sources**
 - [20260613100000_CreateDocenteDisponibilidades.php:1-48](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L1-L48)
 - [DocenteDisponibilidadesTable.php:22-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L30)
-- [DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [ConfiguraplanejamentosTable.php:24-31](file://src/Model/Table/ConfiguraplanejamentosTable.php#L24-L31)
 
 **Section sources**
 - [20260613100000_CreateDocenteDisponibilidades.php:1-48](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L1-L48)
 - [DocenteDisponibilidadesTable.php:13-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L13-L30)
-- [DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [ConfiguraplanejamentosTable.php:24-31](file://src/Model/Table/ConfiguraplanejamentosTable.php#L24-L31)
 
 ### Entity and Validation Rules
@@ -199,7 +199,7 @@ CONFIGURAPLANEJAMENTO ||--o{ DOCENTE_DISPONIBILIDADE : "has many"
   - disponivel must be boolean and not empty
   - motivo optional scalar with max length 100
   - observacoes optional scalar
-- Existence rules enforce referential integrity to Docentes and Configuraplanejamentos.
+- Existence rules enforce referential integrity to Professores and Configuraplanejamentos.
 
 ```mermaid
 flowchart TD
@@ -236,7 +236,7 @@ participant C as "DocenteDisponibilidadesController"
 participant T as "DocenteDisponibilidadesTable"
 participant V as "Template : index.php"
 U->>C : GET /docente_disponibilidades/index?docente_id=...
-C->>T : find().contain([Docentes, Configuraplanejamentos]).orderBy(semestre DESC, id DESC)
+C->>T : find().contain([Professores, Configuraplanejamentos]).orderBy(semestre DESC, id DESC)
 T-->>C : Paginated results
 C->>V : Render list with badges and actions
 V-->>U : HTML page
@@ -251,31 +251,31 @@ V-->>U : HTML page
 - [index.php (DocenteDisponibilidades):1-61](file://templates/DocenteDisponibilidades/index.php#L1-L61)
 
 ### Integration with Faculty Listing Page
-- The Docentes index template shows an inline “Disponibilidade” column that reflects availability for the current planning configuration context.
+- The Professores index template shows an inline “Disponibilidade” column that reflects availability for the current planning configuration context.
 - If an availability record exists for the professor and selected configuration, it displays Yes/No and optionally the reason.
 - If no record exists, it shows “Not provided”.
 
 ```mermaid
 flowchart TD
-LoadFaculty["Load Docentes"] --> FilterSemester["Filter by Configuraplanejamento (if provided)"]
+LoadFaculty["Load Professores"] --> FilterSemester["Filter by Configuraplanejamento (if provided)"]
 FilterSemester --> MapAvail["Map availability per docente for selected configuration"]
 MapAvail --> RenderRow["Render row with badge and reason"]
 RenderRow --> Display["Display in table"]
 ```
 
 **Diagram sources**
-- [index.php (Docentes):106-138](file://templates/Docentes/index.php#L106-L138)
+- [index.php (Professores):106-138](file://templates/Professores/index.php#L106-L138)
 
 **Section sources**
-- [index.php (Docentes):106-138](file://templates/Docentes/index.php#L106-L138)
+- [index.php (Professores):106-138](file://templates/Professores/index.php#L106-L138)
 
 ### Viewing and Managing Availability per Professor
-- The Docentes view template includes a section titled “Disponibilidade por Semestre” that lists each professor’s availability across configurations, with links to add/edit/delete.
+- The Professores view template includes a section titled “Disponibilidade por Semestre” that lists each professor’s availability across configurations, with links to add/edit/delete.
 
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant V as "Template : Docentes/view.php"
+participant V as "Template : Professores/view.php"
 participant C as "DocenteDisponibilidadesController"
 U->>V : Open professor detail
 V->>V : Iterate docente.docente_disponibilidades
@@ -285,16 +285,16 @@ C-->>U : Redirects and flash messages
 ```
 
 **Diagram sources**
-- [view.php (Docentes):100-125](file://templates/Docentes/view.php#L100-L125)
+- [view.php (Professores):100-125](file://templates/Professores/view.php#L100-L125)
 - [DocenteDisponibilidadesController.php:44-116](file://src/Controller/DocenteDisponibilidadesController.php#L44-L116)
 
 **Section sources**
-- [view.php (Docentes):100-125](file://templates/Docentes/view.php#L100-L125)
+- [view.php (Professores):100-125](file://templates/Professores/view.php#L100-L125)
 - [DocenteDisponibilidadesController.php:44-116](file://src/Controller/DocenteDisponibilidadesController.php#L44-L116)
 
 ## Dependency Analysis
-- DocenteDisponibilidadesTable depends on Docentes and Configuraplanejamentos via belongsTo associations.
-- DocentesTable declares hasMany DocenteDisponibilidades.
+- DocenteDisponibilidadesTable depends on Professores and Configuraplanejamentos via belongsTo associations.
+- ProfessoresTable declares hasMany DocenteDisponibilidades.
 - ConfiguraplanejamentosTable declares hasMany DocenteDisponibilidades.
 - Controller uses fetchTable to access models and orchestrate operations.
 - Templates consume controller-provided data and render availability inline.
@@ -314,7 +314,7 @@ class DocenteDisponibilidadesTable {
 +buildRules()
 +findForDocente()
 }
-class DocentesTable {
+class ProfessoresTable {
 +hasMany("DocenteDisponibilidades")
 }
 class ConfiguraplanejamentosTable {
@@ -327,9 +327,9 @@ class DocenteDisponibilidadesController {
 +delete()
 }
 DocenteDisponibilidade <.. DocenteDisponibilidadesTable : "entity/table"
-DocenteDisponibilidadesTable --> DocentesTable : "belongsTo"
+DocenteDisponibilidadesTable --> ProfessoresTable : "belongsTo"
 DocenteDisponibilidadesTable --> ConfiguraplanejamentosTable : "belongsTo"
-DocentesTable --> DocenteDisponibilidadesTable : "hasMany"
+ProfessoresTable --> DocenteDisponibilidadesTable : "hasMany"
 ConfiguraplanejamentosTable --> DocenteDisponibilidadesTable : "hasMany"
 DocenteDisponibilidadesController --> DocenteDisponibilidadesTable : "uses"
 ```
@@ -337,13 +337,13 @@ DocenteDisponibilidadesController --> DocenteDisponibilidadesTable : "uses"
 **Diagram sources**
 - [DocenteDisponibilidade.php:1-22](file://src/Model/Entity/DocenteDisponibilidade.php#L1-L22)
 - [DocenteDisponibilidadesTable.php:13-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L13-L30)
-- [DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [ConfiguraplanejamentosTable.php:24-31](file://src/Model/Table/ConfiguraplanejamentosTable.php#L24-L31)
 - [DocenteDisponibilidadesController.php:17-116](file://src/Controller/DocenteDisponibilidadesController.php#L17-L116)
 
 **Section sources**
 - [DocenteDisponibilidadesTable.php:13-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L13-L30)
-- [DocentesTable.php:35-42](file://src/Model/Table/DocentesTable.php#L35-L42)
+- [ProfessoresTable.php:35-42](file://src/Model/Table/ProfessoresTable.php#L35-L42)
 - [ConfiguraplanejamentosTable.php:24-31](file://src/Model/Table/ConfiguraplanejamentosTable.php#L24-L31)
 - [DocenteDisponibilidadesController.php:17-116](file://src/Controller/DocenteDisponibilidadesController.php#L17-L116)
 
@@ -378,7 +378,7 @@ Operational tips:
 - [20260613100000_CreateDocenteDisponibilidades.php:42-45](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L42-L45)
 - [DocenteDisponibilidadesTable.php:32-64](file://src/Model/Table/DocenteDisponibilidadesTable.php#L32-L64)
 - [DocenteDisponibilidadesController.php:44-116](file://src/Controller/DocenteDisponibilidadesController.php#L44-L116)
-- [index.php (Docentes):106-138](file://templates/Docentes/index.php#L106-L138)
+- [index.php (Professores):106-138](file://templates/Professores/index.php#L106-L138)
 
 ## Conclusion
 The faculty availability management system provides a robust, semester-scoped way to track professor availability using a simple boolean flag and supporting metadata. The unique constraint ensures one availability record per professor per planning configuration, preventing overlaps. The controller and templates offer straightforward CRUD operations and inline visibility on the faculty listing. Validation and existence rules maintain data integrity, while indexes support efficient queries. For advanced scenarios like time-slot conflicts, additional modeling would be required beyond the current design.
@@ -415,10 +415,10 @@ The faculty availability management system provides a robust, semester-scoped wa
 - Display availability inline on faculty listing:
   - Template logic maps availability per professor for the selected planning configuration and renders badges and reasons.
   - References:
-    - [index.php (Docentes):106-138](file://templates/Docentes/index.php#L106-L138)
+    - [index.php (Professores):106-138](file://templates/Professores/index.php#L106-L138)
 
 **Section sources**
 - [DocenteDisponibilidadesController.php:17-116](file://src/Controller/DocenteDisponibilidadesController.php#L17-L116)
 - [DocenteDisponibilidadesTable.php:22-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L30)
 - [add.php (DocenteDisponibilidades):1-21](file://templates/DocenteDisponibilidades/add.php#L1-L21)
-- [index.php (Docentes):106-138](file://templates/Docentes/index.php#L106-L138)
+- [index.php (Professores):106-138](file://templates/Professores/index.php#L106-L138)

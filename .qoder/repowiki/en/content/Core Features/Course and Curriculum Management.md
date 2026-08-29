@@ -130,8 +130,8 @@ MS --> PT
 - Configuraplanejamento (Planning Configuration): Identifies a semester/version context used to group schedule entries.
 
 Key relationships:
-- Ementas belongs to Disciplinas, Configuraplanejamentos, Optativas, Docentes.
-- Planejamentos belongs to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+- Ementas belongs to Disciplinas, Configuraplanejamentos, Optativas, Professores.
+- Planejamentos belongs to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
 - Disciplinas has many Planejamentos.
 
 Validation and constraints:
@@ -414,7 +414,7 @@ CONFIGURAPLANEJAMENTOS ||--o{ PLANEJAMENTOS : "has many"
 
 ## Dependency Analysis
 - Controllers depend on their respective tables for persistence and queries.
-- Tables declare relationships to other tables (e.g., Planejamentos depends on Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios).
+- Tables declare relationships to other tables (e.g., Planejamentos depends on Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios).
 - Migrations ensure schema alignment for new fields like curriculo and foundational entities like dias, horarios, salas.
 
 ```mermaid

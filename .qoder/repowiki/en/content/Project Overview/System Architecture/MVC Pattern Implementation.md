@@ -178,7 +178,7 @@ Render --> End(["Response"])
 ### Models: Table Classes and Entities
 - PlanejamentosTable:
   - Configures table name, display field, primary key, and Timestamp behavior.
-  - Declares belongsTo associations to Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+  - Declares belongsTo associations to Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
   - Provides validationDefault rules for required and optional fields.
 - DisciplinasTable:
   - Configures table name, display field, primary key, and Timestamp behavior.

@@ -2,14 +2,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+ - [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+ - [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+ - [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 - [AppController.php](file://src/Controller/AppController.php)
 - [Application.php](file://src/Application.php)
 </cite>
@@ -26,28 +26,28 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-This document explains the complete faculty (Docente) lifecycle: creation, reading, updating, and deletion. It covers authentication and authorization requirements, form handling, validation rules, data persistence via DocentesTable, filtering and pagination on the index page, and common operational scenarios such as bulk operations, search patterns, and error handling.
+This document explains the complete faculty (Docente) lifecycle: creation, reading, updating, and deletion. It covers authentication and authorization requirements, form handling, validation rules, data persistence via ProfessoresTable, filtering and pagination on the index page, and common operational scenarios such as bulk operations, search patterns, and error handling.
 
 ## Project Structure
 The faculty feature follows a standard CakePHP MVC layout:
-- Controller: DocentesController handles HTTP requests for listing, viewing, adding, editing, and deleting faculty members.
-- Model: DocentesTable defines table configuration, relationships, validation, and normalization logic; Docente entity declares accessible fields.
+ - Controller: ProfessoresController handles HTTP requests for listing, viewing, adding, editing, and deleting faculty members.
+ - Model: ProfessoresTable defines table configuration, relationships, validation, and normalization logic; Docente entity declares accessible fields.
 - Policy: DocentePolicy enforces role-based permissions for index, view, add, edit, and delete actions.
-- Views: templates/Docentes/* render forms and lists with filters, sorting, and pagination.
+- Views: templates/Professores/* render forms and lists with filters, sorting, and pagination.
 - Application bootstrap configures Authentication and Authorization middleware and services.
 
 ```mermaid
 graph TB
 subgraph "HTTP Layer"
-C["DocentesController"]
+C["ProfessoresController"]
 V_index["View: index.php"]
 V_add["View: add.php"]
 V_edit["View: edit.php"]
 V_view["View: view.php"]
 end
 subgraph "Domain Layer"
-T["DocentesTable"]
-E["Docente Entity"]
+T["ProfessoresTable"]
+E["Professor Entity"]
 P["DocentePolicy"]
 end
 subgraph "Security"
@@ -55,7 +55,7 @@ A["Authentication Middleware"]
 Z["Authorization Middleware"]
 end
 subgraph "Persistence"
-DB["Database (docentes)"]
+DB["Database (professores)"]
 end
 C --> T
 C --> P
@@ -70,32 +70,32 @@ Z --> C
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+- [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 - [Application.php](file://src/Application.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+- [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 - [AppController.php](file://src/Controller/AppController.php)
 - [Application.php](file://src/Application.php)
 
 ## Core Components
-- DocentesController: Implements index, view, add, edit, delete; manages filters, pagination, availability display, and flash messages.
-- DocentesTable: Configures table name, primary key, display field, behaviors, relationships, validation rules, and status normalization.
-- Docente Entity: Declares mass-assignable fields.
+- ProfessoresController: Implements index, view, add, edit, delete; manages filters, pagination, availability display, and flash messages.
+- ProfessoresTable: Configures table name, primary key, display field, behaviors, relationships, validation rules, and status normalization.
+- Professor Entity: Declares mass-assignable fields.
 - DocentePolicy: Role-based access control for index, view, add, edit, delete.
 - Views: Provide filter UI, sortable columns, pagination controls, and forms for create/update.
 
@@ -106,14 +106,14 @@ Key responsibilities:
 - Normalization: Status values normalized to canonical Portuguese values before save.
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+- [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 - [Application.php](file://src/Application.php)
 
 ## Architecture Overview
@@ -123,24 +123,24 @@ End-to-end flow for creating a new faculty member:
 sequenceDiagram
 participant U as "User"
 participant MW as "AuthN/AuthZ Middleware"
-participant CT as "DocentesController : : add"
+participant CT as "ProfessoresController : : add"
 participant POL as "DocentePolicy"
-participant TAB as "DocentesTable"
-participant ENT as "Docente Entity"
+participant TAB as "ProfessoresTable"
+participant ENT as "Professor Entity"
 participant DB as "Database"
-U->>MW : GET /docentes/add
+U->>MW : GET /professores/add
 MW-->>U : Redirect if not authenticated
-U->>CT : GET /docentes/add
+U->>CT : GET /professores/add
 CT->>POL : authorize(add)
 POL-->>CT : allow/deny
 CT-->>U : Render add form
-U->>CT : POST /docentes/add {nome, cpf, siape, departamento, status, ...}
+U->>CT : POST /professores/add {nome, cpf, siape, departamento, status, ...}
 CT->>TAB : patchEntity(newEmptyEntity(), data)
 TAB->>ENT : normalize status (beforeMarshal)
 TAB-->>CT : valid/invalid entity
 alt valid
 CT->>TAB : save(entity)
-TAB->>DB : INSERT docentes
+TAB->>DB : INSERT professores
 DB-->>TAB : success
 TAB-->>CT : true
 CT-->>U : Flash success + redirect to view
@@ -150,15 +150,15 @@ end
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [Application.php](file://src/Application.php)
 
 ## Detailed Component Analysis
 
-### DocentesController
+### ProfessoresController
 Responsibilities:
 - Before filter: Marks index and view as unauthenticated.
 - index(): Builds filtered and paginated list with sortable fields; supports filters by status, departamento, and availability for a planning configuration; loads active/current configuration to show availability column.
@@ -180,10 +180,10 @@ Error handling:
 - Uses Flash component for success/error messages on create/update/delete.
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [index.php](file://templates/Docentes/index.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [index.php](file://templates/Professores/index.php)
 
-### DocentesTable
+### ProfessoresTable
 Responsibilities:
 - initialize(): Sets table name, display field, primary key, Timestamp behavior; defines hasMany relationships to Planejamentos and DocenteDisponibilidades.
 - validationDefault(): Defines scalar types, lengths, presence, and emptiness rules; validates email format; allows optional dates.
@@ -198,9 +198,9 @@ Normalization map:
 - English aliases like active/inactive/retired mapped to Portuguese canonical values.
 
 **Section sources**
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 
-### Docente Entity
+### Professor Entity
 - Declares all accessible fields for mass assignment, including timestamps created and modified.
 
 **Section sources**
@@ -222,29 +222,29 @@ Normalization map:
 - view.php: Displays faculty details and associated availability records with links to manage them.
 
 **Section sources**
-- [index.php](file://templates/Docentes/index.php)
-- [add.php](file://templates/Docentes/add.php)
-- [edit.php](file://templates/Docentes/edit.php)
-- [view.php](file://templates/Docentes/view.php)
+- [index.php](file://templates/Professores/index.php)
+- [add.php](file://templates/Professores/add.php)
+- [edit.php](file://templates/Professores/edit.php)
+- [view.php](file://templates/Professores/view.php)
 
 ### Authentication and Authorization Setup
 - Application-level middleware registers Authentication and Authorization components.
 - Authentication service uses Session and Form authenticators; login URL configured.
 - Authorization service uses OrmResolver to resolve policies.
 - AppController loads Flash, Authentication, Authorization components and sets global unauthenticated actions.
-- DocentesController overrides unauthenticated actions to include index and view.
+- ProfessoresController overrides unauthenticated actions to include index and view.
 
 **Section sources**
 - [Application.php](file://src/Application.php)
 - [AppController.php](file://src/Controller/AppController.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 
 ## Dependency Analysis
 High-level dependencies among core components:
 
 ```mermaid
 classDiagram
-class DocentesController {
+class ProfessoresController {
 +beforeFilter(event)
 +index()
 +view(id)
@@ -252,7 +252,7 @@ class DocentesController {
 +edit(id)
 +delete(id)
 }
-class DocentesTable {
+class ProfessoresTable {
 +initialize(config)
 +validationDefault(validator)
 +beforeMarshal(event, data, options)
@@ -271,22 +271,22 @@ class Application {
 +getAuthenticationService(request)
 +getAuthorizationService(request)
 }
-DocentesController --> DocentesTable : "uses"
-DocentesController --> DocentePolicy : "authorizes"
-DocentesTable --> Docente : "operates on"
-Application --> DocentesController : "configures auth/authz"
+ProfessoresController --> ProfessoresTable : "uses"
+ProfessoresController --> DocentePolicy : "authorizes"
+ProfessoresTable --> Docente : "operates on"
+Application --> ProfessoresController : "configures auth/authz"
 ```
 
 **Diagram sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [Application.php](file://src/Application.php)
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
 - [Application.php](file://src/Application.php)
@@ -313,10 +313,10 @@ Operational patterns:
 - Error handling: Use Flash messages consistently; log exceptions where appropriate; return to previous page with preserved filters.
 
 **Section sources**
-- [DocentesController.php](file://src/Controller/DocentesController.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [DocentePolicy.php](file://src/Policy/DocentePolicy.php)
-- [index.php](file://templates/Docentes/index.php)
+- [index.php](file://templates/Professores/index.php)
 
 ## Conclusion
 The faculty CRUD system provides a secure, validated, and user-friendly interface for managing faculty members. Authentication and authorization are enforced through middleware and policies, while validation and normalization ensure data integrity. The index page offers robust filtering and sorting with pagination. Extensibility points exist for bulk operations and advanced search without disrupting existing flows.

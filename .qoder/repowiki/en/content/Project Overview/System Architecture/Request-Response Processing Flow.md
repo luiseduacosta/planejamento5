@@ -233,7 +233,7 @@ Fallback --> REnd(["Resolved Route Attributes"])
   - Skips authorization for listing.
   - Reads query parameter semestre.
   - Queries related Configuraplanejamentos for distinct semestres.
-  - Builds a paginated query with contains for Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios.
+  - Builds a paginated query with contains for Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios.
   - Optionally filters by selected semestre.
   - Sets view variables for pagination and filter UI.
 

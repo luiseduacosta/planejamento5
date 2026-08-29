@@ -117,12 +117,12 @@ MD --> DT
 - Disciplinas table validates period fields periodo_diurno and periodo_noturno as integers within allowed lists.
 - Horarios table validates horario and ordem presence and types.
 - DocenteDisponibilidades table enforces existence constraints and provides a finder helper for filtering by docente_id.
-- Planejamentos controller implements automatic assignment of turno and periodo, and filters docentes by availability.
+- Planejamentos controller implements automatic assignment of turno and periodo, and filters professores by availability.
 
 Key responsibilities:
 - Automatic turno assignment based on horario_id ranges
 - Period selection based on disciplina properties
-- Availability filtering for docentes
+- Availability filtering for professores
 - Basic validation via Table validators
 - Authorization via Policy
 
@@ -138,7 +138,7 @@ The core flow for creating or editing a planejamento involves:
 - Controller receives POST/PATCH data
 - Applies business rules to compute turno and periodo
 - Patches entity and persists
-- Uses related data helpers to populate dropdowns and filter available docentes
+- Uses related data helpers to populate dropdowns and filter available professores
 
 ```mermaid
 sequenceDiagram
@@ -209,15 +209,15 @@ Validation alignment:
 
 ### Faculty Availability Filtering
 Business rule:
-- When a configuraplanejamento_id is provided, only docentes marked as available for that configuration are shown
+- When a configuraplanejamento_id is provided, only professores marked as available for that configuration are shown
 - Active status filtering is also applied
 
 Implementation location:
-- _setRelatedData() builds docentes list using matching on DocenteDisponibilidades.disponivel = true
+- _setRelatedData() builds professores list using matching on DocenteDisponibilidades.disponivel = true
 - Current docente is preserved even if filtered out
 
 Complex scenario considerations:
-- Handle cases where no docentes are available
+- Handle cases where no professores are available
 - Maintain current selection when editing to avoid confusion
 
 **Section sources**
@@ -338,8 +338,8 @@ SelectDisciplina --> AutoPeriodo["Auto-compute Periodo from Disciplina"]
 AutoPeriodo --> SelectDay["Select Day"]
 SelectDay --> SelectTime["Select Time Slot"]
 SelectTime --> AutoTurno["Auto-compute Turno from Time Slot"]
-AutoTurno --> FilterDocentes["Filter Available Docentes"]
-FilterDocentes --> CheckConflicts["Check Scheduling Conflicts"]
+AutoTurno --> FilterProfessores["Filter Available Professores"]
+FilterProfessores --> CheckConflicts["Check Scheduling Conflicts"]
 CheckConflicts --> |No Conflicts| Save["Save Planejamento"]
 CheckConflicts --> |Conflicts| Resolve["Resolve Conflicts"]
 Resolve --> Save
@@ -424,7 +424,7 @@ Common issues and resolutions:
 - Invalid horario_id:
   - Symptom: turno may be assigned incorrectly
   - Resolution: Validate horario_id exists and belongs to expected ranges
-- No available docentes:
+- No available professores:
   - Symptom: Dropdown empty after selecting configuracao
   - Resolution: Verify DocenteDisponibilidades entries and disponivel flag
 - Authorization errors:

@@ -6,7 +6,7 @@
 - [PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [Planejamento Entity.php](file://src/Model/Entity/Planejamento.php)
 - [Disciplina Entity.php](file://src/Model/Entity/Disciplina.php)
-- [Docente Entity.php](file://src/Model/Entity/Docente.php)
+- [Professor Entity.php](file://src/Model/Entity/Docente.php)
 - [Sala Entity.php](file://src/Model/Entity/Sala.php)
 - [Dia Entity.php](file://src/Model/Entity/Dia.php)
 - [Horario Entity.php](file://src/Model/Entity/Horario.php)
@@ -35,7 +35,7 @@
 9. Conclusion
 
 ## Introduction
-This document explains the academic planning management system focused on creating, editing, and managing academic schedules (planejamentos) with multi-semester support. It covers the scheduling workflow including course assignment to faculty members, classroom allocation, time slot management, filtering by semester, validation rules, and business logic for automatic period assignment based on discipline type and time slot selection. Practical examples are provided for schedule creation, bulk operations, and advanced search functionality. The relationships between planejamentos and related entities (disciplinas, docentes, salas, dias, horarios) are detailed.
+This document explains the academic planning management system focused on creating, editing, and managing academic schedules (planejamentos) with multi-semester support. It covers the scheduling workflow including course assignment to faculty members, classroom allocation, time slot management, filtering by semester, validation rules, and business logic for automatic period assignment based on discipline type and time slot selection. Practical examples are provided for schedule creation, bulk operations, and advanced search functionality. The relationships between planejamentos and related entities (disciplinas, professores, salas, dias, horarios) are detailed.
 
 ## Project Structure
 The system follows a typical CakePHP MVC structure:
@@ -54,7 +54,7 @@ subgraph "Models"
 PT["PlanejamentosTable"]
 PE["Planejamento Entity"]
 DE["Disciplina Entity"]
-DoE["Docente Entity"]
+DoE["Professor Entity"]
 SE["Sala Entity"]
 DaE["Dia Entity"]
 HoE["Horario Entity"]
@@ -108,7 +108,7 @@ MC --> DE
 - [PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [Planejamento Entity.php](file://src/Model/Entity/Planejamento.php)
 - [Disciplina Entity.php](file://src/Model/Entity/Disciplina.php)
-- [Docente Entity.php](file://src/Model/Entity/Docente.php)
+- [Professor Entity.php](file://src/Model/Entity/Docente.php)
 - [Sala Entity.php](file://src/Model/Entity/Sala.php)
 - [Dia Entity.php](file://src/Model/Entity/Dia.php)
 - [Horario Entity.php](file://src/Model/Entity/Horario.php)
@@ -166,7 +166,7 @@ participant E as "Entities & Associations"
 participant DB as "Database"
 U->>C : "GET /planejamentos?semestre=..."
 C->>T : "find() with contains"
-T->>E : "Join Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, Horarios"
+T->>E : "Join Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, Horarios"
 E-->>T : "Result set"
 T-->>C : "Paginated results"
 C-->>U : "Render index with filter"
@@ -192,7 +192,7 @@ C-->>U : "Redirect to index with flash message"
 ### Scheduling Workflow and Business Logic
 - Turno assignment: Based on horario_id values, the controller sets turno to diurno or noturno.
 - Periodo assignment: Based on selected disciplina, the controller chooses periodo_diurno if available; otherwise, it uses periodo_noturno.
-- Docente filtering: When a configuraplanejamento_id is selected, only docentes marked as available for that configuration are shown.
+- Docente filtering: When a configuraplanejamento_id is selected, only professores marked as available for that configuration are shown.
 - Semestre filtering: Index supports filtering by semestre via query parameter.
 
 ```mermaid
@@ -311,7 +311,7 @@ Configuraplanejamento --> DocenteDisponibilidade : "hasMany"
 **Diagram sources**
 - [Planejamento Entity.php](file://src/Model/Entity/Planejamento.php)
 - [Disciplina Entity.php](file://src/Model/Entity/Disciplina.php)
-- [Docente Entity.php](file://src/Model/Entity/Docente.php)
+- [Professor Entity.php](file://src/Model/Entity/Docente.php)
 - [Sala Entity.php](file://src/Model/Entity/Sala.php)
 - [Dia Entity.php](file://src/Model/Entity/Dia.php)
 - [Horario Entity.php](file://src/Model/Entity/Horario.php)
@@ -323,7 +323,7 @@ Configuraplanejamento --> DocenteDisponibilidade : "hasMany"
 - [PlanejamentosTable.php](file://src/Model/Table/PlanejamentosTable.php)
 - [Planejamento Entity.php](file://src/Model/Entity/Planejamento.php)
 - [Disciplina Entity.php](file://src/Model/Entity/Disciplina.php)
-- [Docente Entity.php](file://src/Model/Entity/Docente.php)
+- [Professor Entity.php](file://src/Model/Entity/Docente.php)
 - [Sala Entity.php](file://src/Model/Entity/Sala.php)
 - [Dia Entity.php](file://src/Model/Entity/Dia.php)
 - [Horario Entity.php](file://src/Model/Entity/Horario.php)
@@ -356,7 +356,7 @@ Practical example:
 - No explicit conflict detection logic is implemented in the analyzed files.
 - Recommendations:
   - Add uniqueness constraints at the database level to prevent duplicate assignments (e.g., same sala/dia/horario for multiple planejamentos).
-  - Implement server-side validation to detect overlaps for docentes and salas within the same semestre.
+  - Implement server-side validation to detect overlaps for professores and salas within the same semestre.
   - Provide user feedback when conflicts are detected during add/edit.
 
 [No sources needed since this section proposes enhancements without analyzing specific files]
@@ -377,7 +377,7 @@ Practical example:
 - Days (dias): day label and order.
 - Time slots (horarios): time label and order.
 - Rooms (salas): room label.
-- Teacher availability (docente_disponibilidades): links docentes to configurations with availability flags and reasons.
+- Teacher availability (docente_disponibilidades): links professores to configurations with availability flags and reasons.
 - Discipline curriculum field added via migration.
 
 **Section sources**
@@ -397,7 +397,7 @@ PC --> PP["PlanejamentoPolicy"]
 PC --> CP["ConfiguraplanejamentoPolicy"]
 PT --> PE["Planejamento Entity"]
 PT --> DE["Disciplina Entity"]
-PT --> DoE["Docente Entity"]
+PT --> DoE["Professor Entity"]
 PT --> SE["Sala Entity"]
 PT --> DaE["Dia Entity"]
 PT --> HoE["Horario Entity"]
@@ -419,7 +419,7 @@ PC --> DdE["DocenteDisponibilidade Entity"]
 
 ## Performance Considerations
 - Use pagination for large lists to reduce memory usage and improve response times.
-- Limit result sets for dropdowns (e.g., limit 200 for disciplines and docentes) to avoid heavy forms.
+- Limit result sets for dropdowns (e.g., limit 200 for disciplines and professores) to avoid heavy forms.
 - Prefer contain joins to fetch only necessary related data.
 - Consider caching frequently accessed reference data (dias, horarios, salas) if they change infrequently.
 - Avoid N+1 queries by using appropriate contains and indexes on foreign keys.
@@ -431,7 +431,7 @@ Common issues and resolutions:
 - Missing disciplina selection: The controller enforces disciplina selection and redirects with an error message if none is provided.
 - Incorrect turno assignment: Ensure horario_id values align with expected ranges; verify mapping logic in the controller.
 - Incorrect periodo assignment: Confirm disciplina has valid periodo_diurno or periodo_noturno values.
-- Docente availability filtering: If no docentes appear, check DocenteDisponibilidades for the selected configuraplanejamento_id and ensure status is active.
+- Docente availability filtering: If no professores appear, check DocenteDisponibilidades for the selected configuraplanejamento_id and ensure status is active.
 - Permission errors: Verify user roles match policy requirements for add/edit/delete operations.
 
 Operational tips:
@@ -445,6 +445,6 @@ Operational tips:
 - [PlanejamentoPolicy.php](file://src/Policy/PlanejamentoPolicy.php)
 
 ## Conclusion
-The academic planning management system provides robust tools for creating and managing academic schedules across multiple semesters. It automates key aspects like turno and periodo assignment, supports semester-based filtering, and enforces basic validation and authorization. While conflict detection is not currently implemented, the architecture allows straightforward extension to include overlap checks for docentes and salas. With careful attention to performance and usability, the system can scale to handle complex scheduling scenarios.
+The academic planning management system provides robust tools for creating and managing academic schedules across multiple semesters. It automates key aspects like turno and periodo assignment, supports semester-based filtering, and enforces basic validation and authorization. While conflict detection is not currently implemented, the architecture allows straightforward extension to include overlap checks for professores and salas. With careful attention to performance and usability, the system can scale to handle complex scheduling scenarios.
 
 [No sources needed since this section summarizes without analyzing specific files]

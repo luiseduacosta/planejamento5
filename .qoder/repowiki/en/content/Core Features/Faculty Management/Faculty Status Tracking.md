@@ -2,14 +2,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 - [Docente.php](file://src/Model/Entity/Docente.php)
-- [DocentesController.php](file://src/Controller/DocentesController.php)
+- [ProfessoresController.php](file://src/Controller/ProfessoresController.php)
 - [PlanejamentosController.php](file://src/Controller/PlanejamentosController.php)
-- [add.php (Docentes)](file://templates/Docentes/add.php)
-- [edit.php (Docentes)](file://templates/Docentes/edit.php)
-- [index.php (Docentes)](file://templates/Docentes/index.php)
-- [view.php (Docentes)](file://templates/Docentes/view.php)
+- [add.php (Professores)](file://templates/Professores/add.php)
+- [edit.php (Professores)](file://templates/Professores/edit.php)
+- [index.php (Professores)](file://templates/Professores/index.php)
+- [view.php (Professores)](file://templates/Professores/view.php)
 - [CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 </cite>
 
@@ -38,17 +38,17 @@ The status logic is implemented primarily in the Docente domain layer (Table and
 ```mermaid
 graph TB
 subgraph "Domain Layer"
-DT["DocentesTable<br/>normalization + validation"]
-DE["Docente Entity<br/>status field"]
+DT["ProfessoresTable<br/>normalization + validation"]
+DE["Professor Entity<br/>status field"]
 end
 subgraph "Controllers"
-DC["DocentesController<br/>filters + labels + default"]
+DC["ProfessoresController<br/>filters + labels + default"]
 PC["PlanejamentosController<br/>eligibility filter"]
 end
 subgraph "Views"
-VIdx["Docentes Index<br/>labels + filters"]
-VAdd["Docentes Add/Edit<br/>status options"]
-VView["Docentes View<br/>labels"]
+VIdx["Professores Index<br/>labels + filters"]
+VAdd["Professores Add/Edit<br/>status options"]
+VView["Professores View<br/>labels"]
 end
 subgraph "Data"
 MDisp["Migration: docente_disponibilidades"]
@@ -64,23 +64,23 @@ PC --> MDisp
 ```
 
 **Diagram sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
 - [PlanejamentosController.php:217-231](file://src/Controller/PlanejamentosController.php#L217-L231)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
-- [add.php (Docentes):23-32](file://templates/Docentes/add.php#L23-L32)
-- [edit.php (Docentes):23-32](file://templates/Docentes/edit.php#L23-L32)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
+- [add.php (Professores):23-32](file://templates/Professores/add.php#L23-L32)
+- [edit.php (Professores):23-32](file://templates/Professores/edit.php#L23-L32)
 - [CreateDocenteDisponibilidades.php:10-45](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L10-L45)
 
 **Section sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
 - [PlanejamentosController.php:217-231](file://src/Controller/PlanejamentosController.php#L217-L231)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
-- [add.php (Docentes):23-32](file://templates/Docentes/add.php#L23-L32)
-- [edit.php (Docentes):23-32](file://templates/Docentes/edit.php#L23-L32)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
+- [add.php (Professores):23-32](file://templates/Professores/add.php#L23-L32)
+- [edit.php (Professores):23-32](file://templates/Professores/edit.php#L23-L32)
 - [CreateDocenteDisponibilidades.php:10-45](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php#L10-L45)
 
 ## Core Components
@@ -104,14 +104,14 @@ Key implementation points:
 - Views render localized labels and provide filter controls.
 
 **Section sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
-- [DocentesController.php:88-90](file://src/Controller/DocentesController.php#L88-L90)
-- [DocentesController.php:186](file://src/Controller/DocentesController.php#L186)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
-- [add.php (Docentes):23-32](file://templates/Docentes/add.php#L23-L32)
-- [edit.php (Docentes):23-32](file://templates/Docentes/edit.php#L23-L32)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
+- [ProfessoresController.php:88-90](file://src/Controller/ProfessoresController.php#L88-L90)
+- [ProfessoresController.php:186](file://src/Controller/ProfessoresController.php#L186)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
+- [add.php (Professores):23-32](file://templates/Professores/add.php#L23-L32)
+- [edit.php (Professores):23-32](file://templates/Professores/edit.php#L23-L32)
 
 ## Architecture Overview
 The status pipeline spans data entry, normalization, persistence, querying, and UI rendering.
@@ -119,25 +119,25 @@ The status pipeline spans data entry, normalization, persistence, querying, and 
 ```mermaid
 sequenceDiagram
 participant User as "User"
-participant UI as "Docentes Add/Edit Form"
-participant Ctl as "DocentesController"
-participant Tbl as "DocentesTable"
+participant UI as "Professores Add/Edit Form"
+participant Ctl as "ProfessoresController"
+participant Tbl as "ProfessoresTable"
 participant DB as "Database"
 User->>UI : Submit new faculty record
-UI->>Ctl : POST /docentes/add
+UI->>Ctl : POST /professores/add
 Ctl->>Tbl : patchEntity(data)
 Tbl->>Tbl : beforeMarshal() normalize status
 Tbl-->>Ctl : normalized entity
 Ctl->>Tbl : save(entity)
-Tbl->>DB : INSERT docentes(status=canonical)
+Tbl->>DB : INSERT professores(status=canonical)
 DB-->>Tbl : persisted
 Tbl-->>Ctl : saved entity
 Ctl-->>User : redirect to view
 ```
 
 **Diagram sources**
-- [DocentesController.php:183-200](file://src/Controller/DocentesController.php#L183-L200)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresController.php:183-200](file://src/Controller/ProfessoresController.php#L183-L200)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
 
 ## Detailed Component Analysis
@@ -160,12 +160,12 @@ ReturnOrig --> End
 ```
 
 **Diagram sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 
 **Section sources**
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 
 ### Three-Tier Status Model and Labels
 - Canonical statuses: ativo, aposentado, inativo.
@@ -173,7 +173,7 @@ ReturnOrig --> End
 
 ```mermaid
 classDiagram
-class DocentesController {
+class ProfessoresController {
 +STATUS_LABELS : map
 +STATUS_ALIASES : map
 +index()
@@ -181,27 +181,27 @@ class DocentesController {
 +edit()
 +canonicalStatus(status) string
 }
-class DocentesTable {
+class ProfessoresTable {
 +STATUS_NORMALIZATION_MAP : map
 +beforeMarshal(event, data, options) void
 }
 class Docente {
 +string status
 }
-DocentesController --> DocentesTable : "uses"
-DocentesTable --> Docente : "persists"
+ProfessoresController --> ProfessoresTable : "uses"
+ProfessoresTable --> Docente : "persists"
 ```
 
 **Diagram sources**
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
-- [DocentesController.php:202-211](file://src/Controller/DocentesController.php#L202-L211)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
+- [ProfessoresController.php:202-211](file://src/Controller/ProfessoresController.php#L202-L211)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
 
 **Section sources**
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
-- [DocentesController.php:202-211](file://src/Controller/DocentesController.php#L202-L211)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
+- [ProfessoresController.php:202-211](file://src/Controller/ProfessoresController.php#L202-L211)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
 
 ### Visibility and Filtering in Faculty Lists
@@ -212,11 +212,11 @@ DocentesTable --> Docente : "persists"
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant V as "Docentes Index View"
-participant C as "DocentesController.index"
-participant T as "DocentesTable"
+participant V as "Professores Index View"
+participant C as "ProfessoresController.index"
+participant T as "ProfessoresTable"
 U->>V : Select status filter (e.g., "active")
-V->>C : GET /docentes?status=active
+V->>C : GET /professores?status=active
 C->>C : canonicalStatus("active") -> "ativo"
 C->>T : find().where(status IN aliases["ativo"])
 T-->>C : filtered results
@@ -224,13 +224,13 @@ C-->>V : rendered list with labels
 ```
 
 **Diagram sources**
-- [DocentesController.php:34-90](file://src/Controller/DocentesController.php#L34-L90)
-- [DocentesController.php:202-211](file://src/Controller/DocentesController.php#L202-L211)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
+- [ProfessoresController.php:34-90](file://src/Controller/ProfessoresController.php#L34-L90)
+- [ProfessoresController.php:202-211](file://src/Controller/ProfessoresController.php#L202-L211)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
 
 **Section sources**
-- [DocentesController.php:34-90](file://src/Controller/DocentesController.php#L34-L90)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
+- [ProfessoresController.php:34-90](file://src/Controller/ProfessoresController.php#L34-L90)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
 
 ### Scheduling Eligibility and Automatic Generation
 - Only active faculty are considered eligible for scheduling.
@@ -242,7 +242,7 @@ sequenceDiagram
 participant U as "User"
 participant VC as "Planejamentos Add/Edit"
 participant PC as "PlanejamentosController._setRelatedData"
-participant DT as "DocentesTable"
+participant DT as "ProfessoresTable"
 U->>VC : Choose semester/configuracao
 VC->>PC : Request eligible faculty list
 PC->>DT : find().where(status IN ["ativo","active","activo"])
@@ -274,12 +274,12 @@ SetDefault --> Save
 ```
 
 **Diagram sources**
-- [DocentesController.php:186](file://src/Controller/DocentesController.php#L186)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresController.php:186](file://src/Controller/ProfessoresController.php#L186)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 
 **Section sources**
-- [DocentesController.php:186](file://src/Controller/DocentesController.php#L186)
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresController.php:186](file://src/Controller/ProfessoresController.php#L186)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 
 ### Status-Based Queries and Examples
 - Filter by canonical or alias:
@@ -293,7 +293,7 @@ Examples (descriptive):
 - Retrieve retired faculty: filter by "retired" or "aposentado".
 
 **Section sources**
-- [DocentesController.php:88-90](file://src/Controller/DocentesController.php#L88-L90)
+- [ProfessoresController.php:88-90](file://src/Controller/ProfessoresController.php#L88-L90)
 - [PlanejamentosController.php:223-231](file://src/Controller/PlanejamentosController.php#L223-L231)
 
 ### Reporting and Analytics
@@ -307,35 +307,35 @@ The following diagram highlights key dependencies related to status handling and
 
 ```mermaid
 graph LR
-DC["DocentesController"] --> DT["DocentesTable"]
-DC --> VIdx["Docentes Index View"]
-DC --> VAdd["Docentes Add View"]
-DC --> VEdit["Docentes Edit View"]
-DC --> VView["Docentes View"]
+DC["ProfessoresController"] --> DT["ProfessoresTable"]
+DC --> VIdx["Professores Index View"]
+DC --> VAdd["Professores Add View"]
+DC --> VEdit["Professores Edit View"]
+DC --> VView["Professores View"]
 PC["PlanejamentosController"] --> DT
 PC --> Disp["DocenteDisponibilidades (table)"]
-DT --> DE["Docente Entity"]
+DT --> DE["Professor Entity"]
 ```
 
 **Diagram sources**
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [PlanejamentosController.php:217-231](file://src/Controller/PlanejamentosController.php#L217-L231)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
-- [add.php (Docentes):23-32](file://templates/Docentes/add.php#L23-L32)
-- [edit.php (Docentes):23-32](file://templates/Docentes/edit.php#L23-L32)
-- [view.php (Docentes):10-19](file://templates/Docentes/view.php#L10-L19)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
+- [add.php (Professores):23-32](file://templates/Professores/add.php#L23-L32)
+- [edit.php (Professores):23-32](file://templates/Professores/edit.php#L23-L32)
+- [view.php (Professores):10-19](file://templates/Professores/view.php#L10-L19)
 
 **Section sources**
-- [DocentesController.php:16-26](file://src/Controller/DocentesController.php#L16-L26)
-- [DocentesTable.php:15-21](file://src/Model/Table/DocentesTable.php#L15-L21)
+- [ProfessoresController.php:16-26](file://src/Controller/ProfessoresController.php#L16-L26)
+- [ProfessoresTable.php:15-21](file://src/Model/Table/ProfessoresTable.php#L15-L21)
 - [PlanejamentosController.php:217-231](file://src/Controller/PlanejamentosController.php#L217-L231)
 - [Docente.php:26](file://src/Model/Entity/Docente.php#L26)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
-- [add.php (Docentes):23-32](file://templates/Docentes/add.php#L23-L32)
-- [edit.php (Docentes):23-32](file://templates/Docentes/edit.php#L23-L32)
-- [view.php (Docentes):10-19](file://templates/Docentes/view.php#L10-L19)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
+- [add.php (Professores):23-32](file://templates/Professores/add.php#L23-L32)
+- [edit.php (Professores):23-32](file://templates/Professores/edit.php#L23-L32)
+- [view.php (Professores):10-19](file://templates/Professores/view.php#L10-L19)
 
 ## Performance Considerations
 - Normalization occurs once per marshal operation; it is lightweight and avoids repeated lookups.
@@ -356,9 +356,9 @@ Common issues and resolutions:
   - Check that views use the label mapping for the stored status.
 
 **Section sources**
-- [DocentesTable.php:114-124](file://src/Model/Table/DocentesTable.php#L114-L124)
+- [ProfessoresTable.php:114-124](file://src/Model/Table/ProfessoresTable.php#L114-L124)
 - [PlanejamentosController.php:217-231](file://src/Controller/PlanejamentosController.php#L217-L231)
-- [index.php (Docentes):6-15](file://templates/Docentes/index.php#L6-L15)
+- [index.php (Professores):6-15](file://templates/Professores/index.php#L6-L15)
 
 ## Conclusion
 The faculty status tracking system enforces a clear three-tier canonical model while supporting flexible input via aliases. Normalization guarantees consistency, and status directly governs visibility and scheduling eligibility. Active faculty are included in scheduling workflows; retired and inactive faculty are excluded. The design keeps status logic centralized in the domain layer and exposes it consistently through controllers and views.

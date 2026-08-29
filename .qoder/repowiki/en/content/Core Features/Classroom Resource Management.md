@@ -224,7 +224,7 @@ Guidelines:
 - [SalaPolicy.php:11-34](file://src/Policy/SalaPolicy.php#L11-L34)
 
 ### Scheduling Integration and Availability Patterns
-- PlanejamentosTable defines belongsTo relationships with Disciplinas, Docentes, Configuraplanejamentos, Salas, Dias, and Horarios.
+- PlanejamentosTable defines belongsTo relationships with Disciplinas, Professores, Configuraplanejamentos, Salas, Dias, and Horarios.
 - sala_id is an integer field allowing empty values, indicating optional room assignment during planning.
 - HorariosTable defines time slots with ordering, used to schedule sessions.
 

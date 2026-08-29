@@ -9,7 +9,7 @@
 - [CreateDocenteDisponibilidades.php](file://config/Migrations/20260613100000_CreateDocenteDisponibilidades.php)
 - [DocenteDisponibilidadesController.php](file://src/Controller/DocenteDisponibilidadesController.php)
 - [index.php](file://templates/DocenteDisponibilidades/index.php)
-- [DocentesTable.php](file://src/Model/Table/DocentesTable.php)
+- [ProfessoresTable.php](file://src/Model/Table/ProfessoresTable.php)
 </cite>
 
 ## Table of Contents
@@ -41,7 +41,7 @@ D["DocenteDisponibilidade<br/>Entity"]
 DT["DocenteDisponibilidadesTable<br/>Table"]
 CPE["Configuraplanejamento<br/>Entity"]
 CPT["ConfiguraplanejamentosTable<br/>Table"]
-DOC["DocentesTable<br/>Table"]
+DOC["ProfessoresTable<br/>Table"]
 end
 subgraph "UI"
 CTRL["DocenteDisponibilidadesController<br/>Controller"]
@@ -79,7 +79,7 @@ MIG --> DT
 
 ## Core Components
 - DocenteDisponibilidade entity: Represents a professor’s availability within a specific planning configuration (semester/version). Includes the boolean disponivel flag and optional reason/notes fields.
-- DocenteDisponibilidadesTable: Defines belongsTo relationships to Docentes and Configuraplanejamentos, validation rules, and a finder method to filter by docente_id.
+- DocenteDisponibilidadesTable: Defines belongsTo relationships to Professores and Configuraplanejamentos, validation rules, and a finder method to filter by docente_id.
 - Configuraplanejamento entity/table: Represents a planning configuration with fields such as nome, semestre, versao, and ativo. Has a hasMany relationship to DocenteDisponibilidades.
 - DocenteDisponibilidadesController: Provides index, view, add, edit, delete actions; supports prefilling via query parameters and paginated listing ordered by semester descending.
 - Template index view: Renders availability rows including the associated semester and disponivel status.
@@ -235,7 +235,7 @@ participant T as "DocenteDisponibilidadesTable"
 participant CT as "ConfiguraplanejamentosTable"
 participant V as "index.php"
 U->>C : GET /docente_disponibilidades?docente_id=...
-C->>T : find().contain([Docentes, Configuraplanejamentos]).orderBy(semestre DESC)
+C->>T : find().contain([Professores, Configuraplanejamentos]).orderBy(semestre DESC)
 T-->>C : Paginated results
 C->>V : Render index with results
 V-->>U : Display availability list
@@ -255,14 +255,14 @@ V-->>U : Display availability list
 To ensure only available professors are assignable during schedule creation:
 - Determine the active planning configuration (semestre and versao) used for scheduling.
 - Query DocenteDisponibilidades where configuraplanejamento_id matches the active configuration and disponivel is true.
-- Join with Docentes to retrieve the list of available professors.
+- Join with Professores to retrieve the list of available professors.
 - Use this filtered list when presenting assignment options for courses.
 
 ```mermaid
 flowchart TD
 Start(["Start Schedule Creation"]) --> GetActiveCfg["Get Active Planning Configuration<br/>(semestre, versao)"]
 GetActiveCfg --> FindAvail["Find DocenteDisponibilidades<br/>where configuraplanejamento_id = active AND disponivel = true"]
-FindAvail --> JoinDocs["Join with Docentes to get professor details"]
+FindAvail --> JoinDocs["Join with Professores to get professor details"]
 JoinDocs --> FilterList["Build list of available professors"]
 FilterList --> Assign["Present available professors for course assignment"]
 Assign --> End(["End"])
@@ -292,14 +292,14 @@ Assign --> End(["End"])
 
 ## Dependency Analysis
 - DocenteDisponibilidadesTable depends on:
-  - Docentes (via belongsTo).
+  - Professores (via belongsTo).
   - Configuraplanejamentos (via belongsTo).
 - ConfiguraplanejamentosTable declares hasMany DocenteDisponibilidades.
 - Controller orchestrates queries using these relationships and renders the index view.
 
 ```mermaid
 graph LR
-DT["DocenteDisponibilidadesTable"] --> DOC["DocentesTable"]
+DT["DocenteDisponibilidadesTable"] --> DOC["ProfessoresTable"]
 DT --> CPT["ConfiguraplanejamentosTable"]
 CPT --> DT
 CTRL["DocenteDisponibilidadesController"] --> DT
@@ -362,7 +362,7 @@ The faculty availability tracking system cleanly separates availability data fro
 - Filtering available professors during schedule creation:
   - Identify the active planning configuration (semestre, versao).
   - Query DocenteDisponibilidades where configuraplanejamento_id equals the active configuration and disponivel is true.
-  - Join with Docentes to obtain the final list of available professors.
+  - Join with Professores to obtain the final list of available professors.
   - Reference: [DocenteDisponibilidadesTable.php:22-30](file://src/Model/Table/DocenteDisponibilidadesTable.php#L22-L30)
 
 - Understanding availability impact on course assignment:

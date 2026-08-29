@@ -60,7 +60,7 @@ MS --> TSalas
 MDD --> TDocDisp
 MDC --> TDisc
 TDocDisp --> TConfig
-TDocDisp --> TDocentes["docentes (referenced)"]
+TDocDisp --> TProfessores["professores (referenced)"]
 TConfig --> TUsuarioplanejamento["usuarioplanejamentos (referenced)"]
 TConfig --> TPlanejamentos["planejamentos (referenced)"]
 TDisc --> TPlanejamentos
@@ -126,7 +126,7 @@ This section summarizes each core entity with its fields, types, constraints, an
   - Fields: docente_id, configuraplanejamento_id, disponivel (boolean), motivo (string), observacoes (text), created, modified
   - Primary key: id (implicit)
   - Indexes: docente_id, configuraplanejamento_id, unique(docente_id, configuraplanejamento_id)
-  - Relationships: belongsTo Docentes, belongsTo Configuraplanejamentos
+  - Relationships: belongsTo Professores, belongsTo Configuraplanejamentos
   - Validation: integer checks for IDs, boolean check for disponivel, optional text fields
   - Purpose: Records faculty availability per planning configuration
 
@@ -144,7 +144,7 @@ This section summarizes each core entity with its fields, types, constraints, an
   - Validation: codigo and disciplina required; period fields constrained to specific lists; curriculo limited length
   - Purpose: Catalog of academic courses
 
-Note: Some referenced tables (e.g., docentes, usuarioplanejamentos, planejamentos) are not defined in the provided migrations but are referenced by relationships in table classes. Their schemas are assumed to exist elsewhere in the project.
+Note: Some referenced tables (e.g., professores, usuarioplanejamentos, planejamentos) are not defined in the provided migrations but are referenced by relationships in table classes. Their schemas are assumed to exist elsewhere in the project.
 
 **Section sources**
 - [20260612021814_CreateUsers.php:16-48](file://config/Migrations/20260612021814_CreateUsers.php#L16-L48)
@@ -282,7 +282,7 @@ DISCIPLINAS }o--o{ PLANEJAMENTOS : "has many"
 - Key fields: docente_id, configuraplanejamento_id, disponivel, motivo, observacoes
 - Indexes: Indexed by docente_id and configuraplanejamento_id; unique constraint on their pair
 - Relationships:
-  - belongsTo Docentes
+  - belongsTo Professores
   - belongsTo Configuraplanejamentos
 - Validation: Integer presence for IDs; boolean for disponivel; optional text fields
 
@@ -298,10 +298,10 @@ class ConfiguraplanejamentosTable {
 +initialize(config)
 +validationDefault(validator)
 }
-class DocentesTable {
+class ProfessoresTable {
 }
 DocenteDisponibilidadesTable --> ConfiguraplanejamentosTable : "belongsTo"
-DocenteDisponibilidadesTable --> DocentesTable : "belongsTo"
+DocenteDisponibilidadesTable --> ProfessoresTable : "belongsTo"
 ```
 
 **Diagram sources**
@@ -347,7 +347,7 @@ DD["docente_disponibilidades"]
 C["configuraplanejamentos"]
 DC["disciplinas"]
 DD --> C
-DD --> DOC["docentes (referenced)"]
+DD --> DOC["professores (referenced)"]
 C --> UP["usuarioplanejamentos (referenced)"]
 C --> P["planejamentos (referenced)"]
 DC --> P
@@ -380,7 +380,7 @@ DC --> P
 ## Troubleshooting Guide
 Common issues and resolutions:
 - Missing foreign key references
-  - Ensure referenced tables (docentes, usuarioplanejamentos, planejamentos) exist before inserting into dependent tables
+  - Ensure referenced tables (professores, usuarioplanejamentos, planejamentos) exist before inserting into dependent tables
 - Duplicate availability entries
   - The unique index on (docente_id, configuraplanejamento_id) will prevent duplicates; handle errors accordingly
 - Validation failures
