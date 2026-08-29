@@ -8,9 +8,9 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Docentes Model
+ * Professores Model
  */
-class DocentesTable extends Table
+class ProfessoresTable extends Table
 {
     private const STATUS_NORMALIZATION_MAP = [
         'active' => 'ativo',
@@ -27,7 +27,7 @@ class DocentesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('docentes');
+        $this->setTable('professores');
         $this->setDisplayField('nome');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
@@ -48,40 +48,55 @@ class DocentesTable extends Table
     {
         $validator
             ->scalar('nome')
-            ->maxLength('nome', 200)
+            ->maxLength('nome', 50)
             ->requirePresence('nome', 'create')
             ->notEmptyString('nome');
 
         $validator
             ->scalar('cpf')
+            ->maxLength('cpf', 15)
             ->allowEmptyString('cpf');
 
         $validator
-            ->scalar('siape')
+            ->integer('siape')
             ->allowEmptyString('siape');
 
         $validator
             ->scalar('cress')
+            ->maxLength('cress', 10)
             ->allowEmptyString('cress');
 
         $validator
             ->scalar('regiao')
+            ->maxLength('regiao', 2)
             ->allowEmptyString('regiao');
 
         $validator
+            ->integer('codigo_telefone')
+            ->allowEmptyString('codigo_telefone');
+
+        $validator
             ->scalar('telefone')
+            ->maxLength('telefone', 15)
             ->allowEmptyString('telefone');
 
         $validator
+            ->integer('codigo_celular')
+            ->allowEmptyString('codigo_celular');
+
+        $validator
             ->scalar('celular')
+            ->maxLength('celular', 15)
             ->allowEmptyString('celular');
 
         $validator
             ->scalar('departamento')
+            ->maxLength('departamento', 30)
             ->allowEmptyString('departamento');
 
         $validator
             ->email('email', false)
+            ->maxLength('email', 255)
             ->allowEmptyString('email');
 
         $validator
@@ -89,15 +104,12 @@ class DocentesTable extends Table
             ->allowEmptyDate('dataingresso');
 
         $validator
-            ->scalar('tipocargo')
-            ->allowEmptyString('tipocargo');
-            
-        $validator
             ->date('dataegresso')
             ->allowEmptyDate('dataegresso');
 
         $validator
             ->scalar('motivoegresso')
+            ->maxLength('motivoegresso', 100)
             ->allowEmptyString('motivoegresso');
 
         $validator
@@ -107,6 +119,18 @@ class DocentesTable extends Table
         $validator
             ->scalar('status')
             ->allowEmptyString('status');
+
+        $validator
+            ->integer('user_id')
+            ->allowEmptyString('user_id');
+
+        $validator
+            ->integer('estagiario_count')
+            ->allowEmptyString('estagiario_count');
+
+        $validator
+            ->integer('estagiarios_count')
+            ->allowEmptyString('estagiarios_count');
 
         return $validator;
     }

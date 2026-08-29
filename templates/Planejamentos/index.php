@@ -6,7 +6,7 @@ declare(strict_types=1);
         <div class="col"><h3><?= __('Planejamentos') ?></h3></div>
         <div class="col-auto mb-3">
             <?= $this->Html->link(__('Grade'), ['controller' => 'Disciplinas', 'action' => 'grade'], ['class' => 'btn btn-info me-2']) ?>
-            <?= $this->Html->link(__('Novo docente/disciplina/horário/sala'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
+            <?= $this->Html->link(__('Novo professor/disciplina/horário/sala'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
     
@@ -41,7 +41,7 @@ declare(strict_types=1);
                 <tr>
                     <th><?= $this->Paginator->sort('Planejamentos.id', 'ID') ?></th>
                     <th><?= $this->Paginator->sort('Disciplinas.disciplina', 'Disciplina') ?></th>
-                    <th><?= $this->Paginator->sort('Docentes.nome', 'Docente') ?></th>
+                    <th><?= $this->Paginator->sort('Professores.nome', 'Professor') ?></th>
                     <th><?= $this->Paginator->sort('Configuraplanejamentos.semestre', 'Semestre') ?></th>
                     <th><?= $this->Paginator->sort('Dias.dia', 'Dia') ?></th>
                     <th><?= $this->Paginator->sort('Horarios.horario', 'Horário') ?></th>
@@ -54,7 +54,7 @@ declare(strict_types=1);
                 <tr>
                     <td><?= $this->Number->format($planejamento->id) ?></td>
                     <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->disciplina) : '-' ?></td>
-                    <td><?= $planejamento->hasValue('docente') ? h($planejamento->docente->nome) : '-' ?></td>
+                    <td><?= $planejamento->hasValue('professor') ? h($planejamento->professor->nome) : '-' ?></td>
                     <td><?= $planejamento->hasValue('configuraplanejamento') ? h($planejamento->configuraplanejamento->semestre) : '-' ?></td>
                     <td><?= $planejamento->hasValue('dia') ? h($planejamento->dia->dia) : '-' ?></td>
                     <td><?= $planejamento->hasValue('horario') ? h($planejamento->horario->horario) : '-' ?></td>

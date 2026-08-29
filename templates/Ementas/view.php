@@ -22,8 +22,8 @@ declare(strict_types=1);
         </tr>
         <tr></tr>
         <tr>
-            <th><?= __('Docente') ?></th>
-            <td><?= $ementa->hasValue('docente') ? h($ementa->docente->nome) : '-' ?></td>
+            <th><?= __('Professor') ?></th>
+            <td><?= $ementa->hasValue('professor') ? h($ementa->professor->nome) : '-' ?></td>
         </tr>
         <tr>
             <th><?= __('Título') ?></th>

@@ -93,7 +93,7 @@ class DisciplinasController extends AppController
             ->find()
             ->contain([
                 'Disciplinas',
-                'Docentes',
+                'Professores',
                 'Configuraplanejamentos',
                 'Salas',
                 'Dias',

@@ -40,7 +40,7 @@ class PlanejamentosController extends AppController
         $query = $this->Planejamentos->find()
             ->contain([
                 'Disciplinas',
-                'Docentes',
+                'Professores',
                 'Configuraplanejamentos',
                 'Salas',
                 'Dias',
@@ -57,7 +57,7 @@ class PlanejamentosController extends AppController
         $config = [
             'sortableFields' => ['Planejamentos.id', 
             'Disciplinas.disciplina', 
-            'Docentes.nome', 
+            'Professores.nome', 
             'Configuraplanejamentos.semestre', 
             'Dias.dia', 
             'Horarios.horario', 
@@ -78,7 +78,7 @@ class PlanejamentosController extends AppController
         }
         $planejamento = $this->Planejamentos->get($id, contain: [
             'Disciplinas',
-            'Docentes',
+            'Professores',
             'Configuraplanejamentos',
             'Salas',
             'Dias',
@@ -213,7 +213,7 @@ class PlanejamentosController extends AppController
         $query = $this->Planejamentos->find()
             ->contain([
                 'Disciplinas',
-                'Docentes',
+                'Professores',
                 'Configuraplanejamentos',
                 'Salas',
                 'Dias',
@@ -225,7 +225,7 @@ class PlanejamentosController extends AppController
         $this->set(compact('planejamentos'));
     }
 
-    protected function _setRelatedData(?int $configuraplanejamentoId = null, ?int $currentDocenteId = null): void
+    protected function _setRelatedData(?int $configuraplanejamentoId = null, ?int $currentProfessorId = null): void
     {
         $disciplinas = $this->Planejamentos->Disciplinas->find('list', limit: 200)->all();
         $configuracoes = $this->Planejamentos->Configuraplanejamentos->find('list', limit: 200)->all();
@@ -233,41 +233,41 @@ class PlanejamentosController extends AppController
         $dias = $this->Planejamentos->Dias->find('list')->all();
         $horarios = $this->Planejamentos->Horarios->find('list')->all();
 
-        $docentesQuery = $this->Planejamentos->Docentes
+        $professoresQuery = $this->Planejamentos->Professores
             ->find('list', limit: 200)
-            ->where(['Docentes.status IN' => ['ativo', 'active', 'activo']])
-            ->orderBy(['Docentes.nome' => 'ASC']);
+            ->where(['Professores.status IN' => ['ativo', 'active', 'activo']])
+            ->orderBy(['Professores.nome' => 'ASC']);
 
-        $docentesFilteredByDisponibilidade = false;
+        $professoresFilteredByDisponibilidade = false;
         if ($configuraplanejamentoId !== null) {
-            $docentesFilteredByDisponibilidade = true;
-            $docentesQuery->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoId) {
+            $professoresFilteredByDisponibilidade = true;
+            $professoresQuery->matching('DocenteDisponibilidades', function ($q) use ($configuraplanejamentoId) {
                 return $q->where([
                     'DocenteDisponibilidades.configuraplanejamento_id' => $configuraplanejamentoId,
                     'DocenteDisponibilidades.disponivel' => true,
                 ]);
-            })->distinct(['Docentes.id']);
+            })->distinct(['Professores.id']);
         }
 
-        $docentes = $docentesQuery->toArray();
-        if ($currentDocenteId !== null && !isset($docentes[$currentDocenteId])) {
-            $currentDocente = $this->Planejamentos->Docentes->find()
+        $professores = $professoresQuery->toArray();
+        if ($currentProfessorId !== null && !isset($professores[$currentProfessorId])) {
+            $currentProfessor = $this->Planejamentos->Professores->find()
                 ->select(['id', 'nome'])
-                ->where(['Docentes.id' => $currentDocenteId])
+                ->where(['Professores.id' => $currentProfessorId])
                 ->first();
-            if ($currentDocente) {
-                $docentes[$currentDocente->id] = $currentDocente->nome;
+            if ($currentProfessor) {
+                $professores[$currentProfessor->id] = $currentProfessor->nome;
             }
         }
         
         $this->set(compact(
             'disciplinas',
-            'docentes',
+            'professores',
             'configuracoes',
             'salas',
             'dias',
             'horarios',
-            'docentesFilteredByDisponibilidade',
+            'professoresFilteredByDisponibilidade',
         ));
     }
 }

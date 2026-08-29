@@ -46,7 +46,7 @@ $cakeDescription = 'Planejamento5';
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Cadastros</a>
                         <ul class="dropdown-menu">
-                            <li><?= $this->Html->link(__('Docentes'), ['controller' => 'Docentes', 'action' => 'index'], ['class' => 'dropdown-item']) ?></li>
+                            <li><?= $this->Html->link(__('Professores'), ['controller' => 'Professores', 'action' => 'index'], ['class' => 'dropdown-item']) ?></li>
                             <li><?= $this->Html->link(__('Disciplinas'), ['controller' => 'Disciplinas', 'action' => 'index'], ['class' => 'dropdown-item']) ?></li>
                             <li><?= $this->Html->link(__('Salas'), ['controller' => 'Salas', 'action' => 'index'], ['class' => 'dropdown-item']) ?></li>
                             <li><?= $this->Html->link(__('Optativas'), ['controller' => 'Optativas', 'action' => 'index'], ['class' => 'dropdown-item']) ?></li>

@@ -3,9 +3,9 @@ declare(strict_types=1);
 ?>
 <div class="container">
     <div class="col-auto mb-3">
-        <?= $this->Html->link(__('Docentes'), ['controller' => 'Docentes', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
+        <?= $this->Html->link(__('Professores'), ['controller' => 'Professores', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
     </div>
-    <h3><?= h($docente->nome) ?></h3>
+    <h3><?= h($professor->nome) ?></h3>
     <?php
         $statusLabels = [
             'ativo' => __('Ativo'),
@@ -23,75 +23,71 @@ declare(strict_types=1);
             <table class="table table-striped">
                 <tr>
                     <th><?= __('ID') ?></th>
-                    <td><?= $this->Number->format($docente->id) ?></td>
+                    <td><?= $this->Number->format($professor->id) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Nome') ?></th>
-                    <td><?= h($docente->nome) ?></td>
+                    <td><?= h($professor->nome) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('CPF') ?></th>
-                    <td><?= h($docente->cpf) ?></td>
+                    <td><?= h($professor->cpf) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('SIAPE') ?></th>
-                    <td><?= h($docente->siape) ?></td>
+                    <td><?= h($professor->siape) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('CRESS') ?></th>
-                    <td><?= h($docente->cress) ?></td>
+                    <td><?= h($professor->cress) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Região') ?></th>
-                    <td><?= h($docente->regiao) ?></td>
+                    <td><?= h($professor->regiao) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Telefone') ?></th>
-                    <td><?= h($docente->telefone) ?></td>
+                    <td><?= h($professor->telefone) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Celular') ?></th>
-                    <td><?= h($docente->celular) ?></td>
+                    <td><?= h($professor->celular) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Departamento') ?></th>
-                    <td><?= h($docente->departamento) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Tipo de Cargo') ?></th>
-                    <td><?= h($docente->tipocargo ?? '-') ?></td>
+                    <td><?= h($professor->departamento) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Email') ?></th>
-                    <td><?= h($docente->email) ?></td>
+                    <td><?= h($professor->email) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Data de Ingresso') ?></th>
-                    <td><?= h($docente->dataingresso?->format('d/m/Y')) ?></td>
+                    <td><?= h($professor->dataingresso?->format('d/m/Y')) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Data de Egresso') ?></th>
-                    <td><?= h($docente->dataegresso?->format('d/m/Y')) ?></td>
+                    <td><?= h($professor->dataegresso?->format('d/m/Y')) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Motivo de Egresso') ?></th>
-                    <td><?= h($docente->motivoegresso) ?></td>
+                    <td><?= h($professor->motivoegresso) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Status') ?></th>
-                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
+                    <td><?= h($statusLabels[$professor->status] ?? $professor->status) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Observações') ?></th>
-                    <td><?= $docente->observacoes ? nl2br(h($docente->observacoes)) : '-' ?></td>
+                    <td><?= $professor->observacoes ? nl2br(h($professor->observacoes)) : '-' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Criado') ?></th>
-                    <td><?= h($docente->created) ?></td>
+                    <td><?= h($professor->created) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Modificado') ?></th>
-                    <td><?= h($docente->modified) ?></td>
+                    <td><?= h($professor->modified) ?></td>
                 </tr>
             </table>
         </div>
@@ -103,7 +99,7 @@ declare(strict_types=1);
                 <h4 class="mb-0"><?= __('Disponibilidade por Semestre') ?></h4>
                 <?= $this->Html->link(
                     __('Adicionar'),
-                    ['controller' => 'DocenteDisponibilidades', 'action' => 'add', '?' => ['docente_id' => $docente->id]],
+                    ['controller' => 'DocenteDisponibilidades', 'action' => 'add', '?' => ['docente_id' => $professor->id]],
                     ['class' => 'btn btn-sm btn-primary']
                 ) ?>
             </div>
@@ -119,8 +115,8 @@ declare(strict_types=1);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($docente->docente_disponibilidades)): ?>
-                            <?php foreach ($docente->docente_disponibilidades as $disp): ?>
+                        <?php if (!empty($professor->docente_disponibilidades)): ?>
+                            <?php foreach ($professor->docente_disponibilidades as $disp): ?>
                                 <tr>
                                     <td><?= $disp->hasValue('configuraplanejamento') ? h($disp->configuraplanejamento->semestre) : '-' ?></td>
                                     <td><?= $disp->disponivel ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>' ?></td>
@@ -145,7 +141,7 @@ declare(strict_types=1);
 
     <div class="row mt-3">
         <div class="col">
-            <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-warning']) ?>
+            <?= $this->Html->link(__('Editar'), ['action' => 'edit', $professor->id], ['class' => 'btn btn-warning']) ?>
             <?= $this->Html->link(__('Voltar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
         </div>
     </div>

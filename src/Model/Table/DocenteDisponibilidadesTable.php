@@ -19,7 +19,7 @@ class DocenteDisponibilidadesTable extends Table
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Docentes', [
+        $this->belongsTo('Professores', [
             'foreignKey' => 'docente_id',
             'joinType' => 'INNER',
         ]);
@@ -57,7 +57,7 @@ class DocenteDisponibilidadesTable extends Table
 
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['docente_id'], 'Docentes'), ['errorField' => 'docente_id']);
+        $rules->add($rules->existsIn(['docente_id'], 'Professores'), ['errorField' => 'docente_id']);
         $rules->add($rules->existsIn(['configuraplanejamento_id'], 'Configuraplanejamentos'), ['errorField' => 'configuraplanejamento_id']);
 
         return $rules;

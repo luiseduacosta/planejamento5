@@ -20,7 +20,7 @@ class PlanejamentosTable extends Table
             'foreignKey' => 'disciplina_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Docentes', [
+        $this->belongsTo('Professores', [
             'foreignKey' => 'docente_id',
             'joinType' => 'INNER',
         ]);

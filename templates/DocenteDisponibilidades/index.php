@@ -3,19 +3,19 @@ declare(strict_types=1);
 ?>
 <div class="container">
     <div class="row">
-        <div class="col"><h3><?= __('Disponibilidades de Docentes') ?></h3></div>
+        <div class="col"><h3><?= __('Disponibilidades de Professores') ?></h3></div>
         <div class="col-auto mb-3">
             <?= $this->Html->link(__('Nova Disponibilidade'), ['action' => 'add', '?' => $docenteId ? ['docente_id' => $docenteId] : []], ['class' => 'btn btn-primary']) ?>
         </div>
         <div class="col-auto mb-3">
-            <?= $this->Html->link(__('Docentes'), ['controller' => 'Docentes', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
+            <?= $this->Html->link(__('Professores'), ['controller' => 'Professores', 'action' => 'index'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('docente_id', __('Docente')) ?></th>
+                    <th><?= $this->Paginator->sort('docente_id', __('Professor')) ?></th>
                     <th><?= __('Semestre') ?></th>
                     <th><?= $this->Paginator->sort('disponivel', __('Disponível')) ?></th>
                     <th><?= $this->Paginator->sort('motivo', __('Motivo')) ?></th>
@@ -27,8 +27,8 @@ declare(strict_types=1);
                 <?php foreach ($disponibilidades as $disp): ?>
                     <tr>
                         <td>
-                            <?= $disp->hasValue('docente')
-                                ? $this->Html->link(h($disp->docente->nome), ['controller' => 'Docentes', 'action' => 'view', $disp->docente->id])
+                            <?= $disp->hasValue('professor')
+                                ? $this->Html->link(h($disp->professor->nome), ['controller' => 'Professores', 'action' => 'view', $disp->professor->id])
                                 : '-' ?>
                         </td>
                         <td><?= $disp->hasValue('configuraplanejamento') ? h($disp->configuraplanejamento->semestre) : '-' ?></td>

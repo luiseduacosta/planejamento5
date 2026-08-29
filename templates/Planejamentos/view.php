@@ -13,8 +13,8 @@ declare(strict_types=1);
             <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->disciplina) : '-' ?></td>
         </tr>
         <tr>
-            <th><?= __('Docente') ?></th>
-            <td><?= $planejamento->hasValue('docente') ? h($planejamento->docente->nome) : '-' ?></td>
+            <th><?= __('Professor') ?></th>
+            <td><?= $planejamento->hasValue('professor') ? h($planejamento->professor->nome) : '-' ?></td>
         </tr>
         <tr>
             <th><?= __('Semestre') ?></th>

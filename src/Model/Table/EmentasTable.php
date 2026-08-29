@@ -28,7 +28,7 @@ class EmentasTable extends Table
             'foreignKey' => 'optativa_id',
         ]);
 
-        $this->belongsTo('Docentes', [
+        $this->belongsTo('Professores', [
             'foreignKey' => 'docente_id',
         ]);
     }

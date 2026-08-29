@@ -16,7 +16,7 @@ declare(strict_types=1);
     ?>
     <div class="row">
         <div class="col">
-            <h3><?= __('Docentes') ?></h3>
+            <h3><?= __('Professores') ?></h3>
             <?php if ($statusFilter || $departamentoFilter || $configuraplanejamentoFilter): ?>
                 <small class="text-muted">
                     <?= __('Filtros ativos:') ?>
@@ -33,7 +33,7 @@ declare(strict_types=1);
             <?php endif; ?>
         </div>
         <div class="col-auto mb-3">
-            <?= $this->Html->link(__('Novo Docente'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
+            <?= $this->Html->link(__('Novo Professor'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
     
@@ -101,7 +101,6 @@ declare(strict_types=1);
                     <th><?= $this->Paginator->sort('nome', __('Nome')) ?></th>
                     <th><?= $this->Paginator->sort('siape', __('SIAPE')) ?></th>
                     <th><?= $this->Paginator->sort('departamento', __('Departamento')) ?></th>
-                    <th><?= $this->Paginator->sort('tipocargo', __('Tipo de Cargo')) ?></th>
                     <th><?= $this->Paginator->sort('status', __('Status')) ?></th>
                     <th>
                         <?= __('Disponibilidade') ?>
@@ -114,34 +113,33 @@ declare(strict_types=1);
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($docentes as $docente): ?>
+                <?php foreach ($professores as $professor): ?>
                 <tr>
-                    <td><?= $this->Number->format($docente->id) ?></td>
-                    <td><?= h($docente->nome) ?></td>
-                    <td><?= h($docente->siape) ?></td>
-                    <td><?= h($docente->departamento) ?></td>
-                    <td><?= h($docente->tipocargo ?? '-') ?></td>
-                    <td><?= h($statusLabels[$docente->status] ?? $docente->status) ?></td>
+                    <td><?= $this->Number->format($professor->id) ?></td>
+                    <td><?= h($professor->nome) ?></td>
+                    <td><?= h($professor->siape) ?></td>
+                    <td><?= h($professor->departamento) ?></td>
+                    <td><?= h($statusLabels[$professor->status] ?? $professor->status) ?></td>
                     <td>
-                        <?php if (isset($disponibilidades[$docente->id])): ?>
-                            <?php if ($disponibilidades[$docente->id]->disponivel): ?>
+                        <?php if (isset($disponibilidades[$professor->id])): ?>
+                            <?php if ($disponibilidades[$professor->id]->disponivel): ?>
                                 <span class="badge bg-success"><?= __('Sim') ?></span>
                             <?php else: ?>
                                 <span class="badge bg-danger"><?= __('Não') ?></span>
                             <?php endif; ?>
-                            <?php if ($disponibilidades[$docente->id]->motivo): ?>
-                                <small class="text-muted d-block" title="<?= h($disponibilidades[$docente->id]->motivo) ?>"><?= h($disponibilidades[$docente->id]->motivo) ?></small>
+                            <?php if ($disponibilidades[$professor->id]->motivo): ?>
+                                <small class="text-muted d-block" title="<?= h($disponibilidades[$professor->id]->motivo) ?>"><?= h($disponibilidades[$professor->id]->motivo) ?></small>
                             <?php endif; ?>
                         <?php else: ?>
                             <span class="text-muted"><?= __('Não informada') ?></span>
                         <?php endif; ?>
                     </td>
-                    <td><?= h($docente->email) ?></td>
+                    <td><?= h($professor->email) ?></td>
                     <td class="text-nowrap">
-                        <?= $this->Html->link(__('Ver'), ['action' => 'view', $docente->id], ['class' => 'btn btn-sm btn-info']) ?>
-                        <?= $this->Html->link(__('Editar'), ['action' => 'edit', $docente->id], ['class' => 'btn btn-sm btn-warning']) ?>
-                        <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $docente->id], [
-                            'confirm' => __('Tem certeza que deseja excluir {0}?', $docente->nome),
+                        <?= $this->Html->link(__('Ver'), ['action' => 'view', $professor->id], ['class' => 'btn btn-sm btn-info']) ?>
+                        <?= $this->Html->link(__('Editar'), ['action' => 'edit', $professor->id], ['class' => 'btn btn-sm btn-warning']) ?>
+                        <?= $this->Form->postLink(__('Excluir'), ['action' => 'delete', $professor->id], [
+                            'confirm' => __('Tem certeza que deseja excluir {0}?', $professor->nome),
                             'class' => 'btn btn-sm btn-danger'
                         ]) ?>
                     </td>

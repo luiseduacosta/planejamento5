@@ -9,8 +9,8 @@ declare(strict_types=1);
             <td><?= $this->Number->format($docenteDisponibilidade->id) ?></td>
         </tr>
         <tr>
-            <th><?= __('Docente') ?></th>
-            <td><?= $docenteDisponibilidade->hasValue('docente') ? h($docenteDisponibilidade->docente->nome) : '-' ?></td>
+            <th><?= __('Professor') ?></th>
+            <td><?= $docenteDisponibilidade->hasValue('professor') ? h($docenteDisponibilidade->professor->nome) : '-' ?></td>
         </tr>
         <tr>
             <th><?= __('Semestre') ?></th>

@@ -232,6 +232,8 @@ ServerRequest::addDetector('tablet', function ($request) {
 // \Cake\Utility\Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 // \Cake\Utility\Inflector::rules('irregular', ['red' => 'redlings']);
 // \Cake\Utility\Inflector::rules('uninflected', ['dontinflectme']);
+\Cake\Utility\Inflector::rules('irregular', ['professor' => 'professores']);
+
 
 // set a custom date and time format
 // see https://book.cakephp.org/5/en/core-libraries/time.html#setting-the-default-locale-and-format-string

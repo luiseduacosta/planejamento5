@@ -22,7 +22,7 @@ class DocenteDisponibilidadesController extends AppController
 
         $docenteDisponibilidades = $this->fetchTable('DocenteDisponibilidades');
         $query = $docenteDisponibilidades->find()
-            ->contain(['Docentes', 'Configuraplanejamentos'])
+            ->contain(['Professores', 'Configuraplanejamentos'])
             ->orderBy(['Configuraplanejamentos.semestre' => 'DESC', 'DocenteDisponibilidades.id' => 'DESC']);
 
         if ($docenteId) {
@@ -37,7 +37,7 @@ class DocenteDisponibilidadesController extends AppController
     {
         $this->Authorization->skipAuthorization();
         $docenteDisponibilidades = $this->fetchTable('DocenteDisponibilidades');
-        $docenteDisponibilidade = $docenteDisponibilidades->get($id, contain: ['Docentes', 'Configuraplanejamentos']);
+        $docenteDisponibilidade = $docenteDisponibilidades->get($id, contain: ['Professores', 'Configuraplanejamentos']);
         $this->set(compact('docenteDisponibilidade'));
     }
 
@@ -67,9 +67,9 @@ class DocenteDisponibilidadesController extends AppController
             $this->Flash->error(__('Não foi possível salvar a disponibilidade. Tente novamente.'));
         }
 
-        $docentes = $this->fetchTable('Docentes')->find('list', limit: 200)->all();
+        $professores = $this->fetchTable('Professores')->find('list', limit: 200)->all();
         $configuracoes = $this->fetchTable('Configuraplanejamentos')->find('list', limit: 200)->all();
-        $this->set(compact('docenteDisponibilidade', 'docentes', 'configuracoes'));
+        $this->set(compact('docenteDisponibilidade', 'professores', 'configuracoes'));
 
         return null;
     }
@@ -90,9 +90,9 @@ class DocenteDisponibilidadesController extends AppController
             $this->Flash->error(__('Não foi possível atualizar a disponibilidade. Tente novamente.'));
         }
 
-        $docentes = $this->fetchTable('Docentes')->find('list', limit: 200)->all();
+        $professores = $this->fetchTable('Professores')->find('list', limit: 200)->all();
         $configuracoes = $this->fetchTable('Configuraplanejamentos')->find('list', limit: 200)->all();
-        $this->set(compact('docenteDisponibilidade', 'docentes', 'configuracoes'));
+        $this->set(compact('docenteDisponibilidade', 'professores', 'configuracoes'));
 
         return null;
     }

@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 namespace App\Policy;
 
-use App\Model\Entity\Docente;
+use App\Model\Entity\Professor;
 use Authorization\IdentityInterface;
 
-class DocentePolicy
+class ProfessorPolicy
 {
     public function canIndex(IdentityInterface $user): bool
     {
         return true;
     }
 
-    public function canView(IdentityInterface $user, Docente $docente): bool
+    public function canView(IdentityInterface $user, Professor $professor): bool
     {
         return true;
     }
@@ -23,12 +23,12 @@ class DocentePolicy
         return in_array($user->role, ['admin', 'editor']);
     }
 
-    public function canEdit(IdentityInterface $user, Docente $docente): bool
+    public function canEdit(IdentityInterface $user, Professor $professor): bool
     {
         return in_array($user->role, ['admin', 'editor']);
     }
 
-    public function canDelete(IdentityInterface $user, Docente $docente): bool
+    public function canDelete(IdentityInterface $user, Professor $professor): bool
     {
         return $user->role === 'admin';
     }

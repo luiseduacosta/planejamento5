@@ -7,11 +7,11 @@ use App\Controller\AppController;
 use Cake\Event\EventInterface;
 
 /**
- * Docentes Controller
+ * Professores Controller
  *
- * @property \App\Model\Table\DocentesTable $Docentes
+ * @property \App\Model\Table\ProfessoresTable $Professores
  */
-class DocentesController extends AppController
+class ProfessoresController extends AppController
 {
     private const STATUS_LABELS = [
         'ativo' => 'Ativo',
@@ -41,7 +41,7 @@ class DocentesController extends AppController
         $configuraplanejamentoFilter = $this->request->getQuery('configuraplanejamento_id');
         
         // Get unique departamentos for dropdown
-        $departamentos = $this->Docentes->find()
+        $departamentos = $this->Professores->find()
             ->select(['departamento'])
             ->distinct(['departamento'])
             ->where(['departamento IS NOT' => null])
@@ -54,7 +54,7 @@ class DocentesController extends AppController
         }
 
         // Get unique status for dropdown
-        $status = $this->Docentes->find()
+        $status = $this->Professores->find()
             ->select(['status'])
             ->distinct(['status'])
             ->where(['status IS NOT' => null])
@@ -68,7 +68,7 @@ class DocentesController extends AppController
         asort($statusList);
 
         // Get planning configurations that have availability records for dropdown
-        $configuracoes = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+        $configuracoes = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
             ->find()
             ->select(['id', 'semestre', 'versao'])
             ->distinct(['id'])
@@ -82,16 +82,16 @@ class DocentesController extends AppController
         }
 
         // Build query
-        $query = $this->Docentes->find();
+        $query = $this->Professores->find();
         
         // Apply status filter
         if ($statusFilter) {
-            $query->where(['Docentes.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
+            $query->where(['Professores.status IN' => self::STATUS_ALIASES[$statusFilter] ?? [$statusFilter]]);
         }
         
         // Apply departamento filter
         if ($departamentoFilter) {
-            $query->where(['Docentes.departamento' => $departamentoFilter]);
+            $query->where(['Professores.departamento' => $departamentoFilter]);
         }
 
         // Apply availability filter for a planning configuration
@@ -112,7 +112,6 @@ class DocentesController extends AppController
                 'cpf',
                 'siape',
                 'departamento',
-                'tipocargo',
                 'periodo_diurno',
                 'periodo_noturno',
                 'status',
@@ -120,13 +119,13 @@ class DocentesController extends AppController
             ],
         ];
 
-        $docentes = $this->paginate($query, $config);
+        $professores = $this->paginate($query, $config);
 
         $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
         $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int)$configuraplanejamentoFilter] ?? null) : null;
 
         // Determine which planning configuration to show in the availability column
-        $configuracaoAtiva = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+        $configuracaoAtiva = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
             ->find()
             ->where(['ativo' => true])
             ->orderBy(['semestre' => 'DESC'])
@@ -134,7 +133,7 @@ class DocentesController extends AppController
 
         $configuracaoAtual = null;
         if ($configuraplanejamentoFilter) {
-            $configuracaoAtual = $this->Docentes->DocenteDisponibilidades->Configuraplanejamentos
+            $configuracaoAtual = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
                 ->find()
                 ->where(['id' => (int)$configuraplanejamentoFilter])
                 ->first();
@@ -144,7 +143,7 @@ class DocentesController extends AppController
 
         $disponibilidades = [];
         if ($configuracaoAtual !== null) {
-            $disponibilidadesRows = $this->Docentes->DocenteDisponibilidades
+            $disponibilidadesRows = $this->Professores->DocenteDisponibilidades
                 ->find()
                 ->where(['configuraplanejamento_id' => $configuracaoAtual->id])
                 ->all();
@@ -155,7 +154,7 @@ class DocentesController extends AppController
         }
 
         $this->set(compact(
-            'docentes',
+            'professores',
             'departamentosList',
             'statusList',
             'statusFilter',
@@ -172,29 +171,29 @@ class DocentesController extends AppController
 
     public function view($id = null): void
     {
-        $docente = $this->Docentes->get($id, contain: [
+        $professor = $this->Professores->get($id, contain: [
             'Planejamentos',
             'DocenteDisponibilidades' => ['Configuraplanejamentos'],
         ]);
         $this->Authorization->skipAuthorization();
-        $this->set(compact('docente'));
+        $this->set(compact('professor'));
     }
 
     public function add(): \Cake\Http\Response|null
     {
-        $docente = $this->Docentes->newEmptyEntity();
-        $docente->status = 'ativo';
-        $this->Authorization->authorize($docente, 'add');
+        $professor = $this->Professores->newEmptyEntity();
+        $professor->status = 'ativo';
+        $this->Authorization->authorize($professor, 'add');
         
         if ($this->request->is('post')) {
-            $docente = $this->Docentes->patchEntity($docente, $this->request->getData());
-            if ($this->Docentes->save($docente)) {
-                $this->Flash->success(__('O docente foi salvo com sucesso.'));
-                return $this->redirect(['action' => 'view', $docente->id]);
+            $professor = $this->Professores->patchEntity($professor, $this->request->getData());
+            if ($this->Professores->save($professor)) {
+                $this->Flash->success(__('O professor foi salvo com sucesso.'));
+                return $this->redirect(['action' => 'view', $professor->id]);
             }
-            $this->Flash->error(__('Não foi possível salvar o docente. Tente novamente.'));
+            $this->Flash->error(__('Não foi possível salvar o professor. Tente novamente.'));
         }
-        $this->set(compact('docente'));
+        $this->set(compact('professor'));
 
         return null;
     }
@@ -212,19 +211,19 @@ class DocentesController extends AppController
 
     public function edit($id = null): \Cake\Http\Response|null
     {
-        $docente = $this->Docentes->get($id, contain: []);
-        $docente->status = $this->canonicalStatus((string)$docente->status);
-        $this->Authorization->authorize($docente, 'edit');
+        $professor = $this->Professores->get($id, contain: []);
+        $professor->status = $this->canonicalStatus((string)$professor->status);
+        $this->Authorization->authorize($professor, 'edit');
         
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $docente = $this->Docentes->patchEntity($docente, $this->request->getData());
-            if ($this->Docentes->save($docente)) {
-                $this->Flash->success(__('O docente foi atualizado com sucesso.'));
-                return $this->redirect(['action' => 'view', $docente->id]);
+            $professor = $this->Professores->patchEntity($professor, $this->request->getData());
+            if ($this->Professores->save($professor)) {
+                $this->Flash->success(__('O professor foi atualizado com sucesso.'));
+                return $this->redirect(['action' => 'view', $professor->id]);
             }
-            $this->Flash->error(__('Não foi possível atualizar o docente. Tente novamente.'));
+            $this->Flash->error(__('Não foi possível atualizar o professor. Tente novamente.'));
         }
-        $this->set(compact('docente'));
+        $this->set(compact('professor'));
 
         return null;
     }
@@ -232,13 +231,13 @@ class DocentesController extends AppController
     public function delete($id = null): \Cake\Http\Response|null
     {
         $this->request->allowMethod(['post', 'delete']);
-        $docente = $this->Docentes->get($id);
-        $this->Authorization->authorize($docente, 'delete');
+        $professor = $this->Professores->get($id);
+        $this->Authorization->authorize($professor, 'delete');
         
-        if ($this->Docentes->delete($docente)) {
-            $this->Flash->success(__('O docente foi excluído com sucesso.'));
+        if ($this->Professores->delete($professor)) {
+            $this->Flash->success(__('O professor foi excluído com sucesso.'));
         } else {
-            $this->Flash->error(__('Não foi possível excluir o docente. Tente novamente.'));
+            $this->Flash->error(__('Não foi possível excluir o professor. Tente novamente.'));
         }
 
         return $this->redirect(['action' => 'index']);

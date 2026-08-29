@@ -21,7 +21,7 @@ class EmentasController extends AppController
             'Configuraplanejamentos',
             'Disciplinas',
             'Optativas',
-            'Docentes',
+            'Professores',
         ]));
         $this->set(compact('ementas'));
     }
@@ -32,7 +32,7 @@ class EmentasController extends AppController
             'Configuraplanejamentos',
             'Disciplinas',
             'Optativas',
-            'Docentes',
+            'Professores',
         ]);
         $this->Authorization->skipAuthorization();
         $this->set(compact('ementa'));
@@ -47,8 +47,8 @@ class EmentasController extends AppController
         $configuraplanejamentos = $this->Ementas->Configuraplanejamentos->find('list', limit: 200)->all();
         $disciplinas = $this->Ementas->Disciplinas->find('list', limit: 200)->all();
         $optativas = $this->Ementas->Optativas->find('list', limit: 200)->all();
-        $docentes = $this->Ementas->Docentes->find('list', limit: 200)->all();
-        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'docentes'));
+        $professores = $this->Ementas->Professores->find('list', limit: 200)->all();
+        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'professores'));
         
         if ($this->request->is('post')) {
             $ementa = $this->Ementas->patchEntity($ementa, $this->request->getData());
@@ -71,8 +71,8 @@ class EmentasController extends AppController
         $configuraplanejamentos = $this->Ementas->Configuraplanejamentos->find('list', limit: 200)->all();
         $disciplinas = $this->Ementas->Disciplinas->find('list', limit: 200)->all();
         $optativas = $this->Ementas->Optativas->find('list', limit: 200)->all();
-        $docentes = $this->Ementas->Docentes->find('list', limit: 200)->all();
-        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'docentes'));
+        $professores = $this->Ementas->Professores->find('list', limit: 200)->all();
+        $this->set(compact('configuraplanejamentos', 'disciplinas', 'optativas', 'professores'));
         
         if ($this->request->is(['patch', 'post', 'put'])) {
             $ementa = $this->Ementas->patchEntity($ementa, $this->request->getData());
