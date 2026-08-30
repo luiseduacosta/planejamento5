@@ -73,47 +73,68 @@ CREATE TABLE IF NOT EXISTS `disciplinas` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `docentes`
+-- Estrutura para tabela `docentes` (legado — preservado para migrações)
 --
 
 CREATE TABLE IF NOT EXISTS `docentes` (
   `id` int(3) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
-  `cpf` char(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `siape` mediumint(10) DEFAULT NULL,
-  `datanascimento` date DEFAULT NULL,
-  `localnascimento` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `sexo` enum('2','1') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT '2',
-  `ddd_telefone` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
-  `telefone` varchar(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `ddd_celular` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '21',
-  `celular` varchar(12) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `email` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `homepage` varchar(120) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `redesocial` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `curriculolattes` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `atualizacaolattes` date DEFAULT NULL,
-  `curriculosigma` varchar(7) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `pesquisadordgp` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `formacaoprofissional` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `universidadedegraduacao` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `anoformacao` mediumint(4) DEFAULT NULL,
-  `mestradoarea` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `mestradouniversidade` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `mestradoanoconclusao` mediumint(4) DEFAULT NULL,
-  `doutoradoarea` varchar(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `doutoradouniversidade` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `doutoradoanoconclusao` mediumint(4) DEFAULT NULL,
+  `nome` varchar(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
+  `cpf` char(14) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `siape` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `cress` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `regiao` varchar(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `codigo_telefone` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '21',
+  `telefone` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `codigo_celular` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '21',
+  `celular` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `curriculolattes` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `atualizacaolattes` date NULL DEFAULT NULL,
   `dataingresso` date DEFAULT NULL,
-  `formaingresso` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `tipocargo` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `categoria` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `regimetrabalho` varchar(5) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `tipocargo` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `departamento` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `dataegresso` date DEFAULT NULL,
   `motivoegresso` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `observacoes` text CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `user_id` int(11) NULL DEFAULT 0,
+  `estagiarios_count` int(10) unsigned NULL DEFAULT 0,
+  `status` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'ativo',
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `professores` (tabela principal ativa desde a renomeação Docentes→Professores)
+--
+
+CREATE TABLE IF NOT EXISTS `professores` (
+  `id` int(3) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
+  `cpf` char(14) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `siape` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `cress` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `regiao` varchar(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `codigo_telefone` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '21',
+  `telefone` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `codigo_celular` char(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '21',
+  `celular` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `curriculolattes` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `atualizacaolattes` date NULL DEFAULT NULL,
+  `dataingresso` date DEFAULT NULL,
+  `tipocargo` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `departamento` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `dataegresso` date DEFAULT NULL,
+  `motivoegresso` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `observacoes` text CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `user_id` int(11) NULL DEFAULT 0,
+  `estagiarios_count` int(10) unsigned NULL DEFAULT 0,
+  `status` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'ativo',
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -124,12 +145,12 @@ CREATE TABLE IF NOT EXISTS `docentes` (
 --
 
 CREATE TABLE IF NOT EXISTS `docente_disponibilidades` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `docente_id` int(11) DEFAULT NULL,
   `configuraplanejamento_id` int(11) DEFAULT NULL,
   `disponivel` tinyint(1) NOT NULL,
-  `motivo` varchar(100) NOT NULL,
-  `observacoes` text NOT NULL,
+  `motivo` varchar(100) NOT NULL DEFAULT '',
+  `observacoes` text DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   `modified` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)

@@ -17,6 +17,12 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
             echo $this->Form->control('departamento', ['options' => $departamentos]);
             echo $this->Form->control('email');
             echo $this->Form->control('dataingresso', ['label' => 'Data de Ingresso', 'type' => 'date']);
+            echo $this->Form->control('tipocargo', ['label' => 'Tipo de Cargo', 'options' => [
+                'efetivo' => 'Efetivo',
+                'substituto' => 'Substituto',
+                'temporario' => 'Temporário',
+                'visitante' => 'Visitante',
+            ], 'empty' => '-- Selecione --']);
             echo $this->Form->control('dataegresso', ['label' => 'Data de Egresso', 'type' => 'date']);
             echo $this->Form->control('motivoegresso', ['label' => 'Motivo de Egresso']);
             echo $this->Form->control('status', [
@@ -36,7 +42,7 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
             ]);
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Salvar')) ?>
+    <?= $this->Form->button(__('Salvar'), ['class' => 'btn btn-primary']) ?>
     <?= $this->Html->link(__('Cancelar'), ['action' => 'index'], ['class' => 'btn btn-secondary']) ?>
     <?= $this->Form->end() ?>
 </div>

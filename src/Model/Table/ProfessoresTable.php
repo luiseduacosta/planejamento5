@@ -64,17 +64,18 @@ class ProfessoresTable extends Table
     {
         $validator
             ->scalar('nome')
-            ->maxLength('nome', 50)
+            ->maxLength('nome', 200)
             ->requirePresence('nome', 'create')
             ->notEmptyString('nome');
 
         $validator
             ->scalar('cpf')
-            ->maxLength('cpf', 15)
+            ->maxLength('cpf', 14)
             ->allowEmptyString('cpf');
 
         $validator
-            ->integer('siape')
+            ->scalar('siape')
+            ->maxLength('siape', 20)
             ->allowEmptyString('siape');
 
         $validator
@@ -88,21 +89,23 @@ class ProfessoresTable extends Table
             ->allowEmptyString('regiao');
 
         $validator
-            ->integer('codigo_telefone')
+            ->scalar('codigo_telefone')
+            ->maxLength('codigo_telefone', 2)
             ->allowEmptyString('codigo_telefone');
 
         $validator
             ->scalar('telefone')
-            ->maxLength('telefone', 15)
+            ->maxLength('telefone', 20)
             ->allowEmptyString('telefone');
 
         $validator
-            ->integer('codigo_celular')
+            ->scalar('codigo_celular')
+            ->maxLength('codigo_celular', 2)
             ->allowEmptyString('codigo_celular');
 
         $validator
             ->scalar('celular')
-            ->maxLength('celular', 15)
+            ->maxLength('celular', 20)
             ->allowEmptyString('celular');
 
         $validator
@@ -121,6 +124,11 @@ class ProfessoresTable extends Table
             ->allowEmptyDate('dataingresso');
 
         $validator
+            ->scalar('tipocargo')
+            ->maxLength('tipocargo', 20)
+            ->allowEmptyString('tipocargo');
+
+        $validator
             ->date('dataegresso')
             ->allowEmptyDate('dataegresso');
 
@@ -135,7 +143,7 @@ class ProfessoresTable extends Table
 
         $validator
             ->scalar('status')
-            ->maxLength('status', 20)
+            ->maxLength('status', 10)
             ->inList('status', [
                 self::STATUS_ATIVO,
                 self::STATUS_APOSENTADO,

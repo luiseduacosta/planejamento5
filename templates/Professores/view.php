@@ -66,6 +66,10 @@ declare(strict_types=1);
                     <td><?= h($professor->dataingresso?->format('d/m/Y')) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Tipo de Cargo') ?></th>
+                    <td><?= h($professor->tipocargo ?? '-') ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Data de Egresso') ?></th>
                     <td><?= h($professor->dataegresso?->format('d/m/Y')) ?></td>
                 </tr>
