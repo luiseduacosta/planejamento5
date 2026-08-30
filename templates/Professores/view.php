@@ -62,6 +62,14 @@ declare(strict_types=1);
                     <td><?= h($professor->email) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Currículo Lattes') ?></th>
+                    <td><?= h($professor->curriculolattes) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Atualização do Lattes') ?></th>
+                    <td><?= h($professor->atualizacaolattes?->format('d/m/Y')) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Data de Ingresso') ?></th>
                     <td><?= h($professor->dataingresso?->format('d/m/Y')) ?></td>
                 </tr>

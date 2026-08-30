@@ -114,8 +114,6 @@ class ProfessoresController extends AppController
                 'cpf',
                 'siape',
                 'departamento',
-                'periodo_diurno',
-                'periodo_noturno',
                 'status',
                 'email',
             ],

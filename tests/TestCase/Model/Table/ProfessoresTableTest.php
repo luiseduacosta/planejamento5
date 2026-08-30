@@ -55,6 +55,22 @@ class ProfessoresTableTest extends TestCase
         $this->assertArrayHasKey('email', $errors);
     }
 
+    public function testValidationCurriculoLattesMaxLength(): void
+    {
+        $docente = $this->Professores->newEntity(['nome' => 'Teste', 'curriculolattes' => str_repeat('1', 51)]);
+        $errors = $docente->getErrors();
+        $this->assertArrayHasKey('curriculolattes', $errors);
+        $this->assertArrayHasKey('maxLength', $errors['curriculolattes']);
+    }
+
+    public function testValidationAtualizacaoLattesDate(): void
+    {
+        $docente = $this->Professores->newEntity(['nome' => 'Teste', 'atualizacaolattes' => 'not-a-date']);
+        $errors = $docente->getErrors();
+        $this->assertArrayHasKey('atualizacaolattes', $errors);
+        $this->assertArrayHasKey('date', $errors['atualizacaolattes']);
+    }
+
     public function testBeforeMarshalNormalizesStatusAliases(): void
     {
         $docente = $this->Professores->newEntity(['nome' => 'Teste', 'status' => 'active']);
@@ -113,4 +129,3 @@ class ProfessoresTableTest extends TestCase
         $this->assertNull($this->Professores->findById(3)->first());
     }
 }
-

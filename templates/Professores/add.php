@@ -7,15 +7,17 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
     <fieldset>
         <legend><?= __('Adicionar Professor') ?></legend>
         <?php
-            echo $this->Form->control('nome');
-            echo $this->Form->control('cpf');
-            echo $this->Form->control('siape');
-            echo $this->Form->control('cress');
+            echo $this->Form->control('nome', ['label' => 'Nome']);
+            echo $this->Form->control('cpf', ['label' => 'CPF']);
+            echo $this->Form->control('siape', ['label' => 'Siape']);
+            echo $this->Form->control('cress', ['label' => 'CRESS']);
             echo $this->Form->control('regiao', ['label' => 'Região']);
-            echo $this->Form->control('telefone');
-            echo $this->Form->control('celular');
-            echo $this->Form->control('departamento', ['options' => $departamentos]);
-            echo $this->Form->control('email');
+            echo $this->Form->control('telefone', ['label' => 'Telefone']);
+            echo $this->Form->control('celular', ['label' => 'Celular']);
+            echo $this->Form->control('departamento', ['label' => 'Departamento', 'options' => $departamentos]);
+            echo $this->Form->control('email', ['label' => 'E-mail']);
+            echo $this->Form->control('curriculolattes', ['label' => 'Currículo Lattes']);
+            echo $this->Form->control('atualizacaolattes', ['label' => 'Atualização do Lattes', 'type' => 'date', 'empty' => true]);
             echo $this->Form->control('dataingresso', ['label' => 'Data de Ingresso', 'type' => 'date']);
             echo $this->Form->control('tipocargo', ['label' => 'Tipo de Cargo', 'options' => [
                 'efetivo' => 'Efetivo',

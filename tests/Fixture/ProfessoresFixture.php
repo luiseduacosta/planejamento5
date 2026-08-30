@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Test\Fixture;
 
-use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\Fixture\TestFixture;
 
 class ProfessoresFixture extends TestFixture
@@ -14,14 +13,16 @@ class ProfessoresFixture extends TestFixture
         'id' => ['type' => 'integer', 'autoIncrement' => true],
         'nome' => ['type' => 'string', 'length' => 200, 'null' => false],
         'cpf' => ['type' => 'string', 'length' => 14, 'null' => true],
-        'siape' => ['type' => 'string', 'length' => 20, 'null' => true],
+        'siape' => ['type' => 'string', 'length' => 8, 'null' => true],
         'cress' => ['type' => 'string', 'length' => 10, 'null' => true],
         'regiao' => ['type' => 'string', 'length' => 2, 'null' => true],
         'codigo_telefone' => ['type' => 'string', 'length' => 2, 'null' => true],
-        'telefone' => ['type' => 'string', 'length' => 20, 'null' => true],
+        'telefone' => ['type' => 'string', 'length' => 15, 'null' => true],
         'codigo_celular' => ['type' => 'string', 'length' => 2, 'null' => true],
-        'celular' => ['type' => 'string', 'length' => 20, 'null' => true],
+        'celular' => ['type' => 'string', 'length' => 15, 'null' => true],
         'email' => ['type' => 'string', 'length' => 255, 'null' => true],
+        'curriculolattes' => ['type' => 'string', 'length' => 50, 'null' => true],
+        'atualizacaolattes' => ['type' => 'date', 'null' => true],
         'dataingresso' => ['type' => 'date', 'null' => true],
         'tipocargo' => ['type' => 'string', 'length' => 20, 'null' => true],
         'departamento' => ['type' => 'string', 'length' => 30, 'null' => true],
@@ -50,6 +51,8 @@ class ProfessoresFixture extends TestFixture
             'codigo_celular' => '21',
             'celular' => '21988887777',
             'email' => 'maria@example.com',
+            'curriculolattes' => '1234567890123456',
+            'atualizacaolattes' => '2026-01-15',
             'dataingresso' => '2010-03-01',
             'tipocargo' => 'efetivo',
             'departamento' => 'Fundamentos',
@@ -83,31 +86,4 @@ class ProfessoresFixture extends TestFixture
             'modified' => '2026-01-01 10:00:00',
         ],
     ];
-
-    protected function _schemaFromReflection(): void
-    {
-        $schema = new TableSchema($this->table);
-        foreach ($this->fields as $key => $attrs) {
-            if ($key === '_constraints') {
-                foreach ($attrs as $name => $constraint) {
-                    $schema->addConstraint($name, $constraint);
-                }
-                continue;
-            }
-            if ($key === '_indexes') {
-                foreach ($attrs as $name => $index) {
-                    $schema->addIndex($name, $index);
-                }
-                continue;
-            }
-            if ($key === '_options') {
-                if (method_exists($schema, 'setOptions')) {
-                    $schema->setOptions($attrs);
-                }
-                continue;
-            }
-            $schema->addColumn((string)$key, $attrs);
-        }
-        $this->_schema = $schema;
-    }
 }

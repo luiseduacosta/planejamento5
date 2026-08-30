@@ -67,6 +67,8 @@ class ProfessoresControllerTest extends TestCase
         $this->get('/professores/view/1');
         $this->assertResponseOk();
         $this->assertResponseContains('Maria da Silva');
+        $this->assertResponseContains('1234567890123456');
+        $this->assertResponseContains('15/01/2026');
     }
 
     public function testAddRequiresLogin(): void
@@ -93,6 +95,8 @@ class ProfessoresControllerTest extends TestCase
         $this->post('/professores/add', [
             'nome' => 'Novo Docente',
             'email' => 'novo@example.com',
+            'curriculolattes' => '9876543210987654',
+            'atualizacaolattes' => '2026-02-10',
             'status' => 'ativo',
         ]);
         $this->assertRedirectContains('/professores/view');
@@ -100,7 +104,10 @@ class ProfessoresControllerTest extends TestCase
         $professores = TableRegistry::getTableLocator()->get('Professores');
         $query = $professores->find()->where(['nome' => 'Novo Docente']);
         $this->assertSame(1, $query->count());
-        $this->assertSame('ativo', $query->first()->status);
+        $docente = $query->first();
+        $this->assertSame('ativo', $docente->status);
+        $this->assertSame('9876543210987654', $docente->curriculolattes);
+        $this->assertSame('2026-02-10', $docente->atualizacaolattes->format('Y-m-d'));
     }
 
     public function testAddKeepsAtivoWhenStatusEmpty(): void
@@ -157,4 +164,3 @@ class ProfessoresControllerTest extends TestCase
         $this->assertNull($professores->findById(3)->first());
     }
 }
-

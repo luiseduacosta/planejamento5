@@ -58,17 +58,3 @@ ConnectionHelper::addTestAliases();
 // (new SchemaLoader())->loadSqlFiles('./tests/schema.sql', 'test');
 
 (new Migrator())->run();
-
-use Cake\Datasource\ConnectionManager;
-use App\Test\Fixture\ProfessoresFixture;
-
-$testDb = ConnectionManager::get('test');
-$existingTables = $testDb->getSchemaCollection()->listTables();
-if (!in_array('professores', $existingTables, true)) {
-    $professoresFixture = new ProfessoresFixture();
-    $professoresFixture->init();
-    $professoresSchema = $professoresFixture->getTableSchema();
-    foreach ($professoresSchema->createSql($testDb) as $stmt) {
-        $testDb->execute($stmt);
-    }
-}

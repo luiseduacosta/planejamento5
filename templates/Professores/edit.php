@@ -16,6 +16,8 @@ $departamentos = ['Fundamentos' => 'Fundamentos', 'Métodos e técnicas' => 'Mé
             echo $this->Form->control('celular');
             echo $this->Form->control('departamento', ['options' => $departamentos]);
             echo $this->Form->control('email');
+            echo $this->Form->control('curriculolattes', ['label' => 'Currículo Lattes']);
+            echo $this->Form->control('atualizacaolattes', ['label' => 'Atualização do Lattes', 'type' => 'date', 'empty' => true]);
             echo $this->Form->control('dataingresso', ['label' => 'Data de Ingresso', 'type' => 'date']);
             echo $this->Form->control('tipocargo', ['label' => 'Tipo de Cargo', 'options' => [
                 'efetivo' => 'Efetivo',
