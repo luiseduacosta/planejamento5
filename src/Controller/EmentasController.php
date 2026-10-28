@@ -42,7 +42,13 @@ class EmentasController extends AppController
     {
         $ementa = $this->Ementas->newEmptyEntity();
         $this->Authorization->authorize($ementa, 'add');
-        
+
+        // Default the semester to the persistent active configuraplanejamento.
+        $activeConfigId = $this->getActiveConfiguraplanejamentoId();
+        if ($activeConfigId !== null) {
+            $ementa->configuraplanejamento_id = $activeConfigId;
+        }
+
         // Load related data for dropdowns
         $configuraplanejamentos = $this->Ementas->Configuraplanejamentos->find('list', limit: 200)->all();
         $disciplinas = $this->Ementas->Disciplinas->find('list', limit: 200)->all();

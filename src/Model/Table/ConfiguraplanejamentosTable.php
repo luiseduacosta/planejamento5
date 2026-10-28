@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -57,5 +59,34 @@ class ConfiguraplanejamentosTable extends Table
             ->allowEmptyString('ativo');
 
         return $validator;
+    }
+
+    /**
+     * Keeps the "one active semester" invariant: whenever a record is saved
+     * with ativo=true, every other record is deactivated.
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity, \ArrayObject $options): void
+    {
+        if ($entity->get('ativo') === true) {
+            $this->updateAll(['ativo' => false], ['id !=' => $entity->get('id')]);
+        }
+    }
+
+    /**
+     * The app requires one semester to always be active: if no record carries
+     * the ativo flag (e.g. the active one was just deleted), activate the most
+     * recently modified one ("last semester" default).
+     */
+    public function afterSaveCommit(EventInterface $event, EntityInterface $entity, \ArrayObject $options): void
+    {
+        $hasAtivo = $this->find()->where(['ativo' => true])->count() > 0;
+        if ($hasAtivo) {
+            return;
+        }
+
+        $fallback = $this->find()->orderBy(['modified' => 'DESC'])->first();
+        if ($fallback !== null) {
+            $this->updateAll(['ativo' => true], ['id' => $fallback->get('id')]);
+        }
     }
 }

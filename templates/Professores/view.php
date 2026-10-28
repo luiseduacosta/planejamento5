@@ -153,6 +153,56 @@ declare(strict_types=1);
         </div>
     </div>
 
+    <div class="row mt-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><?= __('Planejamentos') ?>
+                    <span class="badge bg-secondary"><?= count($planejamentos) ?></span>
+                </h4>
+            </div>
+            <div class="table-responsive mt-2">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><?= __('Semestre') ?></th>
+                            <th><?= __('Disciplina') ?></th>
+                            <th><?= __('Período') ?></th>
+                            <th><?= __('Turno') ?></th>
+                            <th><?= __('Dia') ?></th>
+                            <th><?= __('Horário') ?></th>
+                            <th><?= __('Sala') ?></th>
+                            <th class="text-nowrap"><?= __('Ações') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($planejamentos)): ?>
+                            <?php foreach ($planejamentos as $planejamento): ?>
+                                <tr>
+                                    <td><?= $planejamento->hasValue('configuraplanejamento') ? h($planejamento->configuraplanejamento->semestre) : '-' ?></td>
+                                    <td><?= $planejamento->hasValue('disciplina') ? h($planejamento->disciplina->disciplina) : '-' ?></td>
+                                    <td><?= $planejamento->periodo !== null ? h((string)$planejamento->periodo) : '-' ?></td>
+                                    <td><?= $planejamento->turno ? h($planejamento->turno) : '-' ?></td>
+                                    <td><?= $planejamento->hasValue('dia') ? h($planejamento->dia->dia) : '-' ?></td>
+                                    <td><?= $planejamento->hasValue('horario') ? h($planejamento->horario->horario) : '-' ?></td>
+                                    <td><?= $planejamento->hasValue('sala') ? h($planejamento->sala->sala) : '-' ?></td>
+                                    <td class="text-nowrap">
+                                        <?= $this->Html->link(__('Ver'), ['controller' => 'Planejamentos', 'action' => 'view', $planejamento->id], ['class' => 'btn btn-sm btn-info']) ?>
+                                        <?= $this->Html->link(__('Editar'), ['controller' => 'Planejamentos', 'action' => 'edit', $planejamento->id], ['class' => 'btn btn-sm btn-warning']) ?>
+                                        <?= $this->Form->postLink(__('Excluir'), ['controller' => 'Planejamentos', 'action' => 'delete', $planejamento->id], ['confirm' => __('Tem certeza?'), 'class' => 'btn btn-sm btn-danger']) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8"><?= __('Nenhum planejamento vinculado a este professor.') ?></td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="row mt-3">
         <div class="col">
             <?= $this->Html->link(__('Editar'), ['action' => 'edit', $professor->id], ['class' => 'btn btn-warning']) ?>

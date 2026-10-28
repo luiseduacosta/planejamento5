@@ -11,13 +11,25 @@ declare(strict_types=1);
             <thead><tr><th><?= $this->Paginator->sort('id') ?></th><th><?= $this->Paginator->sort('nome') ?></th><th><?= $this->Paginator->sort('semestre') ?></th><th><?= $this->Paginator->sort('versao') ?></th><th><?= $this->Paginator->sort('ativo') ?></th><th class="text-nowrap"><?= __('Ações') ?></th></tr></thead>
             <tbody>
                 <?php foreach ($configuracoes as $configuracao): ?>
-                <tr>
+                <?php $emUso = !empty($configuracaoAtiva) && $configuracaoAtiva->id === $configuracao->id; ?>
+                <tr class="<?= $emUso ? 'table-success' : '' ?>">
                     <td><?= $this->Number->format($configuracao->id) ?></td>
                     <td><?= h($configuracao->nome) ?></td>
                     <td><?= h($configuracao->semestre) ?></td>
                     <td><?= h($configuracao->versao ?? '-') ?></td>
-                    <td><?= $configuracao->ativo ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-secondary">Inativo</span>' ?></td>
+                    <td>
+                        <?php if ($emUso): ?>
+                            <span class="badge bg-success"><?= __('Em uso') ?></span>
+                        <?php elseif ($configuracao->ativo): ?>
+                            <span class="badge bg-info text-dark"><?= __('Ativo') ?></span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary"><?= __('Inativo') ?></span>
+                        <?php endif; ?>
+                    </td>
                     <td class="text-nowrap">
+                        <?php if (!$emUso): ?>
+                            <?= $this->Form->postLink(__('Ativar'), ['action' => 'setativo', $configuracao->id], ['confirm' => __('Tornar este o semestre ativo?'), 'class' => 'btn btn-sm btn-success']) ?>
+                        <?php endif; ?>
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $configuracao->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $configuracao->id], ['class' => 'btn btn-sm btn-warning']) ?>
                         <?= $this->Form->postLink(__('Clonar'), ['action' => 'clone', $configuracao->id], ['confirm' => __('Deseja clonar esta configuração?'), 'class' => 'btn btn-sm btn-primary']) ?>

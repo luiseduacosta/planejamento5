@@ -10,31 +10,51 @@ declare(strict_types=1);
         </div>
     </div>
     
-    <!-- Semestre Filter -->
-    <?php if (!empty($semestresList)): ?>
+    <!-- Filtros: Semestre + Busca -->
     <div class="row mb-3">
-        <div class="col-auto">
-            <?= $this->Form->create(null, ['type' => 'get', 'class' => 'd-flex align-items-center gap-2']) ?>
-            <label class="form-label mb-0"><?= __('Filtrar por Semestre:') ?></label>
-            <?= $this->Form->control('semestre', [
-                'options' => ['' => __('Todos os Semestres')] + $semestresList,
-                'default' => $selectedSemestre,
-                'label' => false,
-                'onchange' => 'this.form.submit()'
-            ]) ?>
+        <div class="col-12">
+            <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-3 align-items-end']) ?>
+
+            <?php if (!empty($semestresList)): ?>
+            <div class="col-auto">
+                <?= $this->Form->control('semestre', [
+                    'label' => __('Semestre'),
+                    'options' => ['' => __('Todos os Semestres')] + $semestresList,
+                    'default' => $selectedSemestre,
+                    'empty' => false,
+                    'onchange' => 'this.form.submit()',
+                ]) ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="col-auto">
+                <?= $this->Form->control('busca', [
+                    'type' => 'text',
+                    'label' => __('Busca'),
+                    'value' => $busca,
+                    'placeholder' => __('Professor, disciplina, sala, dia ou horário'),
+                    'class' => 'form-control',
+                    'style' => 'min-width: 280px;',
+                ]) ?>
+            </div>
+
+            <div class="col-auto">
+                <?= $this->Form->button('<i class="bi bi-search"></i> ' . __('Buscar'), ['escape' => false, 'class' => 'btn btn-primary']) ?>
+            </div>
+
+            <?php if ($selectedSemestre || $busca !== ''): ?>
+            <div class="col-auto">
+                <?= $this->Html->link(
+                    '<i class="bi bi-x-circle"></i> ' . __('Limpar Filtros'),
+                    ['action' => 'index'],
+                    ['class' => 'btn btn-outline-secondary', 'escape' => false]
+                ) ?>
+            </div>
+            <?php endif; ?>
+
             <?= $this->Form->end() ?>
         </div>
-        <?php if ($selectedSemestre): ?>
-        <div class="col-auto">
-            <?= $this->Html->link(
-                '<i class="bi bi-x-circle"></i> ' . __('Limpar Filtro'),
-                ['action' => 'index'],
-                ['class' => 'btn btn-outline-secondary', 'escape' => false]
-            ) ?>
-        </div>
-        <?php endif; ?>
     </div>
-    <?php endif; ?>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>

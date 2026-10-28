@@ -21,8 +21,16 @@ class PlanejamentosController extends AppController
     {
         $this->Authorization->skipAuthorization();
         
-        // Get selected semestre from query params
+        // Get selected semestre from query params; when the user hasn't picked
+        // one, default to the persistent active semester.
         $selectedSemestre = $this->request->getQuery('semestre');
+        $configuracaoAtiva = $this->getActiveConfiguraplanejamento();
+        if ($selectedSemestre === null && $configuracaoAtiva !== null) {
+            $selectedSemestre = $configuracaoAtiva->semestre;
+        }
+
+        // Free-text search across professor, disciplina, sala, dia and horário.
+        $busca = trim((string)$this->request->getQuery('busca', ''));
         
         // Extract unique semestres from Configuraplanejamentos
         $semestres = $this->Planejamentos->Configuraplanejamentos->find()
@@ -54,6 +62,22 @@ class PlanejamentosController extends AppController
             });
         }
 
+        // Free-text search, additive with the semester filter. The related
+        // belongsTo tables are LEFT-joined via contain(), so we can match their
+        // display fields; rows lacking a given parent simply won't match.
+        if ($busca !== '') {
+            $like = '%' . $busca . '%';
+            $query->where([
+                'OR' => [
+                    'Professores.nome LIKE' => $like,
+                    'Disciplinas.disciplina LIKE' => $like,
+                    'Salas.sala LIKE' => $like,
+                    'Dias.dia LIKE' => $like,
+                    'Horarios.horario LIKE' => $like,
+                ],
+            ]);
+        }
+
         $config = [
             'sortableFields' => ['Planejamentos.id', 
             'Disciplinas.disciplina', 
@@ -66,7 +90,7 @@ class PlanejamentosController extends AppController
         ];
         
         $planejamentos = $this->paginate($query, $config);
-        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre'));
+        $this->set(compact('planejamentos', 'semestresList', 'selectedSemestre', 'busca'));
     }
  
     public function view($id = null): void
@@ -98,7 +122,12 @@ class PlanejamentosController extends AppController
             $planejamento->configuraplanejamento_id = (int)$selectedConfiguracaoId;
             $selectedConfiguracaoId = (int)$selectedConfiguracaoId;
         } else {
-            $selectedConfiguracaoId = null;
+            // Default to the persistent active semester (configuraplanejamento)
+            // until the user explicitly selects another one.
+            $selectedConfiguracaoId = $this->getActiveConfiguraplanejamentoId();
+            if ($selectedConfiguracaoId !== null) {
+                $planejamento->configuraplanejamento_id = $selectedConfiguracaoId;
+            }
         }
         
         $this->_setRelatedData($selectedConfiguracaoId, null);
@@ -202,7 +231,15 @@ class PlanejamentosController extends AppController
         } else {
             $this->Flash->error(__('Não foi possível excluir.'));
         }
-        return $this->redirect(['action' => 'index']);
+
+        // Return to the page the deletion was initiated from (e.g. the professor
+        // view); fall back to the index when there is no meaningful local referer.
+        $referer = $this->request->referer();
+        $target = ($referer === null || $referer === '' || $referer === '/')
+            ? ['controller' => 'Planejamentos', 'action' => 'index']
+            : $referer;
+
+        return $this->redirect($target);
     }
 
     public function listar(): void

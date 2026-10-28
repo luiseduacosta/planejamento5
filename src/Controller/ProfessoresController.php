@@ -124,12 +124,9 @@ class ProfessoresController extends AppController
         $statusFilterLabel = $statusFilter ? (self::STATUS_LABELS[$this->canonicalStatus($statusFilter)] ?? $statusFilter) : null;
         $configuracaoFilterLabel = $configuraplanejamentoFilter ? ($configuracoesList[(int) $configuraplanejamentoFilter] ?? null) : null;
 
-        // Determine which planning configuration to show in the availability column
-        $configuracaoAtiva = $this->Professores->DocenteDisponibilidades->Configuraplanejamentos
-            ->find()
-            ->where(['ativo' => true])
-            ->orderBy(['semestre' => 'DESC'])
-            ->first();
+        // Determine which planning configuration to show in the availability
+        // column: the persistent active semester (session > DB flag > last).
+        $configuracaoAtiva = $this->getActiveConfiguraplanejamento();
 
         $configuracaoAtual = null;
         if ($configuraplanejamentoFilter) {
@@ -172,11 +169,31 @@ class ProfessoresController extends AppController
     public function view($id = null): void
     {
         $professor = $this->Professores->get($id, contain: [
-            'Planejamentos',
+            'Planejamentos' => [
+                'Disciplinas',
+                'Configuraplanejamentos',
+                'Dias',
+                'Horarios',
+                'Salas',
+            ],
             'DocenteDisponibilidades' => ['Configuraplanejamentos'],
         ]);
+
+        // Related planning records, ordered by semester and then by day/time.
+        $planejamentos = collection($professor->planejamentos ?? [])
+            ->sortBy(function ($planejamento) {
+                return sprintf(
+                    '%s|%02d|%02d|%06d',
+                    $planejamento->configuraplanejamento->semestre ?? '',
+                    (int)($planejamento->dia_id ?? 0),
+                    (int)($planejamento->horario_id ?? 0),
+                    (int)$planejamento->id
+                );
+            }, SORT_ASC, SORT_STRING)
+            ->toList();
+
         $this->Authorization->skipAuthorization();
-        $this->set(compact('professor'));
+        $this->set(compact('professor', 'planejamentos'));
     }
 
     public function add(): \Cake\Http\Response|null
@@ -237,9 +254,35 @@ class ProfessoresController extends AppController
         if ($this->Professores->delete($professor)) {
             $this->Flash->success(__('O professor foi excluído com sucesso.'));
         } else {
-            $this->Flash->error(__('Não foi possível excluir o professor. Tente novamente.'));
+            // Surface the real reason (e.g. the "hasPlanejamentos" rule) instead of a
+            // generic message, so the admin knows deletion is blocked, not transient.
+            $message = $this->firstErrorMessage($professor->getErrors())
+                ?? __('Não foi possível excluir o professor. Tente novamente.');
+            $this->Flash->error($message);
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Extracts the first human-readable message from a (possibly nested) entity
+     * errors array, e.g. ['id' => ['hasPlanejamentos' => 'message']].
+     */
+    private function firstErrorMessage(array $errors): ?string
+    {
+        foreach ($errors as $fieldErrors) {
+            if (\is_string($fieldErrors) && $fieldErrors !== '') {
+                return $fieldErrors;
+            }
+            if (\is_array($fieldErrors)) {
+                foreach ($fieldErrors as $message) {
+                    if (\is_string($message) && $message !== '') {
+                        return $message;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

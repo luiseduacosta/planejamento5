@@ -75,7 +75,33 @@ $cakeDescription = 'Planejamento5';
                         <?= $this->Html->link('Planejamentos', ['controller' => 'Planejamentos', 'action' => 'index'], ['class' => 'nav-link']) ?>
                     </li>
                 </ul>
-                
+
+                <!-- Semestre ativo (persistente até o usuário escolher outro) -->
+                <?php
+                $identity = $this->request->getAttribute('identity');
+                $configuracaoAtiva = $configuracaoAtiva ?? null;
+                $semestreAtivoOptions = $semestreAtivoOptions ?? [];
+                if (!empty($configuracaoAtiva) && $identity):
+                ?>
+                    <div class="d-flex align-items-center me-3">
+                        <span class="text-white me-2 text-nowrap">
+                            <small><?= __('Semestre ativo') ?>:</small>
+                            <strong><?= h($configuracaoAtiva->semestre) ?></strong>
+                        </span>
+                        <?= $this->Form->create(null, [
+                            'url' => ['controller' => 'Configuraplanejamentos', 'action' => 'setativo'],
+                            'class' => 'd-flex',
+                        ]) ?>
+                        <?= $this->Form->select('id', $semestreAtivoOptions, [
+                            'value' => $configuracaoAtiva->id,
+                            'label' => false,
+                            'class' => 'form-select form-select-sm',
+                            'onchange' => 'this.form.submit()',
+                        ]) ?>
+                        <?= $this->Form->end() ?>
+                    </div>
+                <?php endif; ?>
+
                 <!-- User Menu -->
                 <ul class="navbar-nav">
                     <?php

@@ -75,6 +75,11 @@ class DisciplinasController extends AppController
         $this->Authorization->skipAuthorization();
 
         $selectedSemestre = $this->request->getQuery('semestre');
+        $configuracaoAtiva = $this->getActiveConfiguraplanejamento();
+        if ($selectedSemestre === null && $configuracaoAtiva !== null) {
+            // Default to the persistent active semester until the user picks another.
+            $selectedSemestre = $configuracaoAtiva->semestre;
+        }
 
         $semestres = $this->fetchTable('Planejamentos')
             ->Configuraplanejamentos
@@ -150,12 +155,10 @@ class DisciplinasController extends AppController
                 ->where(['semestre' => $selectedSemestre])
                 ->orderBy(['ativo' => 'DESC', 'semestre' => 'DESC', 'versao' => 'DESC'])
                 ->first();
-        } else {
-            $configuracaoAtual = $planejamentosTable->Configuraplanejamentos
-                ->find()
-                ->where(['ativo' => true])
-                ->orderBy(['semestre' => 'DESC'])
-                ->first();
+        }
+        if ($configuracaoAtual === null) {
+            // Fall back to the persistent active semester.
+            $configuracaoAtual = $configuracaoAtiva;
         }
 
         $this->set(compact(

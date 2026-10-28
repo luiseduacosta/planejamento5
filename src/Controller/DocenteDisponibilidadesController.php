@@ -53,6 +53,10 @@ class DocenteDisponibilidadesController extends AppController
         }
 
         $prefillConfiguracaoId = $this->request->getQuery('configuraplanejamento_id');
+        if (!$prefillConfiguracaoId) {
+            // Default to the persistent active semester.
+            $prefillConfiguracaoId = $this->getActiveConfiguraplanejamentoId();
+        }
         if ($prefillConfiguracaoId) {
             $docenteDisponibilidade->configuraplanejamento_id = (int)$prefillConfiguracaoId;
         }

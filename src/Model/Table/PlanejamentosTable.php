@@ -16,17 +16,19 @@ class PlanejamentosTable extends Table
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
+        // These belongsTo associations must NOT use joinType INNER. An INNER JOIN
+        // silently drops planejamentos whose parent row is missing (e.g. an orphaned
+        // configuraplanejamento_id) or optional (docente_id allows empty), hiding
+        // records in views while integrity rules still counted them. The default
+        // LEFT JOIN keeps every planejamento and yields null for missing parents.
         $this->belongsTo('Disciplinas', [
             'foreignKey' => 'disciplina_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Professores', [
             'foreignKey' => 'docente_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Configuraplanejamentos', [
             'foreignKey' => 'configuraplanejamento_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Salas', [
             'foreignKey' => 'sala_id',

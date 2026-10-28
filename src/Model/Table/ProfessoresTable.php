@@ -177,9 +177,24 @@ class ProfessoresTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->addDelete(
-            fn($entity, $operation) => !$this->Planejamentos->exists(['docente_id' => $entity->id]),
+            function ($entity) {
+                $count = $this->Planejamentos->find()
+                    ->where(['docente_id' => $entity->id])
+                    ->count();
+                if ($count === 0) {
+                    return true;
+                }
+
+                // Returning a string makes CakePHP use it as this rule's error message,
+                // so the controller can surface the real reason instead of a generic one.
+                return __(
+                    'Este professor possui {0} planejamento(s) vinculado(s) e não pode ser '
+                    . 'excluído. Remova ou reatribua os planejamentos antes de excluí-lo.',
+                    $count
+                );
+            },
             'hasPlanejamentos',
-            ['errorField' => 'id', 'message' => 'O docente possui planejamentos vinculados e não pode ser excluído.'],
+            ['errorField' => 'id'],
         );
 
         return $rules;

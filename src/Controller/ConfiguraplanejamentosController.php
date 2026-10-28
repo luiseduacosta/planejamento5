@@ -43,6 +43,11 @@ class ConfiguraplanejamentosController extends AppController
         
         if ($this->request->is('post')) {
             $configuracao = $this->Configuraplanejamentos->patchEntity($configuracao, $this->request->getData());
+            // The app requires one active semester: the first configuration
+            // ever created becomes the active one.
+            if ($this->getActiveConfiguraplanejamentoId() === null) {
+                $configuracao->ativo = true;
+            }
             if ($this->Configuraplanejamentos->save($configuracao)) {
                 $this->Flash->success(__('A configuração foi salva com sucesso.'));
                 return $this->redirect(['action' => 'index']);
@@ -77,11 +82,53 @@ class ConfiguraplanejamentosController extends AppController
         $this->Authorization->authorize($configuracao, 'delete');
         
         if ($this->Configuraplanejamentos->delete($configuracao)) {
+            // Forget the session choice when the semester in use was removed;
+            // the table fallback re-activates the last remaining one.
+            $this->setActiveConfiguraplanejamentoId(null);
             $this->Flash->success(__('Excluída com sucesso.'));
         } else {
             $this->Flash->error(__('Não foi possível excluir.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Marks a configuration as the active semester (persisted in DB and in
+     * session) so every controller uses it as default until the user picks
+     * another semester. The id may come from the URL ("Ativar" button) or
+     * from the POST body (navbar dropdown switcher).
+     */
+    public function setativo($id = null): \Cake\Http\Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $id = $id ?? $this->request->getData('id');
+        if ($id === null || $id === '') {
+            $this->Flash->error(__('Semestre não informado.'));
+
+            return $this->redirect($this->request->referer() ?: ['action' => 'index']);
+        }
+
+        $configuracao = $this->Configuraplanejamentos->find()
+            ->where(['id' => (int)$id])
+            ->first();
+        if ($configuracao === null) {
+            $this->Flash->error(__('Semestre não encontrado.'));
+
+            return $this->redirect($this->request->referer() ?: ['action' => 'index']);
+        }
+
+        $this->Authorization->authorize($configuracao, 'edit');
+
+        $configuracao->ativo = true;
+        if ($this->Configuraplanejamentos->save($configuracao)) {
+            $this->setActiveConfiguraplanejamentoId((int)$configuracao->id);
+            $this->Flash->success(__('O semestre "{0}" agora está ativo.', $configuracao->semestre));
+        } else {
+            $this->Flash->error(__('Não foi possível ativar o semestre.'));
+        }
+
+        return $this->redirect($this->request->referer() ?: ['action' => 'index']);
     }
 
     public function clone($id = null): \Cake\Http\Response|null
